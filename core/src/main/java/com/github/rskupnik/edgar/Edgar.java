@@ -1,15 +1,14 @@
 package com.github.rskupnik.edgar;
 
-public class Edgar {
+import com.github.rskupnik.edgar.domain.Device;
+import io.vavr.control.Either;
 
-    private final EdgarDep dep;
+public interface Edgar {
 
-    public Edgar(EdgarDep dep) {
-        this.dep = dep;
-    }
+    Either<String, Device> registerDevice(String name, String ip);
 
-    public String test() {
-        return dep.test();
+    static Edgar defaultImplementation(Database database) {
+        return new EdgarImpl(database);
     }
 }
 

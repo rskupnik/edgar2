@@ -35,6 +35,12 @@
 			<artifactId>edgar2-http</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+
+		<dependency>
+			<groupId>com.github.rskupnik</groupId>
+			<artifactId>edgar2-db</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 
 	<build>
