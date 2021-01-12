@@ -4,11 +4,13 @@ import com.github.rskupnik.edgar.domain.Device;
 import io.vavr.control.Either;
 
 import java.util.List;
+import java.util.Map;
 
 public interface Edgar {
 
     Either<String, Device> registerDevice(Device device);
     List<Device> getDevices();
+    boolean sendCommand(String deviceName, String commandName, Map<String, Object> params);
 
     static Edgar defaultImplementation(Database database) {
         return new EdgarImpl(database);
