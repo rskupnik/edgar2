@@ -3,9 +3,12 @@ package com.github.rskupnik.edgar;
 import com.github.rskupnik.edgar.domain.Device;
 import io.vavr.control.Either;
 
+import java.util.List;
+
 public interface Edgar {
 
-    Either<String, Device> registerDevice(String name, String ip);
+    Either<String, Device> registerDevice(Device device);
+    List<Device> getDevices();
 
     static Edgar defaultImplementation(Database database) {
         return new EdgarImpl(database);
@@ -62,3 +65,4 @@ This dashboard should display all devices and their current status.
  */
 
 // TODO: How to monitor for device status? Ping them every minute to check if they respond?
+// TODO: Add some validation to device register endpoint
