@@ -14,6 +14,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 class EdgarImpl implements Edgar {
 
@@ -52,7 +53,12 @@ class EdgarImpl implements Edgar {
             return false;
         }
 
-        return sendCommand(device, endpoint, params);
+        // Filter out params that are not defined on the endpoint
+        var filteredParams = params.entrySet().stream()
+                .filter(e -> endpoint.getParams().stream().anyMatch(edp -> edp.getName().equals(e.getKey())))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+        return sendCommand(device, endpoint, filteredParams);
     }
 
     @Override

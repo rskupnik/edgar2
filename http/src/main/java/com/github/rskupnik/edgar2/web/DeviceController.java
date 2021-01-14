@@ -40,7 +40,7 @@ public class DeviceController {
                 .split(request.getContextPath() + "/devices/" + deviceName)[1];
         System.out.println("Sending command " + command + " to device " + deviceName);
         requestParams.forEach((k, v) -> System.out.println(k + ": " + v));
-        boolean success = edgar.sendCommand(deviceName, command, Collections.emptyMap());
+        boolean success = edgar.sendCommand(deviceName, command, requestParams);
         System.out.println("Result: " + success);
     }
 }
