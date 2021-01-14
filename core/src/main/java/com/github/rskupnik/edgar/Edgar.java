@@ -10,7 +10,7 @@ public interface Edgar {
 
     Either<String, Device> registerDevice(Device device);
     List<Device> getDevices();
-    boolean sendCommand(String deviceName, String commandName, Map<String, Object> params);
+    boolean sendCommand(String deviceName, String commandName, Map<String, String> params);
 
     static Edgar defaultImplementation(Database database) {
         return new EdgarImpl(database);

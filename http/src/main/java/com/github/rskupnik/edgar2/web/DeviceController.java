@@ -24,6 +24,7 @@ public class DeviceController {
     @PostMapping("devices")
     public void registerDevice(@RequestBody DeviceDto device) {
         edgar.registerDevice(device.toDomainClass());   // TODO: Do something with the error case, change return code etc.
+        System.out.println("Registered a new device");
     }
 
     @GetMapping("devices")

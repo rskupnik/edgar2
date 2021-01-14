@@ -38,7 +38,7 @@ class EdgarImpl implements Edgar {
     }
 
     @Override
-    public boolean sendCommand(String deviceName, String commandName, Map<String, Object> params) {
+    public boolean sendCommand(String deviceName, String commandName, Map<String, String> params) {
         // Find device
         final Device device = database.findDevice(deviceName).getOrNull();
         if (device == null) {
@@ -79,5 +79,7 @@ class EdgarImpl implements Edgar {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        return true;
     }
 }
