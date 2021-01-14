@@ -2,6 +2,7 @@ package com.github.rskupnik.edgar2.web;
 
 import com.github.rskupnik.edgar.domain.DeviceEndpoint;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,7 +18,7 @@ public class DeviceEndpointDto {
     }
 
     public DeviceEndpoint toDomainClass() {
-        return new DeviceEndpoint(path, method, description, params.stream()
+        return new DeviceEndpoint(path, method, description, params == null ? Collections.emptyList() : params.stream()
                 .map(DeviceEndpointParamDto::toDomainClass).collect(Collectors.toList()));
     }
 
@@ -26,7 +27,7 @@ public class DeviceEndpointDto {
         dto.setPath(endpoint.getPath());
         dto.setMethod(endpoint.getMethod());
         dto.setDescription(endpoint.getDescription());
-        dto.setParams(endpoint.getParams().stream().map(DeviceEndpointParamDto::fromDomainClass).collect(Collectors.toList()));
+        dto.setParams(endpoint.getParams() == null ? Collections.emptyList() : endpoint.getParams().stream().map(DeviceEndpointParamDto::fromDomainClass).collect(Collectors.toList()));
         return dto;
     }
 

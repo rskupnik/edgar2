@@ -2,6 +2,7 @@ package com.github.rskupnik.edgar2.web;
 
 import com.github.rskupnik.edgar.domain.Device;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,14 +17,14 @@ public class DeviceDto {
     }
 
     public Device toDomainClass() {
-        return new Device(name, ip, endpoints.stream().map(DeviceEndpointDto::toDomainClass).collect(Collectors.toList()));
+        return new Device(name, ip, endpoints == null ? Collections.emptyList() : endpoints.stream().map(DeviceEndpointDto::toDomainClass).collect(Collectors.toList()));
     }
 
     public static DeviceDto fromDomainClass(Device device) {
         DeviceDto dto = new DeviceDto();
         dto.setName(device.getName());
         dto.setIp(device.getIp());
-        dto.setEndpoints(device.getEndpoints().stream().map(DeviceEndpointDto::fromDomainClass).collect(Collectors.toList()));
+        dto.setEndpoints(device.getEndpoints() == null ? Collections.emptyList() : device.getEndpoints().stream().map(DeviceEndpointDto::fromDomainClass).collect(Collectors.toList()));
         return dto;
     }
 
