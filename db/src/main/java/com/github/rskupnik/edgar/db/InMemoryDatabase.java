@@ -27,4 +27,9 @@ public class InMemoryDatabase implements Database {
     public List<Device> getAll() {
         return new ArrayList<>(devices.values());
     }
+
+    @Override
+    public void removeDevice(String name) {
+        devices.remove(name);
+    }
 }

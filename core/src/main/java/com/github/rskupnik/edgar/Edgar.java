@@ -11,6 +11,7 @@ public interface Edgar {
     Either<String, Device> registerDevice(Device device);
     List<Device> getDevices();
     boolean sendCommand(String deviceName, String commandName, Map<String, String> params);
+    void refreshDeviceStatus();
 
     static Edgar defaultImplementation(Database database) {
         return new EdgarImpl(database);
@@ -23,6 +24,7 @@ Edgar should be able to:
 1. Allow for new devices to register themselves
 2. Pass commands to registered devices, received through various means, HTTP for start
 3. Expose a dashboard
+4. Perpetually monitor devices' state
 
 Ad 1:
 Edgar should expose an HTTP endpoint that the devices will use to register themselves. This endpoint should
@@ -64,7 +66,10 @@ it was registered with. Edgar will then find the device's IP and pass the comman
 Ad 3:
 Simply expose a website that will serve as a dashboard and use the command endpoint to pass commands to devices.
 This dashboard should display all devices and their current status.
+
+Ad 4:
+Need to check every minute (configurable) every device's /status endpoint
  */
 
-// TODO: How to monitor for device status? Ping them every minute to check if they respond?
 // TODO: Add some validation to device register endpoint
+// TODO: Introduce a proper logger in place of system outputs

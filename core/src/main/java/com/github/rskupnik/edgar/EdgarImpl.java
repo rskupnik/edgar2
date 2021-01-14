@@ -3,6 +3,7 @@ package com.github.rskupnik.edgar;
 import com.github.rskupnik.edgar.domain.Device;
 import com.github.rskupnik.edgar.domain.DeviceEndpoint;
 import io.vavr.control.Either;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.*;
 import org.apache.http.client.utils.URIBuilder;
@@ -52,6 +53,26 @@ class EdgarImpl implements Edgar {
         }
 
         return sendCommand(device, endpoint, params);
+    }
+
+    @Override
+    public void refreshDeviceStatus() {
+        database.getAll().stream()
+                .filter(d -> !isAlive(d))
+                .forEach(d -> {
+                    System.out.println("Removing device: " + d.getName() + " at IP " + d.getIp());
+                    database.removeDevice(d.getName());
+                });
+    }
+
+    private boolean isAlive(Device device) {
+        var httpClient = HttpClients.createDefault();
+        try (CloseableHttpResponse response = httpClient.execute(new HttpGet("http://" + device.getIp() + "/status"))) {
+            return response.getStatusLine().getStatusCode() == HttpStatus.SC_OK;
+        } catch (IOException e) {
+            //e.printStackTrace();
+            return false;
+        }
     }
 
     private boolean sendCommand(Device device, DeviceEndpoint endpoint, Map<String, String> params) {

@@ -10,4 +10,5 @@ public interface Database {
     Option<Device> findDevice(String name);
     void saveDevice(Device device);
     List<Device> getAll();
+    void removeDevice(String name);
 }
