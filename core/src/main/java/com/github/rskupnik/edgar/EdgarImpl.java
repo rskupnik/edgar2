@@ -79,7 +79,7 @@ class EdgarImpl implements Edgar {
 
         URI uri = null;
         try {
-            var uriBuilder = new URIBuilder("http://" + device.getIp() + "/" + endpoint.getPath());
+            var uriBuilder = new URIBuilder("http://" + device.getIp() + endpoint.getPath());
             for (Map.Entry<String, String> entry : params.entrySet()) {
                 uriBuilder.addParameter(entry.getKey(), entry.getValue());
             }
@@ -97,6 +97,8 @@ class EdgarImpl implements Edgar {
 
         var httpClient = HttpClients.createDefault();
         try (CloseableHttpResponse response = httpClient.execute(request)) {
+            System.out.println("Sent request to: " + uri.toString());
+            return response.getStatusLine().getStatusCode() == HttpStatus.SC_OK;
         } catch (IOException e) {
             e.printStackTrace();
         }

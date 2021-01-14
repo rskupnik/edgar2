@@ -73,3 +73,4 @@ Need to check every minute (configurable) every device's /status endpoint
 
 // TODO: Add some validation to device register endpoint
 // TODO: Introduce a proper logger in place of system outputs
+// TODO: How to deal with the server going down and then back up? How will it re-register all the devices that are healthy?
