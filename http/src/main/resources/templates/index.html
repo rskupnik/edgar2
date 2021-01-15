@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Edgar Dashboard</title>
+    <script src="https://unpkg.com/vue"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+<body>
+<div id="app">
+    {{ devices }}
+    <div v-for="device in devices" class="device">
+        <h1>{{ device.name }}</h1>
+        <div v-for="endpoint in device.endpoints" class="endpoint">
+            <button v-on:click="sendCommand(device, endpoint)">{{ endpoint.path }}</button>
+            <span>{{ endpoint.description }}</span>
+        </div>
+    </div>
+</div>
+
+<script>
+    var app = new Vue({
+        el: '#app',
+        data() {
+            return {
+                devices: null
+            }
+        },
+        mounted() {
+            axios
+                .get('http://localhost:8080/devices')
+                .then(response => (this.devices = response.data))
+        },
+        methods: {
+            sendCommand: function (device, endpoint) {
+                console.log(endpoint)
+                axios.post("http://localhost:8080/devices/" + device.name + endpoint.path)
+            }
+        }
+    })
+</script>
+</body>
+</html>
