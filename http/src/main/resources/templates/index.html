@@ -1,13 +1,20 @@
 <!DOCTYPE html>
-<html xmlns:v-on="http://www.w3.org/1999/xhtml">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Edgar Dashboard</title>
+    <link th:href="@{main.css}" rel="stylesheet" />
     <script src="https://unpkg.com/vue"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 </head>
 <body>
 <div id="app">
     {{ devices }}
+
+    <div class="switch">
+        <input type="checkbox">
+        <label><i></i></label>
+    </div>
+
     <div v-for="device in devices" class="device">
         <h1>{{ device.name }}</h1>
         <div v-for="endpoint in device.endpoints" class="endpoint">
@@ -27,13 +34,13 @@
         },
         mounted() {
             axios
-                .get('http://localhost:8080/devices')
+                .get('http://' + window.location.host + '/devices')
                 .then(response => (this.devices = response.data))
         },
         methods: {
             sendCommand: function (device, endpoint) {
                 console.log(endpoint)
-                axios.post("http://localhost:8080/devices/" + device.name + endpoint.path)
+                axios.post("http://" + window.location.host + "/devices/" + device.name + endpoint.path)
             }
         }
     })
