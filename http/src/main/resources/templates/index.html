@@ -8,12 +8,60 @@
 </head>
 <body>
 <div id="app">
-    {{ devices }}
 
-    <div class="switch">
-        <input type="checkbox">
-        <label><i></i></label>
+    <div class="deviceContainer">
+        <h1>Room fan #1</h1>
+        <div class="endpoints">
+            <div class="singleEndpoint">
+                <label class="toggle-control">
+                    <input type="checkbox" checked="checked">
+                    <span class="control"></span>
+                </label>
+                <span class="endpointToggleDescription">Basic speed</span>
+            </div>
+
+            <div class="singleEndpoint">
+                <label class="toggle-control">
+                    <input type="checkbox" checked="checked">
+                    <span class="control"></span>
+                </label>
+                <span class="endpointToggleDescription">Super speed</span>
+            </div>
+        </div>
     </div>
+
+    <div class="deviceContainer">
+        <h1>Room fan #2</h1>
+        <div class="endpoints">
+            <div class="power-switch">
+                <input type="checkbox" />
+                <div class="button">
+                    <svg class="power-off">
+                        <use xlink:href="#line" class="line" />
+                        <use xlink:href="#circle" class="circle" />
+                    </svg>
+                    <svg class="power-on">
+                        <use xlink:href="#line" class="line" />
+                        <use xlink:href="#circle" class="circle" />
+                    </svg>
+                </div>
+            </div>
+            <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+                <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 150" id="line">
+                    <line x1="75" y1="34" x2="75" y2="58"/>
+                </symbol>
+                <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 150" id="circle">
+                    <circle cx="75" cy="80" r="35"/>
+                </symbol>
+            </svg>
+        </div>
+    </div>
+
+
+    <!--    <div class="switch">-->
+<!--        <input type="checkbox">-->
+<!--        <label><i></i></label>-->
+<!--    </div>-->
 
     <div v-for="device in devices" class="device">
         <h1>{{ device.name }}</h1>
