@@ -9,30 +9,58 @@
 <body>
 <div id="app">
 
-    <div class="deviceContainer">
-        <h1>Room fan #1</h1>
-        <div class="endpoints">
-            <div class="singleEndpoint">
-                <label class="toggle-control">
-                    <input type="checkbox" checked="checked">
-                    <span class="control"></span>
-                </label>
-                <span class="endpointToggleDescription">Basic speed</span>
-            </div>
+    <device-widget v-bind:device="{'name': 'Room fan #1', 'endpoints': [{'name': 'Basic speed', 'type': 'toggle'}]}"></device-widget>
+    <device-widget v-bind:device="{'name': 'Room fan #2', 'endpoints': [{'type': 'toggle-large'}]}"></device-widget>
 
-            <div class="singleEndpoint">
-                <label class="toggle-control">
-                    <input type="checkbox" checked="checked">
-                    <span class="control"></span>
-                </label>
-                <span class="endpointToggleDescription">Super speed</span>
-            </div>
+    <div v-for="device in devices" class="device">
+        <h1>{{ device.name }}</h1>
+        <div v-for="endpoint in device.endpoints" class="endpoint">
+            <button v-on:click="sendCommand(device, endpoint)">{{ endpoint.path }}</button>
+            <span>{{ endpoint.description }}</span>
         </div>
     </div>
+</div>
 
-    <div class="deviceContainer">
-        <h1>Room fan #2</h1>
-        <div class="endpoints">
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+    <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 150" id="line">
+        <line x1="75" y1="34" x2="75" y2="58"/>
+    </symbol>
+    <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 150" id="circle">
+        <circle cx="75" cy="80" r="35"/>
+    </symbol>
+</svg>
+
+<script>
+    Vue.component('device-widget', {
+        props: ['device'],
+        template: `
+            <div class="deviceContainer">
+                <h1>{{ device.name }}</h1>
+                <div class="endpoints">
+                    <div v-for="endpoint in device.endpoints">
+                        <basic-toggle-endpoint v-bind:endpoint="{'name': 'Basic speed'}" v-if="endpoint.type === 'toggle'"></basic-toggle-endpoint>
+                        <large-toggle-endpoint v-if="endpoint.type === 'toggle-large'"></large-toggle-endpoint>
+                    </div>
+                </div>
+            </div>
+        `
+    })
+
+    Vue.component('basic-toggle-endpoint', {
+        props: ['endpoint'],
+        template: `
+            <div class="singleEndpoint">
+                <label class="toggle-control">
+                    <input type="checkbox" checked="checked">
+                    <span class="control"></span>
+                </label>
+                <span class="endpointToggleDescription">{{ endpoint.name }}</span>
+            </div>
+        `
+    })
+
+    Vue.component('large-toggle-endpoint', {
+        template: `
             <div class="power-switch">
                 <input type="checkbox" />
                 <div class="button">
@@ -46,33 +74,9 @@
                     </svg>
                 </div>
             </div>
-            <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
-                <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 150" id="line">
-                    <line x1="75" y1="34" x2="75" y2="58"/>
-                </symbol>
-                <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 150" id="circle">
-                    <circle cx="75" cy="80" r="35"/>
-                </symbol>
-            </svg>
-        </div>
-    </div>
+        `
+    })
 
-
-    <!--    <div class="switch">-->
-<!--        <input type="checkbox">-->
-<!--        <label><i></i></label>-->
-<!--    </div>-->
-
-    <div v-for="device in devices" class="device">
-        <h1>{{ device.name }}</h1>
-        <div v-for="endpoint in device.endpoints" class="endpoint">
-            <button v-on:click="sendCommand(device, endpoint)">{{ endpoint.path }}</button>
-            <span>{{ endpoint.description }}</span>
-        </div>
-    </div>
-</div>
-
-<script>
     var app = new Vue({
         el: '#app',
         data() {
