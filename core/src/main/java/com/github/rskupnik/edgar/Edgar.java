@@ -31,33 +31,40 @@ Edgar should expose an HTTP endpoint that the devices will use to register thems
 gather information such as the device name, IP address, and a list of endpoints it exposes.
 Example structure:
 {
-    "name": "exampleDevice",
+    "id": "exampleDevice",
+    "name": "Example device",
     "ip": "127.0.0.1",
     "endpoints": [
         {
-            "path": "on",    // <device IP>/<path>
+            "name": "ON",
+            "path": "/on",    // <device IP>/<path>
             "method": "POST",
-            "description": "Turn the device on"
         },
         {
-            "path": "off",
+            "name": "OFF",
+            "path": "/off",
             "method": "POST",
-            "description": "Turn the device off"
         },
         {
-            "path": "toggle",
+            "name": "Toggle",
+            "path": "/toggle",
             "method": "POST",
-            "description": "Turn the device on or off",
             "params": [
                 {
                     "name": "enable",
-                    "type": "bool",
-                    "description": "Whether to enable the device or disable it"
+                    "type": "bool"
                 }
             ]
         }
     ]
 }
+
+[
+    {
+        "id": "exampleDevice",
+        "type": "toggle-single-large"
+    }
+]
 
 Ad 2:
 Expose a single endpoint that accepts commands for devices. The devices are distinguished by the device name/id that

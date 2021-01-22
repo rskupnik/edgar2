@@ -9,16 +9,20 @@
 <body>
 <div id="app">
 
-    <device-widget v-bind:device="{'name': 'Room fan #1', 'endpoints': [{'name': 'Basic speed', 'type': 'toggle'}]}"></device-widget>
-    <device-widget v-bind:device="{'name': 'Room fan #2', 'endpoints': [{'type': 'toggle-large'}]}"></device-widget>
+<!--    <device-widget v-bind:device="{'name': 'Room fan #1', 'endpoints': [{'name': 'Basic speed', 'type': 'toggle'}]}"></device-widget>-->
+<!--    <device-widget v-bind:device="{'name': 'Room fan #2', 'endpoints': [{'type': 'toggle-large'}]}"></device-widget>-->
 
-    <div v-for="device in devices" class="device">
-        <h1>{{ device.name }}</h1>
-        <div v-for="endpoint in device.endpoints" class="endpoint">
-            <button v-on:click="sendCommand(device, endpoint)">{{ endpoint.path }}</button>
-            <span>{{ endpoint.description }}</span>
-        </div>
+    <div v-for="device in testDevices">
+        <device-widget v-bind:device="device"></device-widget>
     </div>
+
+<!--    <div v-for="device in devices" class="device">-->
+<!--        <h1>{{ device.name }}</h1>-->
+<!--        <div v-for="endpoint in device.endpoints" class="endpoint">-->
+<!--            <button v-on:click="sendCommand(device, endpoint)">{{ endpoint.path }}</button>-->
+<!--            <span>{{ endpoint.description }}</span>-->
+<!--        </div>-->
+<!--    </div>-->
 </div>
 
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
@@ -81,7 +85,18 @@
         el: '#app',
         data() {
             return {
-                devices: null
+                devices: null,
+                testDevices: [
+                    {
+                        "name": "Test device #1",
+                        "endpoints": [
+                            {
+                                "name": "Basic speed",
+                                "type": "toggle"
+                            }
+                        ]
+                    }
+                ]
             }
         },
         mounted() {
