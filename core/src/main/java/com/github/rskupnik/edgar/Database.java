@@ -1,6 +1,7 @@
 package com.github.rskupnik.edgar;
 
 import com.github.rskupnik.edgar.domain.Device;
+import com.github.rskupnik.edgar.domain.DeviceLayout;
 import io.vavr.control.Option;
 
 import java.util.List;
@@ -11,4 +12,7 @@ public interface Database {
     void saveDevice(Device device);
     List<Device> getAll();
     void removeDevice(String name);
+
+    Option<DeviceLayout> findDeviceLayout(String id);
+    void saveDeviceLayout(DeviceLayout deviceLayout);
 }

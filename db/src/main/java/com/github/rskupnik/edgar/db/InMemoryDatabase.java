@@ -2,6 +2,7 @@ package com.github.rskupnik.edgar.db;
 
 import com.github.rskupnik.edgar.Database;
 import com.github.rskupnik.edgar.domain.Device;
+import com.github.rskupnik.edgar.domain.DeviceLayout;
 import io.vavr.control.Option;
 
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import java.util.Map;
 public class InMemoryDatabase implements Database {
 
     private final Map<String, Device> devices = new HashMap<>();
+    private final Map<String, DeviceLayout> deviceLayouts = new HashMap<>();
 
     @Override
     public Option<Device> findDevice(String name) {
@@ -31,5 +33,15 @@ public class InMemoryDatabase implements Database {
     @Override
     public void removeDevice(String name) {
         devices.remove(name);
+    }
+
+    @Override
+    public Option<DeviceLayout> findDeviceLayout(String id) {
+        return Option.of(deviceLayouts.get(id));
+    }
+
+    @Override
+    public void saveDeviceLayout(DeviceLayout deviceLayout) {
+        deviceLayouts.put(deviceLayout.getId(), deviceLayout);
     }
 }

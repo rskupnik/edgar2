@@ -2,6 +2,7 @@ package com.github.rskupnik.edgar;
 
 import com.github.rskupnik.edgar.domain.Device;
 import com.github.rskupnik.edgar.domain.DeviceEndpoint;
+import com.github.rskupnik.edgar.domain.DeviceLayout;
 import io.vavr.control.Either;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
@@ -69,6 +70,11 @@ class EdgarImpl implements Edgar {
                     System.out.println("Removing device: " + d.getName() + " at IP " + d.getIp());
                     database.removeDevice(d.getName());
                 });
+    }
+
+    @Override
+    public void registerLayouts(List<DeviceLayout> layouts) {
+        layouts.forEach(database::saveDeviceLayout);
     }
 
     private boolean isAlive(Device device) {
