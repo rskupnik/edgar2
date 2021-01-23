@@ -3,9 +3,10 @@ package com.github.rskupnik.edgar;
 import com.github.rskupnik.edgar.domain.Device;
 import com.github.rskupnik.edgar.domain.DeviceEndpoint;
 import com.github.rskupnik.edgar.domain.DeviceLayout;
+import io.vavr.Tuple2;
 import io.vavr.control.Either;
+import io.vavr.control.Option;
 import org.apache.http.HttpStatus;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.*;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.HttpClients;
@@ -75,6 +76,11 @@ class EdgarImpl implements Edgar {
     @Override
     public void registerLayouts(List<DeviceLayout> layouts) {
         layouts.forEach(database::saveDeviceLayout);
+    }
+
+    @Override
+    public List<Tuple2<Device, Option<DeviceLayout>>> applyLayouts(List<Device> devices) {
+        return devices.stream().map(d -> new Tuple2<>(d, database.findDeviceLayout(d.getId()))).collect(Collectors.toList());
     }
 
     private boolean isAlive(Device device) {

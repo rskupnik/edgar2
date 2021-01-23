@@ -10,7 +10,6 @@ public class DeviceEndpointDto {
 
     private String path;
     private DeviceEndpoint.HttpMethod method;
-    private String description;
     private List<DeviceEndpointParamDto> params;
 
     public DeviceEndpointDto() {
@@ -18,7 +17,7 @@ public class DeviceEndpointDto {
     }
 
     public DeviceEndpoint toDomainClass() {
-        return new DeviceEndpoint(path, method, description, params == null ? Collections.emptyList() : params.stream()
+        return new DeviceEndpoint(path, method, params == null ? Collections.emptyList() : params.stream()
                 .map(DeviceEndpointParamDto::toDomainClass).collect(Collectors.toList()));
     }
 
@@ -26,7 +25,6 @@ public class DeviceEndpointDto {
         DeviceEndpointDto dto = new DeviceEndpointDto();
         dto.setPath(endpoint.getPath());
         dto.setMethod(endpoint.getMethod());
-        dto.setDescription(endpoint.getDescription());
         dto.setParams(endpoint.getParams() == null ? Collections.emptyList() : endpoint.getParams().stream().map(DeviceEndpointParamDto::fromDomainClass).collect(Collectors.toList()));
         return dto;
     }
@@ -45,14 +43,6 @@ public class DeviceEndpointDto {
 
     public void setMethod(DeviceEndpoint.HttpMethod method) {
         this.method = method;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public List<DeviceEndpointParamDto> getParams() {

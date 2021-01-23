@@ -2,7 +2,9 @@ package com.github.rskupnik.edgar;
 
 import com.github.rskupnik.edgar.domain.Device;
 import com.github.rskupnik.edgar.domain.DeviceLayout;
+import io.vavr.Tuple2;
 import io.vavr.control.Either;
+import io.vavr.control.Option;
 
 import java.util.List;
 import java.util.Map;
@@ -14,6 +16,7 @@ public interface Edgar {
     boolean sendCommand(String deviceName, String commandName, Map<String, String> params);
     void refreshDeviceStatus();
     void registerLayouts(List<DeviceLayout> layouts);
+    List<Tuple2<Device, Option<DeviceLayout>>> applyLayouts(List<Device> devices);
 
     static Edgar defaultImplementation(Database database) {
         return new EdgarImpl(database);

@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 public class DeviceDto {
 
+    private String id;
     private String name;
     private String ip;
     private List<DeviceEndpointDto> endpoints;
@@ -17,15 +18,24 @@ public class DeviceDto {
     }
 
     public Device toDomainClass() {
-        return new Device(name, ip, endpoints == null ? Collections.emptyList() : endpoints.stream().map(DeviceEndpointDto::toDomainClass).collect(Collectors.toList()));
+        return new Device(id, name, ip, endpoints == null ? Collections.emptyList() : endpoints.stream().map(DeviceEndpointDto::toDomainClass).collect(Collectors.toList()));
     }
 
     public static DeviceDto fromDomainClass(Device device) {
         DeviceDto dto = new DeviceDto();
+        dto.setId(device.getId());
         dto.setName(device.getName());
         dto.setIp(device.getIp());
         dto.setEndpoints(device.getEndpoints() == null ? Collections.emptyList() : device.getEndpoints().stream().map(DeviceEndpointDto::fromDomainClass).collect(Collectors.toList()));
         return dto;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getName() {
