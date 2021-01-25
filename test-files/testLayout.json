@@ -1,6 +1,11 @@
 [
   {
     "id": "exampleDevice",
-    "type": "toggle-large"
+    "endpointTypes": [
+      {
+        "path": "/toggle",
+        "type": "toggle-large"
+      }
+    ]
   }
 ]
