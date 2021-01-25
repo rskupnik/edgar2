@@ -3,6 +3,7 @@ package com.github.rskupnik.edgar;
 import com.github.rskupnik.edgar.domain.Device;
 import com.github.rskupnik.edgar.domain.DeviceEndpoint;
 import com.github.rskupnik.edgar.domain.DeviceLayout;
+import com.github.rskupnik.edgar.domain.EndpointType;
 import io.vavr.Tuple2;
 import io.vavr.control.Either;
 import io.vavr.control.Option;
@@ -14,8 +15,7 @@ import org.apache.http.impl.client.HttpClients;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 class EdgarImpl implements Edgar {
@@ -79,8 +79,19 @@ class EdgarImpl implements Edgar {
     }
 
     @Override
-    public List<Tuple2<Device, Option<DeviceLayout>>> applyLayouts(List<Device> devices) {
-        return devices.stream().map(d -> new Tuple2<>(d, database.findDeviceLayout(d.getId()))).collect(Collectors.toList());
+    public List<Tuple2<Device, Map<String, String>>> getLayouts(List<Device> devices) {
+        List<Tuple2<Device, Map<String, String>>> output = new ArrayList<>();
+        for (Device d : devices) {
+            var layout = database.findDeviceLayout(d.getId());
+            Map<String, String> endpointTypes = new HashMap<>();
+            if (!layout.isDefined()) {
+                d.getEndpoints().forEach(et -> endpointTypes.put(et.getPath(), "basic"));
+            } else {
+                layout.get().getEndpointTypes().forEach(et -> endpointTypes.put(et.getPath(), et.getType()));
+            }
+            output.add(new Tuple2<>(d, endpointTypes));
+        }
+        return output;
     }
 
     private boolean isAlive(Device device) {

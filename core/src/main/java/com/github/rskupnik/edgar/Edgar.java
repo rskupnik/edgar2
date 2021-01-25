@@ -16,7 +16,7 @@ public interface Edgar {
     boolean sendCommand(String deviceName, String commandName, Map<String, String> params);
     void refreshDeviceStatus();
     void registerLayouts(List<DeviceLayout> layouts);
-    List<Tuple2<Device, Option<DeviceLayout>>> applyLayouts(List<Device> devices);
+    List<Tuple2<Device, Map<String, String>>> getLayouts(List<Device> devices);
 
     static Edgar defaultImplementation(Database database) {
         return new EdgarImpl(database);
@@ -86,3 +86,6 @@ Need to check every minute (configurable) every device's /status endpoint
 // TODO: Add some validation to device register endpoint
 // TODO: Introduce a proper logger in place of system outputs
 // TODO: How to deal with the server going down and then back up? How will it re-register all the devices that are healthy?
+// TODO: Make a device re-register every minute so the dashboard can discover it after going down
+// TODO: Return and handle layouts
+// TODO: Read JSON layout file as input at startup and register the layouts

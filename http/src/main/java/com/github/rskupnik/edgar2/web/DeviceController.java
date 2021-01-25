@@ -1,13 +1,13 @@
 package com.github.rskupnik.edgar2.web;
 
 import com.github.rskupnik.edgar.Edgar;
-import com.github.rskupnik.edgar.domain.Device;
+import com.github.rskupnik.edgar.domain.DeviceLayout;
+import com.github.rskupnik.edgar.domain.EndpointType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.websocket.server.PathParam;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -21,6 +21,14 @@ public class DeviceController {
     @Autowired
     public DeviceController(Edgar edgar) {
         this.edgar = edgar;
+
+        List<DeviceLayout> testLayouts = new ArrayList<>();
+        List<EndpointType> endpointTypes = new ArrayList<>();
+        var endpointType = new EndpointType("/on", "toggle-large");
+        endpointTypes.add(endpointType);
+        var testLayout = new DeviceLayout("test4", endpointTypes);
+        testLayouts.add(testLayout);
+        edgar.registerLayouts(testLayouts);
     }
 
     @PostMapping("devices")
@@ -31,7 +39,11 @@ public class DeviceController {
 
     @GetMapping("devices")
     public List<DeviceDto> getDevices() {
-        return edgar.getDevices().stream().map(DeviceDto::fromDomainClass).collect(Collectors.toList());
+        return edgar.getLayouts(edgar.getDevices()).stream().map(t -> {
+            var dto = DeviceDto.fromDomainClass(t._1);
+            dto.getEndpoints().forEach(e -> e.setType(t._2.get(e.getPath())));
+            return dto;
+        }).collect(Collectors.toList());
     }
 
     @PostMapping("devices/{deviceName}/**")

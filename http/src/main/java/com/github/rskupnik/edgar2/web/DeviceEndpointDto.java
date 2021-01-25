@@ -10,6 +10,7 @@ public class DeviceEndpointDto {
 
     private String path;
     private DeviceEndpoint.HttpMethod method;
+    private String type;
     private List<DeviceEndpointParamDto> params;
 
     public DeviceEndpointDto() {
@@ -51,5 +52,13 @@ public class DeviceEndpointDto {
 
     public void setParams(List<DeviceEndpointParamDto> params) {
         this.params = params;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }
