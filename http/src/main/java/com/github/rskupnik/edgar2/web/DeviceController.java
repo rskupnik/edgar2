@@ -32,7 +32,9 @@ public class DeviceController {
     }
 
     @PostMapping("devices")
-    public void registerDevice(@RequestBody DeviceDto device) {
+    public void registerDevice(@RequestBody DeviceDto device, HttpServletRequest request) {
+        device.setIp(device.getIp() != null ? device.getIp() : request.getRemoteAddr());
+
         edgar.registerDevice(device.toDomainClass());   // TODO: Do something with the error case, change return code etc.
         System.out.println("Registered a new device");
     }
