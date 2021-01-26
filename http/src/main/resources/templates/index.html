@@ -42,8 +42,8 @@
                 <h1>{{ device.name }}</h1>
                 <div class="endpoints">
                     <div v-for="endpoint in device.endpoints">
-                        <basic-toggle-endpoint v-if="endpoint.type === 'basic'"></basic-toggle-endpoint>
-                        <large-toggle-endpoint v-if="endpoint.type === 'toggle-large'"></large-toggle-endpoint>
+                        <basic-toggle-endpoint v-if="endpoint.type === 'basic'" :device="device" :endpoint="endpoint"></basic-toggle-endpoint>
+                        <large-toggle-endpoint v-if="endpoint.type === 'toggle-large'" :device="device" :endpoint="endpoint"></large-toggle-endpoint>
                     </div>
                 </div>
             </div>
@@ -51,11 +51,11 @@
     })
 
     Vue.component('basic-toggle-endpoint', {
-        props: ['endpoint'],
+        props: ['endpoint', 'device'],
         template: `
             <div class="singleEndpoint">
                 <label class="toggle-control">
-                    <input type="checkbox" checked="checked">
+                    <input type="checkbox" v-on:change="$root.sendCommand(device, endpoint)"/>
                     <span class="control"></span>
                 </label>
                 <span class="endpointToggleDescription">{{ endpoint.name }}</span>
@@ -64,9 +64,10 @@
     })
 
     Vue.component('large-toggle-endpoint', {
+        props: ['endpoint', 'device'],
         template: `
             <div class="power-switch">
-                <input type="checkbox" />
+                <input type="checkbox" v-on:change="$root.sendCommand(device, endpoint)"/>
                 <div class="button">
                     <svg class="power-off">
                         <use xlink:href="#line" class="line" />
@@ -107,7 +108,7 @@
         methods: {
             sendCommand: function (device, endpoint) {
                 console.log(endpoint)
-                axios.post("http://" + window.location.host + "/devices/" + device.name + endpoint.path)
+                axios.post("http://" + window.location.host + "/devices/" + device.id + endpoint.path)
             }
         }
     })

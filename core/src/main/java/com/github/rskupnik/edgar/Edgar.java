@@ -86,5 +86,6 @@ Need to check every minute (configurable) every device's /status endpoint
 // TODO: Add some validation to device register endpoint
 // TODO: Introduce a proper logger in place of system outputs
 // TODO: Make a device re-register every minute so the dashboard can discover it after going down
-// TODO: Bind logic to endpoints on frontend
 // TODO: Cleanup device code so the editable parts are clearly visible
+// TODO: Save device status
+// TODO: Make frontend poll for device status every 10s? and use the status to update the display

@@ -1,6 +1,6 @@
 [
   {
-    "id": "exampleDevice",
+    "id": "testDevice",
     "endpointTypes": [
       {
         "path": "/toggle",

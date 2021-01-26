@@ -11,10 +11,12 @@ import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.*;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -97,6 +99,8 @@ class EdgarImpl implements Edgar {
     private boolean isAlive(Device device) {
         var httpClient = HttpClients.createDefault();
         try (CloseableHttpResponse response = httpClient.execute(new HttpGet("http://" + device.getIp() + "/status"))) {
+            String body = EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8);
+            System.out.println(body);
             return response.getStatusLine().getStatusCode() == HttpStatus.SC_OK;
         } catch (IOException e) {
             //e.printStackTrace();
