@@ -1,12 +1,12 @@
 package com.github.rskupnik.edgar;
 
-import com.github.rskupnik.edgar.domain.Device;
-import com.github.rskupnik.edgar.domain.DeviceEndpoint;
-import com.github.rskupnik.edgar.domain.DeviceLayout;
-import com.github.rskupnik.edgar.domain.EndpointType;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.rskupnik.edgar.domain.*;
 import io.vavr.Tuple2;
 import io.vavr.control.Either;
 import io.vavr.control.Option;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.*;
 import org.apache.http.client.utils.URIBuilder;
@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 class EdgarImpl implements Edgar {
 
     private final Database database;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     public EdgarImpl(Database database) {
         this.database = database;
@@ -35,6 +36,7 @@ class EdgarImpl implements Edgar {
         }
 
         database.saveDevice(device);
+        database.saveDeviceStatus(device.getId(), getStatus(device));
         return Either.right(device);
     }
 
@@ -70,10 +72,15 @@ class EdgarImpl implements Edgar {
     @Override
     public void refreshDeviceStatus() {
         database.getAll().stream()
-                .filter(d -> !isAlive(d))
+                .map(d -> new Tuple2<>(d, getStatus(d)))
                 .forEach(d -> {
-                    System.out.println("Removing device: " + d.getId() + " at IP " + d.getIp());
-                    database.removeDevice(d.getId());
+                    if (!d._2.isResponsive()) {
+                        System.out.println("Removing device: " + d._1.getId() + " at IP " + d._1.getIp());
+                        database.removeDevice(d._1.getId());
+                    } else {
+                        System.out.println("Saving device status for device " + d._1.getId());
+                        database.saveDeviceStatus(d._1.getId(), d._2);
+                    }
                 });
     }
 
@@ -98,15 +105,19 @@ class EdgarImpl implements Edgar {
         return output;
     }
 
-    private boolean isAlive(Device device) {
+    private DeviceStatus getStatus(Device device) {
         var httpClient = HttpClients.createDefault();
         try (CloseableHttpResponse response = httpClient.execute(new HttpGet("http://" + device.getIp() + "/status"))) {
-            String body = EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8);
-            System.out.println(body);
-            return response.getStatusLine().getStatusCode() == HttpStatus.SC_OK;
+            HttpEntity entity = response.getEntity();
+            if (entity == null) {
+                return new DeviceStatus(response.getStatusLine().getStatusCode() == HttpStatus.SC_OK, Collections.emptyMap());
+            }
+            String body = EntityUtils.toString(entity, StandardCharsets.UTF_8);
+            Map<String, String> params = objectMapper.readValue(body, new TypeReference<>() {});
+            return new DeviceStatus(response.getStatusLine().getStatusCode() == HttpStatus.SC_OK, params);
         } catch (IOException e) {
-            //e.printStackTrace();
-            return false;
+            e.printStackTrace();
+            return new DeviceStatus(false, Collections.emptyMap());
         }
     }
 
