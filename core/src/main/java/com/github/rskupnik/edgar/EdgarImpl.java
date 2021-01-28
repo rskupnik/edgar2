@@ -30,7 +30,7 @@ class EdgarImpl implements Edgar {
 
     @Override
     public Either<String, Device> registerDevice(Device device) {
-        if (database.findDevice(device.getName()).isDefined()) {
+        if (database.findDevice(device.getId()).isDefined()) {
             return Either.left("This device is already registered");
         }
 
@@ -44,16 +44,18 @@ class EdgarImpl implements Edgar {
     }
 
     @Override
-    public boolean sendCommand(String deviceName, String commandName, Map<String, String> params) {
+    public boolean sendCommand(String deviceId, String commandName, Map<String, String> params) {
         // Find device
-        final Device device = database.findDevice(deviceName).getOrNull();
+        final Device device = database.findDevice(deviceId).getOrNull();
         if (device == null) {
+            System.out.println("This device doesn't exist");
             return false;   // TODO: Handle errors with Either
         }
 
         // Find the command in the device
         final DeviceEndpoint endpoint = device.getEndpoints().stream().filter(e -> e.getPath().equals(commandName)).findFirst().orElse(null);
         if (endpoint == null) {
+            System.out.println("Endpoint " + commandName + " doesn't exist");
             return false;
         }
 
@@ -70,8 +72,8 @@ class EdgarImpl implements Edgar {
         database.getAll().stream()
                 .filter(d -> !isAlive(d))
                 .forEach(d -> {
-                    System.out.println("Removing device: " + d.getName() + " at IP " + d.getIp());
-                    database.removeDevice(d.getName());
+                    System.out.println("Removing device: " + d.getId() + " at IP " + d.getIp());
+                    database.removeDevice(d.getId());
                 });
     }
 

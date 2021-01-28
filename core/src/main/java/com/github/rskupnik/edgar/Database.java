@@ -8,10 +8,10 @@ import java.util.List;
 
 public interface Database {
 
-    Option<Device> findDevice(String name);
+    Option<Device> findDevice(String id);
     void saveDevice(Device device);
     List<Device> getAll();
-    void removeDevice(String name);
+    void removeDevice(String id);
 
     Option<DeviceLayout> findDeviceLayout(String id);
     void saveDeviceLayout(DeviceLayout deviceLayout);

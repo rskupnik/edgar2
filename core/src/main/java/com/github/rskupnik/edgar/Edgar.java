@@ -13,7 +13,7 @@ public interface Edgar {
 
     Either<String, Device> registerDevice(Device device);
     List<Device> getDevices();
-    boolean sendCommand(String deviceName, String commandName, Map<String, String> params);
+    boolean sendCommand(String deviceId, String commandName, Map<String, String> params);
     void refreshDeviceStatus();
     void registerLayouts(List<DeviceLayout> layouts);
     List<Tuple2<Device, Map<String, String>>> getLayouts(List<Device> devices);
@@ -86,6 +86,6 @@ Need to check every minute (configurable) every device's /status endpoint
 // TODO: Add some validation to device register endpoint
 // TODO: Introduce a proper logger in place of system outputs
 // TODO: Make a device re-register every minute so the dashboard can discover it after going down
-// TODO: Cleanup device code so the editable parts are clearly visible
+// TODO: Ask for device status on register or send the same data in register
 // TODO: Save device status
 // TODO: Make frontend poll for device status every 10s? and use the status to update the display

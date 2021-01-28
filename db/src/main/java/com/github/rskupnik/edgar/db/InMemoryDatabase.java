@@ -16,13 +16,13 @@ public class InMemoryDatabase implements Database {
     private final Map<String, DeviceLayout> deviceLayouts = new HashMap<>();
 
     @Override
-    public Option<Device> findDevice(String name) {
-        return Option.of(devices.get(name));
+    public Option<Device> findDevice(String id) {
+        return Option.of(devices.get(id));
     }
 
     @Override
     public void saveDevice(Device device) {
-        devices.put(device.getName(), device);
+        devices.put(device.getId(), device);
     }
 
     @Override
@@ -31,8 +31,8 @@ public class InMemoryDatabase implements Database {
     }
 
     @Override
-    public void removeDevice(String name) {
-        devices.remove(name);
+    public void removeDevice(String id) {
+        devices.remove(id);
     }
 
     @Override
