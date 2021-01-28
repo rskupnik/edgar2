@@ -44,6 +44,7 @@ public class DeviceController {
         return edgar.getLayouts(edgar.getDevices()).stream().map(t -> {
             var dto = DeviceDto.fromDomainClass(t._1);
             dto.getEndpoints().forEach(e -> e.setType(t._2.get(e.getPath())));
+            dto.setStatus(DeviceStatusDto.fromDomainClass(edgar.getDeviceStatus(t._1.getId()).orElse(null)));
             return dto;
         }).collect(Collectors.toList());
     }

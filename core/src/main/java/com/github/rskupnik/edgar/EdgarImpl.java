@@ -105,6 +105,11 @@ class EdgarImpl implements Edgar {
         return output;
     }
 
+    @Override
+    public Optional<DeviceStatus> getDeviceStatus(String deviceId) {
+        return database.getDeviceStatus(deviceId);
+    }
+
     private DeviceStatus getStatus(Device device) {
         var httpClient = HttpClients.createDefault();
         try (CloseableHttpResponse response = httpClient.execute(new HttpGet("http://" + device.getIp() + "/status"))) {

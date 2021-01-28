@@ -12,6 +12,7 @@ public class DeviceDto {
     private String name;
     private String ip;
     private List<DeviceEndpointDto> endpoints;
+    private DeviceStatusDto status;
 
     public DeviceDto() {
 
@@ -60,5 +61,13 @@ public class DeviceDto {
 
     public void setEndpoints(List<DeviceEndpointDto> endpoints) {
         this.endpoints = endpoints;
+    }
+
+    public DeviceStatusDto getStatus() {
+        return status;
+    }
+
+    public void setStatus(DeviceStatusDto status) {
+        this.status = status;
     }
 }
