@@ -9,15 +9,15 @@ import java.util.stream.Collectors;
 public class DeviceLayoutDto {
 
     public String id;
-    public List<EndpointTypeDto> endpointTypes;
+    public List<EndpointLayoutDto> endpoints;
 
-    public DeviceLayoutDto(String id, List<EndpointTypeDto> endpointTypes) {
+    public DeviceLayoutDto(String id, List<EndpointLayoutDto> endpoints) {
         this.id = id;
-        this.endpointTypes = endpointTypes;
+        this.endpoints = endpoints;
     }
 
     public DeviceLayout toDomainClass() {
-        return new DeviceLayout(id, endpointTypes == null ? Collections.emptyList() : endpointTypes.stream().map(EndpointTypeDto::toDomainClass).collect(Collectors.toList()));
+        return new DeviceLayout(id, endpoints == null ? Collections.emptyList() : endpoints.stream().map(EndpointLayoutDto::toDomainClass).collect(Collectors.toList()));
     }
 
     public String getId() {
@@ -28,11 +28,11 @@ public class DeviceLayoutDto {
         this.id = id;
     }
 
-    public List<EndpointTypeDto> getEndpointTypes() {
-        return endpointTypes;
+    public List<EndpointLayoutDto> getEndpoints() {
+        return endpoints;
     }
 
-    public void setEndpointTypes(List<EndpointTypeDto> endpointTypes) {
-        this.endpointTypes = endpointTypes;
+    public void setEndpoints(List<EndpointLayoutDto> endpoints) {
+        this.endpoints = endpoints;
     }
 }

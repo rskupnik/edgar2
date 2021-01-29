@@ -5,18 +5,18 @@ import java.util.List;
 public class DeviceLayout {
 
     private final String id;
-    private final List<EndpointType> endpointTypes;
+    private final List<EndpointLayout> endpoints;
 
-    public DeviceLayout(String id, List<EndpointType> endpointTypes) {
+    public DeviceLayout(String id, List<EndpointLayout> endpoints) {
         this.id = id;
-        this.endpointTypes = endpointTypes;
+        this.endpoints = endpoints;
     }
 
     public String getId() {
         return id;
     }
 
-    public List<EndpointType> getEndpointTypes() {
-        return endpointTypes;
+    public List<EndpointLayout> getEndpoints() {
+        return endpoints;
     }
 }

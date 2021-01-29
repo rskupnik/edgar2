@@ -47,9 +47,6 @@ public class InMemoryDatabase implements Database {
     @Override
     public void saveDeviceStatus(String deviceId, DeviceStatus status) {
         deviceStatus.put(deviceId, status);
-        for (Map.Entry<String, String> param : status.getParams().entrySet()) {
-            System.out.println(param.getKey() + ": " + param.getValue());
-        }
     }
 
     @Override

@@ -1,15 +1,14 @@
 package com.github.rskupnik.edgar2.web;
 
 import com.github.rskupnik.edgar.Edgar;
-import com.github.rskupnik.edgar.domain.DeviceLayout;
-import com.github.rskupnik.edgar.domain.EndpointType;
+import com.github.rskupnik.edgar.domain.EndpointLayout;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -21,14 +20,6 @@ public class DeviceController {
     @Autowired
     public DeviceController(Edgar edgar) {
         this.edgar = edgar;
-
-        List<DeviceLayout> testLayouts = new ArrayList<>();
-        List<EndpointType> endpointTypes = new ArrayList<>();
-        var endpointType = new EndpointType("/on", "toggle-large");
-        endpointTypes.add(endpointType);
-        var testLayout = new DeviceLayout("test4", endpointTypes);
-        testLayouts.add(testLayout);
-        edgar.registerLayouts(testLayouts);
     }
 
     @PostMapping("devices")
@@ -43,7 +34,15 @@ public class DeviceController {
     public List<DeviceDto> getDevices() {
         return edgar.getLayouts(edgar.getDevices()).stream().map(t -> {
             var dto = DeviceDto.fromDomainClass(t._1);
-            dto.getEndpoints().forEach(e -> e.setType(t._2.get(e.getPath())));
+            dto.getEndpoints().forEach(e -> {
+                var layout = findEndpointLayout(t._2.getEndpoints(), e.getPath());
+                if (layout.isEmpty()) {
+                    System.out.println("ERROR, layout not present");
+                    return;
+                }
+                e.setType(layout.get().getType());
+                e.setBindings(layout.get().getBindings().stream().map(EndpointBindingDto::fromDomainClass).collect(Collectors.toList()));
+            });
             dto.setStatus(DeviceStatusDto.fromDomainClass(edgar.getDeviceStatus(t._1.getId()).orElse(null)));
             return dto;
         }).collect(Collectors.toList());
@@ -58,5 +57,9 @@ public class DeviceController {
         requestParams.forEach((k, v) -> System.out.println(k + ": " + v));
         boolean success = edgar.sendCommand(deviceName, command, requestParams);
         System.out.println("Result: " + success);
+    }
+
+    private Optional<EndpointLayout> findEndpointLayout(List<EndpointLayout> list, String path) {
+        return list.stream().filter(l -> l.getPath().equals(path)).findFirst();
     }
 }

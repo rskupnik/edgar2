@@ -1,10 +1,16 @@
 [
   {
     "id": "testDevice",
-    "endpointTypes": [
+    "endpoints": [
       {
         "path": "/toggle",
-        "type": "toggle-large"
+        "type": "toggle-large",
+        "bindings": [
+          {
+            "uiParam": "isToggled",
+            "deviceParam": "enabled"
+          }
+        ]
       }
     ]
   }

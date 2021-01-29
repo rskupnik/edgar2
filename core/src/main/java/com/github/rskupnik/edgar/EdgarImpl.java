@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.rskupnik.edgar.domain.*;
 import io.vavr.Tuple2;
 import io.vavr.control.Either;
-import io.vavr.control.Option;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.*;
@@ -90,24 +89,17 @@ class EdgarImpl implements Edgar {
     }
 
     @Override
-    public List<Tuple2<Device, Map<String, String>>> getLayouts(List<Device> devices) {
-        List<Tuple2<Device, Map<String, String>>> output = new ArrayList<>();
-        for (Device d : devices) {
-            var layout = database.findDeviceLayout(d.getId());
-            Map<String, String> endpointTypes = new HashMap<>();
-            if (!layout.isDefined()) {
-                d.getEndpoints().forEach(et -> endpointTypes.put(et.getPath(), "basic"));
-            } else {
-                layout.get().getEndpointTypes().forEach(et -> endpointTypes.put(et.getPath(), et.getType()));
-            }
-            output.add(new Tuple2<>(d, endpointTypes));
-        }
-        return output;
+    public List<Tuple2<Device, DeviceLayout>> getLayouts(List<Device> devices) {
+        return devices.stream().map(d -> new Tuple2<>(d, database.findDeviceLayout(d.getId()).getOrElse(createDefaultLayout(d)))).collect(Collectors.toList());
     }
 
     @Override
     public Optional<DeviceStatus> getDeviceStatus(String deviceId) {
         return database.getDeviceStatus(deviceId);
+    }
+
+    private DeviceLayout createDefaultLayout(Device device) {
+        return new DeviceLayout(device.getId(), device.getEndpoints().stream().map(e -> new EndpointLayout(e.getPath(), "default", Collections.emptyList())).collect(Collectors.toList()));
     }
 
     private DeviceStatus getStatus(Device device) {
