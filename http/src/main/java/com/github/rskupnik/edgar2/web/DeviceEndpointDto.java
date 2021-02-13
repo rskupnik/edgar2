@@ -12,7 +12,6 @@ public class DeviceEndpointDto {
     private DeviceEndpoint.HttpMethod method;
     private String type;
     private List<DeviceEndpointParamDto> params;
-    private List<EndpointBindingDto> bindings;
 
     public DeviceEndpointDto() {
 
@@ -61,13 +60,5 @@ public class DeviceEndpointDto {
 
     public void setType(String type) {
         this.type = type;
-    }
-
-    public List<EndpointBindingDto> getBindings() {
-        return bindings;
-    }
-
-    public void setBindings(List<EndpointBindingDto> bindings) {
-        this.bindings = bindings;
     }
 }

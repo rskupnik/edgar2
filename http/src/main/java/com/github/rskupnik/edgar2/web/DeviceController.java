@@ -1,11 +1,14 @@
 package com.github.rskupnik.edgar2.web;
 
 import com.github.rskupnik.edgar.Edgar;
+import com.github.rskupnik.edgar.domain.DeviceStatus;
+import com.github.rskupnik.edgar.domain.EndpointBinding;
 import com.github.rskupnik.edgar.domain.EndpointLayout;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -34,6 +37,7 @@ public class DeviceController {
     public List<DeviceDto> getDevices() {
         return edgar.getLayouts(edgar.getDevices()).stream().map(t -> {
             var dto = DeviceDto.fromDomainClass(t._1);
+            var deviceStatus = edgar.getDeviceStatus(t._1.getId()).orElse(DeviceStatus.unknown());
             dto.getEndpoints().forEach(e -> {
                 var layout = findEndpointLayout(t._2.getEndpoints(), e.getPath());
                 if (layout.isEmpty()) {
@@ -41,9 +45,9 @@ public class DeviceController {
                     return;
                 }
                 e.setType(layout.get().getType());
-                e.setBindings(layout.get().getBindings().stream().map(EndpointBindingDto::fromDomainClass).collect(Collectors.toList()));
+                //e.setBindings(convertBindings(layout.get().getBindings(), deviceStatus));
             });
-            dto.setStatus(DeviceStatusDto.fromDomainClass(edgar.getDeviceStatus(t._1.getId()).orElse(null)));
+            dto.setStatus(DeviceStatusDto.fromDomainClass(deviceStatus));
             return dto;
         }).collect(Collectors.toList());
     }
@@ -61,5 +65,14 @@ public class DeviceController {
 
     private Optional<EndpointLayout> findEndpointLayout(List<EndpointLayout> list, String path) {
         return list.stream().filter(l -> l.getPath().equals(path)).findFirst();
+    }
+
+    private Map<String, String> convertBindings(List<EndpointBinding> bindings, DeviceStatus status) {
+        // TODO: Refactor to be more functional
+        Map<String, String> output = new HashMap<>();
+        bindings.forEach(b -> {
+            output.put(b.getUiParam(), status.getParams().get(b.getDeviceParam()));
+        });
+        return output;
     }
 }

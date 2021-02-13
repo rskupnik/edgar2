@@ -67,7 +67,7 @@
         props: ['endpoint', 'device'],
         template: `
             <div class="power-switch">
-                <input type="checkbox" v-on:change="$root.sendCommand(device, endpoint)"/>
+                <input type="checkbox" v-on:change="$root.sendCommand(device, endpoint)" v-model="device.status.enabled"/>
                 <div class="button">
                     <svg class="power-off">
                         <use xlink:href="#line" class="line" />

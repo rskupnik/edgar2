@@ -42,9 +42,14 @@ Example structure:
     "id": "exampleDevice",
     "name": "Example device",
     "ip": "127.0.0.1",
+    "status": {
+        "responsive": "true",
+        "params": {
+            "enabled": "true"
+        }
+    },
     "endpoints": [
         {
-            "name": "ON",
             "path": "/on",    // <device IP>/<path>
             "method": "POST",
         },
