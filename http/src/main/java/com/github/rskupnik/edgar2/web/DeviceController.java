@@ -71,7 +71,7 @@ public class DeviceController {
         // TODO: Refactor to be more functional
         Map<String, String> output = new HashMap<>();
         bindings.forEach(b -> {
-            output.put(b.getUiParam(), status.getParams().get(b.getDeviceParam()));
+            output.put(b.getUiParam(), status.getData().get(b.getDeviceParam()));
         });
         return output;
     }

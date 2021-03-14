@@ -6,22 +6,28 @@ import java.util.Map;
 public class DeviceStatus {
 
     private final boolean responsive;
-    private final Map<String, String> params;
+    private final Map<String, String> data;
+    private final Map<String, Map<String, String>> endpoints;
 
-    public DeviceStatus(boolean responsive, Map<String, String> params) {
+    public DeviceStatus(boolean responsive, Map<String, String> data, Map<String, Map<String, String>> endpoints) {
         this.responsive = responsive;
-        this.params = params;
+        this.data = data;
+        this.endpoints = endpoints;
     }
 
     public static DeviceStatus unknown() {
-        return new DeviceStatus(false, Collections.emptyMap());
+        return new DeviceStatus(false, Collections.emptyMap(), Collections.emptyMap());
     }
 
     public boolean isResponsive() {
         return responsive;
     }
 
-    public Map<String, String> getParams() {
-        return params;
+    public Map<String, String> getData() {
+        return data;
+    }
+
+    public Map<String, Map<String, String>> getEndpoints() {
+        return endpoints;
     }
 }

@@ -107,14 +107,15 @@ class EdgarImpl implements Edgar {
         try (CloseableHttpResponse response = httpClient.execute(new HttpGet("http://" + device.getIp() + "/status"))) {
             HttpEntity entity = response.getEntity();
             if (entity == null) {
-                return new DeviceStatus(response.getStatusLine().getStatusCode() == HttpStatus.SC_OK, Collections.emptyMap());
+                return new DeviceStatus(response.getStatusLine().getStatusCode() == HttpStatus.SC_OK, Collections.emptyMap(), Collections.emptyMap());
             }
             String body = EntityUtils.toString(entity, StandardCharsets.UTF_8);
             Map<String, String> params = objectMapper.readValue(body, new TypeReference<>() {});
-            return new DeviceStatus(response.getStatusLine().getStatusCode() == HttpStatus.SC_OK, params);
+            Map<String, Map<String, String>> endpointData = objectMapper.readValue(params.getOrDefault("endpoints", "{}"), new TypeReference<>() {});
+            return new DeviceStatus(response.getStatusLine().getStatusCode() == HttpStatus.SC_OK, params, endpointData);
         } catch (IOException e) {
             e.printStackTrace();
-            return new DeviceStatus(false, Collections.emptyMap());
+            return new DeviceStatus(false, Collections.emptyMap(), Collections.emptyMap());
         }
     }
 

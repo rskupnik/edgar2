@@ -8,6 +8,7 @@ public class DeviceStatusDto {
 
     public boolean responsive;
     public Map<String, String> params;
+    public Map<String, Map<String, String>> endpoints;
 
     public DeviceStatusDto() {
 
@@ -20,7 +21,8 @@ public class DeviceStatusDto {
 
         var dto = new DeviceStatusDto();
         dto.setResponsive(status.isResponsive());
-        dto.setParams(status.getParams());
+        dto.setParams(status.getData());
+        dto.setEndpoints(status.getEndpoints());
         return dto;
     }
 
@@ -38,5 +40,13 @@ public class DeviceStatusDto {
 
     public void setParams(Map<String, String> params) {
         this.params = params;
+    }
+
+    public Map<String, Map<String, String>> getEndpoints() {
+        return endpoints;
+    }
+
+    public void setEndpoints(Map<String, Map<String, String>> endpoints) {
+        this.endpoints = endpoints;
     }
 }

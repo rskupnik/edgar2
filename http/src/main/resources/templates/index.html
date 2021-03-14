@@ -42,7 +42,7 @@
                 <h1>{{ device.name }}</h1>
                 <div class="endpoints">
                     <div v-for="endpoint in device.endpoints">
-                        <basic-toggle-endpoint v-if="endpoint.type === 'basic'" :device="device" :endpoint="endpoint"></basic-toggle-endpoint>
+                        <basic-toggle-endpoint v-if="endpoint.type === 'default'" :device="device" :endpoint="endpoint"></basic-toggle-endpoint>
                         <large-toggle-endpoint v-if="endpoint.type === 'toggle-large'" :device="device" :endpoint="endpoint"></large-toggle-endpoint>
                     </div>
                 </div>
@@ -58,7 +58,7 @@
                     <input type="checkbox" v-on:change="$root.sendCommand(device, endpoint)"/>
                     <span class="control"></span>
                 </label>
-                <span class="endpointToggleDescription">{{ endpoint.name }}</span>
+                <span class="endpointToggleDescription">{{ endpoint.path }}</span>
             </div>
         `
     })
