@@ -48,6 +48,12 @@ public class DeviceController {
                 //e.setBindings(convertBindings(layout.get().getBindings(), deviceStatus));
             });
             dto.setStatus(DeviceStatusDto.fromDomainClass(deviceStatus));
+
+            // TODO: REMOVE
+            var endpoints = new HashMap<String, Map<String, String>>();
+            dto.getEndpoints().forEach(e -> endpoints.put(e.getPath(), Map.of("enabled", "true")));
+            dto.getStatus().setEndpoints(endpoints);
+
             return dto;
         }).collect(Collectors.toList());
     }

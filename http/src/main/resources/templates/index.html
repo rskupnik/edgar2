@@ -55,10 +55,11 @@
         template: `
             <div class="singleEndpoint">
                 <label class="toggle-control">
-                    <input type="checkbox" v-on:change="$root.sendCommand(device, endpoint)"/>
+                    <input type="checkbox" v-on:change="$root.sendCommand(device, endpoint)" v-model="device.status.endpoints[endpoint.path].enabled"/>
                     <span class="control"></span>
                 </label>
                 <span class="endpointToggleDescription">{{ endpoint.path }}</span>
+                {{ device.status.endpoints[endpoint.path].enabled }}
             </div>
         `
     })
@@ -67,7 +68,7 @@
         props: ['endpoint', 'device'],
         template: `
             <div class="power-switch">
-                <input type="checkbox" v-on:change="$root.sendCommand(device, endpoint)" v-model="device.status.enabled"/>
+                <input type="checkbox" v-on:change="$root.sendCommand(device, endpoint)" v-model="device.status.endpoints[endpoint.path].enabled"/>
                 <div class="button">
                     <svg class="power-off">
                         <use xlink:href="#line" class="line" />
