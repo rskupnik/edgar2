@@ -8,12 +8,14 @@ public class Device {
     private final String name;
     private final String ip;
     private final List<DeviceEndpoint> endpoints;
+    private final List<ActivationPeriod> activationPeriods;
 
-    public Device(String id, String name, String ip, List<DeviceEndpoint> endpoints) {
+    public Device(String id, String name, String ip, List<DeviceEndpoint> endpoints, List<ActivationPeriod> activationPeriods) {
         this.id = id;
         this.name = name;
         this.ip = ip;
         this.endpoints = endpoints;
+        this.activationPeriods = activationPeriods;
     }
 
     public String getId() {
@@ -30,5 +32,9 @@ public class Device {
 
     public List<DeviceEndpoint> getEndpoints() {
         return endpoints;
+    }
+
+    public List<ActivationPeriod> getActivationPeriods() {
+        return activationPeriods;
     }
 }

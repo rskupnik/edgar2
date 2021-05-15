@@ -19,7 +19,13 @@ public class DeviceDto {
     }
 
     public Device toDomainClass() {
-        return new Device(id, name, ip, endpoints == null ? Collections.emptyList() : endpoints.stream().map(DeviceEndpointDto::toDomainClass).collect(Collectors.toList()));
+        return new Device(
+            id,
+            name,
+            ip,
+            endpoints == null ? Collections.emptyList() : endpoints.stream().map(DeviceEndpointDto::toDomainClass).collect(Collectors.toList()),
+            Collections.emptyList()
+        );
     }
 
     public static DeviceDto fromDomainClass(Device device) {

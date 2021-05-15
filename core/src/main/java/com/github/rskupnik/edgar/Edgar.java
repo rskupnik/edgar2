@@ -1,5 +1,6 @@
 package com.github.rskupnik.edgar;
 
+import com.github.rskupnik.edgar.domain.ActivationPeriod;
 import com.github.rskupnik.edgar.domain.Device;
 import com.github.rskupnik.edgar.domain.DeviceLayout;
 import com.github.rskupnik.edgar.domain.DeviceStatus;
@@ -20,6 +21,7 @@ public interface Edgar {
     void registerLayouts(List<DeviceLayout> layouts);
     List<Tuple2<Device, DeviceLayout>> getLayouts(List<Device> devices);
     Optional<DeviceStatus> getDeviceStatus(String deviceId);
+    void setActivationPeriods(String deviceId, List<ActivationPeriod> periods);
 
     static Edgar defaultImplementation(Database database) {
         return new EdgarImpl(database);
@@ -96,3 +98,23 @@ Need to check every minute (configurable) every device's /status endpoint
 // TODO: BUG: Device doesn't enable power properly on first click
 // TODO: Make a device re-register every minute so the dashboard can discover it after going down
 // TODO: Make frontend poll for device status every 10s? and use the status to update the display
+
+/*
+Multi-time picker widget
+* Can add multiple time periods during which the device will be enabled
+* User can still manually enable or disable the device as well
+* Start of period will always enable the device
+* End of period will always disable the device (even if disabled and then enabled manually)
+* Time periods cannot overlap
+* No dates, only times, works on day-to-day basis
+
+Model:
+* A list of Periods where
+  * Each Period has
+    * startHour
+    * endHour
+
+On frontend side: some compact widget where you can add rows with a small plus, each row
+has a field for setting start and end time and an x to remove it. Each row also needs a tick sign
+to save it.
+ */

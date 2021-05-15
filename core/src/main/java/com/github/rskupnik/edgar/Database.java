@@ -1,5 +1,6 @@
 package com.github.rskupnik.edgar;
 
+import com.github.rskupnik.edgar.domain.ActivationPeriods;
 import com.github.rskupnik.edgar.domain.Device;
 import com.github.rskupnik.edgar.domain.DeviceLayout;
 import com.github.rskupnik.edgar.domain.DeviceStatus;
@@ -21,4 +22,7 @@ public interface Database {
     void saveDeviceStatus(String deviceId, DeviceStatus status);
     void removeDeviceStatus(String deviceId);
     Optional<DeviceStatus> getDeviceStatus(String deviceId);
+
+    void saveActivationPeriods(String deviceId, ActivationPeriods activationPeriods);
+    Optional<ActivationPeriods> getActivationPeriods(String deviceId);
 }

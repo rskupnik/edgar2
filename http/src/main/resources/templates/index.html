@@ -44,6 +44,7 @@
                     <div v-for="endpoint in device.endpoints">
                         <basic-toggle-endpoint v-if="endpoint.type === 'default'" :device="device" :endpoint="endpoint"></basic-toggle-endpoint>
                         <large-toggle-endpoint v-if="endpoint.type === 'toggle-large'" :device="device" :endpoint="endpoint"></large-toggle-endpoint>
+                        <large-toggle-with-multi-hour v-if="endpoint.type === 'toggle-large-with-multi-hour'" :device="device" :endpoint="endpoint"></large-toggle-with-multi-hour>
                     </div>
                 </div>
             </div>
@@ -65,6 +66,25 @@
     })
 
     Vue.component('large-toggle-endpoint', {
+        props: ['endpoint', 'device'],
+        template: `
+            <div class="power-switch">
+                <input type="checkbox" v-on:change="$root.sendCommand(device, endpoint)" v-model="device.status.endpoints[endpoint.path].enabled"/>
+                <div class="button">
+                    <svg class="power-off">
+                        <use xlink:href="#line" class="line" />
+                        <use xlink:href="#circle" class="circle" />
+                    </svg>
+                    <svg class="power-on">
+                        <use xlink:href="#line" class="line" />
+                        <use xlink:href="#circle" class="circle" />
+                    </svg>
+                </div>
+            </div>
+        `
+    })
+
+    Vue.component('large-toggle-with-multi-hour', {
         props: ['endpoint', 'device'],
         template: `
             <div class="power-switch">

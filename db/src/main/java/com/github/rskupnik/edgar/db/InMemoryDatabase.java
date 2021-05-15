@@ -1,6 +1,7 @@
 package com.github.rskupnik.edgar.db;
 
 import com.github.rskupnik.edgar.Database;
+import com.github.rskupnik.edgar.domain.ActivationPeriods;
 import com.github.rskupnik.edgar.domain.Device;
 import com.github.rskupnik.edgar.domain.DeviceLayout;
 import com.github.rskupnik.edgar.domain.DeviceStatus;
@@ -13,6 +14,7 @@ public class InMemoryDatabase implements Database {
     private final Map<String, Device> devices = new HashMap<>();
     private final Map<String, DeviceLayout> deviceLayouts = new HashMap<>();
     private final Map<String, DeviceStatus> deviceStatus = new HashMap<>();
+    private final Map<String, ActivationPeriods> deviceActivationPeriods = new HashMap<>();
 
     @Override
     public Option<Device> findDevice(String id) {
@@ -57,5 +59,15 @@ public class InMemoryDatabase implements Database {
     @Override
     public Optional<DeviceStatus> getDeviceStatus(String deviceId) {
         return Optional.ofNullable(deviceStatus.get(deviceId));
+    }
+
+    @Override
+    public void saveActivationPeriods(String deviceId, ActivationPeriods activationPeriods) {
+        deviceActivationPeriods.put(deviceId, activationPeriods);
+    }
+
+    @Override
+    public Optional<ActivationPeriods> getActivationPeriods(String deviceId) {
+        return Optional.ofNullable(deviceActivationPeriods.get(deviceId));
     }
 }

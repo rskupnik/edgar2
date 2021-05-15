@@ -7,5 +7,14 @@
         "type": "toggle-large"
       }
     ]
+  },
+  {
+    "id": "multiHourDevice",
+    "endpoints": [
+      {
+        "path": "/toggle",
+        "type": "toggle-large-with-multi-hour"
+      }
+    ]
   }
 ]
