@@ -58,15 +58,20 @@ public class DeviceController {
         }).collect(Collectors.toList());
     }
 
-    @PostMapping("devices/{deviceName}/**")
-    public void sendCommand(@PathVariable("deviceName") String deviceName, HttpServletRequest request,
+    @PostMapping("devices/{deviceId}/**")
+    public void sendCommand(@PathVariable("deviceId") String deviceId, HttpServletRequest request,
                             @RequestParam Map<String, String> requestParams) {
         String command = request.getRequestURI()
-                .split(request.getContextPath() + "/devices/" + deviceName)[1];
-        System.out.println("Sending command " + command + " to device " + deviceName);
+                .split(request.getContextPath() + "/devices/" + deviceId)[1];
+        System.out.println("Sending command " + command + " to device " + deviceId);
         requestParams.forEach((k, v) -> System.out.println(k + ": " + v));
-        boolean success = edgar.sendCommand(deviceName, command, requestParams);
+        boolean success = edgar.sendCommand(deviceId, command, requestParams);
         System.out.println("Result: " + success);
+    }
+
+    @PostMapping("device/{deviceId}/activationPeriods")
+    public void setActivationPeriods(@PathVariable("deviceId") String deviceId, @RequestBody ActivationPeriodsDto dto) {
+        edgar.setActivationPeriods(deviceId, dto.toDomainClass().getPeriods());
     }
 
     private Optional<EndpointLayout> findEndpointLayout(List<EndpointLayout> list, String path) {

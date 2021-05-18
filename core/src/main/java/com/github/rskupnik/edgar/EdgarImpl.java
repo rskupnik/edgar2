@@ -101,8 +101,6 @@ class EdgarImpl implements Edgar {
     @Override
     public void setActivationPeriods(String deviceId, List<ActivationPeriod> periods) {
         database.saveActivationPeriods(deviceId, new ActivationPeriods(periods));
-        // TODO: An endpoint to set activation periods
-        // TODO: A scheduled job that looks at activation periods and activates/deactivates device if needed
     }
 
     private DeviceLayout createDefaultLayout(Device device) {
