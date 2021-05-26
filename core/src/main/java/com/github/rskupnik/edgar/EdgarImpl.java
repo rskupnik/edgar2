@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -23,6 +24,7 @@ class EdgarImpl implements Edgar {
 
     private final Database database;
     private final ObjectMapper objectMapper = new ObjectMapper();
+    private final List<Device> autoActivatedDevices = new ArrayList<>();
 
     public EdgarImpl(Database database) {
         this.database = database;
@@ -100,7 +102,64 @@ class EdgarImpl implements Edgar {
 
     @Override
     public void setActivationPeriods(String deviceId, List<ActivationPeriod> periods) {
+        // TODO: Validate - hours: 0-23, minutes: 0-59, cannot overlap
         database.saveActivationPeriods(deviceId, new ActivationPeriods(periods));
+    }
+
+    @Override
+    public void checkActivationPeriods() {
+        // TODO: Go through all devices' activation periods and (de)activate them if needed
+        database.getAll().stream()
+                .map(d -> new Pair<>(database.findDevice(d.getId()), database.getActivationPeriods(d.getId())))
+                .filter(p -> p.getRight().isPresent() && p.getLeft().isDefined())
+                .forEach(p -> resolveActivationPeriod(p.left.get(), p.right.get()));
+    }
+
+    private void resolveActivationPeriod(Device device, ActivationPeriods activationPeriods) {
+        if (autoActivatedDevices.contains(device)) {
+            checkDeactivation(device, activationPeriods);
+        } else {
+            checkActivation(device, activationPeriods);
+        }
+    }
+
+    private void checkDeactivation(Device device, ActivationPeriods activationPeriods) {
+        LocalDateTime ldt = LocalDateTime.now();
+        for (ActivationPeriod period : activationPeriods.getPeriods()) {
+            if (ldt.getHour() > period.getEndHour() || (period.getEndHour() == ldt.getHour() && ldt.getMinute() >= period.getEndMinute())) {
+                autoActivatedDevices.remove(device);
+                deactivate(device);
+            }
+        }
+    }
+
+    private void deactivate(Device device) {
+        for (DeviceEndpoint endpoint : device.getEndpoints()) {
+            if (endpoint.getPath().equals("/off")) {
+                sendCommand(device, endpoint, Collections.emptyMap());
+            }
+        }
+    }
+
+    private void checkActivation(Device device, ActivationPeriods activationPeriods) {
+        LocalDateTime ldt = LocalDateTime.now();
+        for (ActivationPeriod period : activationPeriods.getPeriods()) {
+            if (
+                    (ldt.getHour() > period.getStartHour() || (ldt.getHour() == period.getStartHour() || ldt.getMinute() >= period.getStartMinute()))
+                    && (ldt.getHour() < period.getEndHour() || (ldt.getHour() == period.getEndHour() && ldt.getMinute() <= period.getEndMinute()))
+            ) {
+                autoActivatedDevices.add(device);
+                activate(device);
+            }
+        }
+    }
+
+    private void activate(Device device) {
+        for (DeviceEndpoint endpoint : device.getEndpoints()) {
+            if (endpoint.getPath().equals("/on")) {
+                sendCommand(device, endpoint, Collections.emptyMap());
+            }
+        }
     }
 
     private DeviceLayout createDefaultLayout(Device device) {
@@ -153,5 +212,24 @@ class EdgarImpl implements Edgar {
         }
 
         return true;
+    }
+
+    private static class Pair<L, R> {
+
+        private final L left;
+        private final R right;
+
+        private Pair(L left, R right) {
+            this.left = left;
+            this.right = right;
+        }
+
+        public L getLeft() {
+            return left;
+        }
+
+        public R getRight() {
+            return right;
+        }
     }
 }

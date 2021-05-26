@@ -20,4 +20,10 @@ public class ScheduledJobs {
         System.out.println("Checking device status");
         edgar.refreshDeviceStatus();
     }
+
+    @Scheduled(fixedDelayString = "${devices.activationPeriodsCheck.delay}", initialDelayString = "${devices.activationPeriodsCheck.initialDelay}")
+    public void checkActivationPeriods() {
+        System.out.println("Checking activation periods");
+        edgar.checkActivationPeriods();
+    }
 }

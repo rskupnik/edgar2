@@ -69,7 +69,7 @@ public class DeviceController {
         System.out.println("Result: " + success);
     }
 
-    @PostMapping("device/{deviceId}/activationPeriods")
+    @PostMapping("devices/{deviceId}/activationPeriods")
     public void setActivationPeriods(@PathVariable("deviceId") String deviceId, @RequestBody ActivationPeriodsDto dto) {
         edgar.setActivationPeriods(deviceId, dto.toDomainClass().getPeriods());
     }

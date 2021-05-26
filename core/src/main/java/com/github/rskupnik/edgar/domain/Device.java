@@ -1,6 +1,7 @@
 package com.github.rskupnik.edgar.domain;
 
 import java.util.List;
+import java.util.Objects;
 
 public class Device {
 
@@ -36,5 +37,18 @@ public class Device {
 
     public List<ActivationPeriod> getActivationPeriods() {
         return activationPeriods;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Device)) return false;
+        Device device = (Device) o;
+        return id.equals(device.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

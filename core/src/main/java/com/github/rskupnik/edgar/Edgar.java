@@ -22,6 +22,7 @@ public interface Edgar {
     List<Tuple2<Device, DeviceLayout>> getLayouts(List<Device> devices);
     Optional<DeviceStatus> getDeviceStatus(String deviceId);
     void setActivationPeriods(String deviceId, List<ActivationPeriod> periods);
+    void checkActivationPeriods();
 
     static Edgar defaultImplementation(Database database) {
         return new EdgarImpl(database);
