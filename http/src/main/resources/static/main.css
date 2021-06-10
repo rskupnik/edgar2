@@ -1,158 +1,377 @@
 #container {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    grid-template-rows: repeat(5, 1fr);
-    grid-gap: 1rem;
-    width: 800px;
-    height: 800px;
+    grid-template-columns: repeat(10_ 1fr);
+    grid-template-rows: repeat(6_ 1fr);
+    grid-gap: 3px;
+    width: 1024px;
+    height: 600px;
 }
 
-[class="0,0"] {
+body {
+    margin: 0;
+    background-color: black;
+}
+
+.tile {
+    border-radius: 3px;
+}
+
+[class~="0_0"] {
     background-color: coral;
     grid-column: 1 / 2;
     grid-row: 1 / 2;
 }
 
-[class="1,0"] {
+[class~="1_0"] {
     background-color: coral;
     grid-column: 2 / 3;
     grid-row: 1 / 2;
 }
 
-[class="2,0"] {
+[class~="2_0"] {
     background-color: coral;
     grid-column: 3 / 4;
     grid-row: 1 / 2;
 }
 
-[class="3,0"] {
+[class~="3_0"] {
     background-color: coral;
     grid-column: 4 / 5;
     grid-row: 1 / 2;
 }
 
-[class="4,0"] {
+[class~="4_0"] {
     background-color: coral;
     grid-column: 5 / 6;
     grid-row: 1 / 2;
 }
 
-[class="0,1"] {
+[class~="5_0"] {
+    background-color: coral;
+    grid-column: 6 / 7;
+    grid-row: 1 / 2;
+}
+
+[class~="6_0"] {
+    background-color: coral;
+    grid-column: 7 / 8;
+    grid-row: 1 / 2;
+}
+
+[class~="7_0"] {
+    background-color: coral;
+    grid-column: 8 / 9;
+    grid-row: 1 / 2;
+}
+
+[class~="8_0"] {
+    background-color: coral;
+    grid-column: 9 / 10;
+    grid-row: 1 / 2;
+}
+
+[class~="9_0"] {
+    background-color: coral;
+    grid-column: 10 / 11;
+    grid-row: 1 / 2;
+}
+
+[class~="0_1"] {
     background-color: coral;
     grid-column: 1 / 2;
     grid-row: 2 / 3;
 }
 
-[class="1,1"] {
+[class~="1_1"] {
     background-color: coral;
     grid-column: 2 / 3;
     grid-row: 2 / 3;
 }
 
-[class="2,1"] {
+[class~="2_1"] {
     background-color: coral;
     grid-column: 3 / 4;
     grid-row: 2 / 3;
 }
 
-[class="3,1"] {
+[class~="3_1"] {
     background-color: coral;
     grid-column: 4 / 5;
     grid-row: 2 / 3;
 }
 
-[class="4,1"] {
+[class~="4_1"] {
     background-color: coral;
     grid-column: 5 / 6;
     grid-row: 2 / 3;
 }
 
-[class="0,2"] {
+[class~="5_1"] {
+    background-color: coral;
+    grid-column: 6 / 7;
+    grid-row: 2 / 3;
+}
+
+[class~="6_1"] {
+    background-color: coral;
+    grid-column: 7 / 8;
+    grid-row: 2 / 3;
+}
+
+[class~="7_1"] {
+    background-color: coral;
+    grid-column: 8 / 9;
+    grid-row: 2 / 3;
+}
+
+[class~="8_1"] {
+    background-color: coral;
+    grid-column: 9 / 10;
+    grid-row: 2 / 3;
+}
+
+[class~="9_1"] {
+    background-color: coral;
+    grid-column: 10 / 11;
+    grid-row: 2 / 3;
+}
+
+[class~="0_2"] {
     background-color: coral;
     grid-column: 1 / 2;
     grid-row: 3 / 4;
 }
 
-[class="1,2"] {
+[class~="1_2"] {
     background-color: coral;
     grid-column: 2 / 3;
     grid-row: 3 / 4;
 }
 
-[class="2,2"] {
+[class~="2_2"] {
     background-color: coral;
     grid-column: 3 / 4;
     grid-row: 3 / 4;
 }
 
-[class="3,2"] {
+[class~="3_2"] {
     background-color: coral;
     grid-column: 4 / 5;
     grid-row: 3 / 4;
 }
 
-[class="4,2"] {
+[class~="4_2"] {
     background-color: coral;
     grid-column: 5 / 6;
     grid-row: 3 / 4;
 }
 
-[class="0,3"] {
+[class~="5_2"] {
+    background-color: coral;
+    grid-column: 6 / 7;
+    grid-row: 3 / 4;
+}
+
+[class~="6_2"] {
+    background-color: coral;
+    grid-column: 7 / 8;
+    grid-row: 3 / 4;
+}
+
+[class~="7_2"] {
+    background-color: coral;
+    grid-column: 8 / 9;
+    grid-row: 3 / 4;
+}
+
+[class~="8_2"] {
+    background-color: coral;
+    grid-column: 9 / 10;
+    grid-row: 3 / 4;
+}
+
+[class~="9_2"] {
+    background-color: coral;
+    grid-column: 10 / 11;
+    grid-row: 3 / 4;
+}
+
+[class~="0_3"] {
     background-color: coral;
     grid-column: 1 / 2;
     grid-row: 4 / 5;
 }
 
-[class="1,3"] {
+[class~="1_3"] {
     background-color: coral;
     grid-column: 2 / 3;
     grid-row: 4 / 5;
 }
 
-[class="2,3"] {
+[class~="2_3"] {
     background-color: coral;
     grid-column: 3 / 4;
     grid-row: 4 / 5;
 }
 
-[class="3,3"] {
+[class~="3_3"] {
     background-color: coral;
     grid-column: 4 / 5;
     grid-row: 4 / 5;
 }
 
-[class="4,3"] {
+[class~="4_3"] {
     background-color: coral;
     grid-column: 5 / 6;
     grid-row: 4 / 5;
 }
 
-[class="0,4"] {
+[class~="5_3"] {
+    background-color: coral;
+    grid-column: 6 / 7;
+    grid-row: 4 / 5;
+}
+
+[class~="6_3"] {
+    background-color: coral;
+    grid-column: 7 / 8;
+    grid-row: 4 / 5;
+}
+
+[class~="7_3"] {
+    background-color: coral;
+    grid-column: 8 / 9;
+    grid-row: 4 / 5;
+}
+
+[class~="8_3"] {
+    background-color: coral;
+    grid-column: 9 / 10;
+    grid-row: 4 / 5;
+}
+
+[class~="9_3"] {
+    background-color: coral;
+    grid-column: 10 / 11;
+    grid-row: 4 / 5;
+}
+
+[class~="0_4"] {
     background-color: coral;
     grid-column: 1 / 2;
     grid-row: 5 / 6;
 }
 
-[class="1,4"] {
+[class~="1_4"] {
     background-color: coral;
     grid-column: 2 / 3;
     grid-row: 5 / 6;
 }
 
-[class="2,4"] {
+[class~="2_4"] {
     background-color: coral;
     grid-column: 3 / 4;
     grid-row: 5 / 6;
 }
 
-[class="3,4"] {
+[class~="3_4"] {
     background-color: coral;
     grid-column: 4 / 5;
     grid-row: 5 / 6;
 }
 
-[class="4,4"] {
+[class~="4_4"] {
     background-color: coral;
     grid-column: 5 / 6;
     grid-row: 5 / 6;
+}
+
+[class~="5_4"] {
+    background-color: coral;
+    grid-column: 6 / 7;
+    grid-row: 5 / 6;
+}
+
+[class~="6_4"] {
+    background-color: coral;
+    grid-column: 7 / 8;
+    grid-row: 5 / 6;
+}
+
+[class~="7_4"] {
+    background-color: coral;
+    grid-column: 8 / 9;
+    grid-row: 5 / 6;
+}
+
+[class~="8_4"] {
+    background-color: coral;
+    grid-column: 9 / 10;
+    grid-row: 5 / 6;
+}
+
+[class~="9_4"] {
+    background-color: coral;
+    grid-column: 10 / 11;
+    grid-row: 5 / 6;
+}
+
+[class~="0_5"] {
+    background-color: coral;
+    grid-column: 1 / 2;
+    grid-row: 6 / 7;
+}
+
+[class~="1_5"] {
+    background-color: coral;
+    grid-column: 2 / 3;
+    grid-row: 6 / 7;
+}
+
+[class~="2_5"] {
+    background-color: coral;
+    grid-column: 3 / 4;
+    grid-row: 6 / 7;
+}
+
+[class~="3_5"] {
+    background-color: coral;
+    grid-column: 4 / 5;
+    grid-row: 6 / 7;
+}
+
+[class~="4_5"] {
+    background-color: coral;
+    grid-column: 5 / 6;
+    grid-row: 6 / 7;
+}
+
+[class~="5_5"] {
+    background-color: coral;
+    grid-column: 6 / 7;
+    grid-row: 6 / 7;
+}
+
+[class~="6_5"] {
+    background-color: coral;
+    grid-column: 7 / 8;
+    grid-row: 6 / 7;
+}
+
+[class~="7_5"] {
+    background-color: coral;
+    grid-column: 8 / 9;
+    grid-row: 6 / 7;
+}
+
+[class~="8_5"] {
+    background-color: coral;
+    grid-column: 9 / 10;
+    grid-row: 6 / 7;
+}
+
+[class~="9_5"] {
+    background-color: coral;
+    grid-column: 10 / 11;
+    grid-row: 6 / 7;
 }

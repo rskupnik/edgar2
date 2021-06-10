@@ -9,66 +9,102 @@
 <body>
     <div id="app">
         <div id="container">
-            <div class="0,0"></div>
-            <div class="1,0"></div>
-            <div class="2,0"></div>
-            <div class="3,0"></div>
-            <div class="4,0"></div>
+            <div class="tile 0_0"></div>
+            <div class="tile 1_0"></div>
+            <div class="tile 2_0"></div>
+            <div class="tile 3_0"></div>
+            <div class="tile 4_0"></div>
+            <div class="tile 5_0"></div>
+            <div class="tile 6_0"></div>
+            <div class="tile 7_0"></div>
+            <div class="tile 8_0"></div>
+            <div class="tile 9_0"></div>
 
-            <div class="0,1"></div>
-            <div class="1,1"></div>
-            <div class="2,1"></div>
-            <div class="3,1"></div>
-            <div class="4,1"></div>
+            <div class="tile 0_1"></div>
+            <div class="tile 1_1"></div>
+            <div class="tile 2_1"></div>
+            <div class="tile 3_1"></div>
+            <div class="tile 4_1"></div>
+            <div class="tile 5_1"></div>
+            <div class="tile 6_1"></div>
+            <div class="tile 7_1"></div>
+            <div class="tile 8_1"></div>
+            <div class="tile 9_1"></div>
 
-            <div class="0,2"></div>
-            <div class="1,2"></div>
-            <div class="2,2"></div>
-            <div class="3,2"></div>
-            <div class="4,2"></div>
+            <div class="tile 0_2"></div>
+            <div class="tile 1_2"></div>
+            <div class="tile 2_2"></div>
+            <div class="tile 3_2"></div>
+            <div class="tile 4_2"></div>
+            <div class="tile 5_2"></div>
+            <div class="tile 6_2"></div>
+            <div class="tile 7_2"></div>
+            <div class="tile 8_2"></div>
+            <div class="tile 9_2"></div>
 
-            <div class="0,3"></div>
-            <div class="1,3"></div>
-            <div class="2,3"></div>
-            <div class="3,3"></div>
-            <div class="4,3"></div>
+            <div class="tile 0_3"></div>
+            <div class="tile 1_3"></div>
+            <div class="tile 2_3"></div>
+            <div class="tile 3_3"></div>
+            <div class="tile 4_3"></div>
+            <div class="tile 5_3"></div>
+            <div class="tile 6_3"></div>
+            <div class="tile 7_3"></div>
+            <div class="tile 8_3"></div>
+            <div class="tile 9_3"></div>
 
-            <div class="0,4"></div>
-            <div class="1,4"></div>
-            <div class="2,4"></div>
-            <div class="3,4"></div>
-            <div class="4,4"></div>
+            <div class="tile 0_4"></div>
+            <div class="tile 1_4"></div>
+            <div class="tile 2_4"></div>
+            <div class="tile 3_4"></div>
+            <div class="tile 4_4"></div>
+            <div class="tile 5_4"></div>
+            <div class="tile 6_4"></div>
+            <div class="tile 7_4"></div>
+            <div class="tile 8_4"></div>
+            <div class="tile 9_4"></div>
+
+            <div class="tile 0_5"></div>
+            <div class="tile 1_5"></div>
+            <div class="tile 2_5"></div>
+            <div class="tile 3_5"></div>
+            <div class="tile 4_5"></div>
+            <div class="tile 5_5"></div>
+            <div class="tile 6_5"></div>
+            <div class="tile 7_5"></div>
+            <div class="tile 8_5"></div>
+            <div class="tile 9_5"></div>
         </div>
     </div>
 
     <script>
         var app = new Vue({
-            el: '#app',
+            el: '#app'_
             data() {
                 return {
-                    devices: null,
-                    dashboard: null,
+                    devices: null_
+                    dashboard: null_
                     testDevices: [
                         {
-                            "name": "Test device #1",
+                            "name": "Test device #1"_
                             "endpoints": [
                                 {
-                                    "name": "Basic speed",
+                                    "name": "Basic speed"_
                                     "type": "basic"
                                 }
                             ]
                         }
                     ]
                 }
-            },
+            }_
             mounted() {
                 // axios.get('http://' + window.location.host + '/devices')
                 //     .then(response => (this.devices = response.data))
                 // axios.get('http://' + window.location.host + '/dashboards/' + window.location.pathname.split('/')[1])
                 //     .then(response => (this.dashboard = response.data))
-            },
+            }_
             methods: {
-                sendCommand: function (device, endpoint) {
+                sendCommand: function (device_ endpoint) {
                     console.log(endpoint)
                     axios.post("http://" + window.location.host + "/devices/" + device.id + endpoint.path)
                 }
