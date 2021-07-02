@@ -1,0 +1,70 @@
+#container {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  grid-template-rows: repeat(6, 1fr);
+  grid-gap: 3px;
+  width: 1024px;
+  height: 600px;
+}
+
+body {
+  margin: 0;
+  background-color: black;
+}
+
+.tile {
+  border-radius: 3px;
+  background-color: coral;
+}
+
+@mixin singleTile($column: 1, $row: 1) {
+  grid-column: $column #{'/'} $column + 1;
+  grid-row: $row #{'/'} $row + 1;
+}
+
+@mixin horizontal($column: 1, $row: 1) {
+  grid-column: $column #{'/'} $column + 2;
+  grid-row: $row #{'/'} $row + 1;
+}
+
+@mixin vertical($column: 1, $row: 1) {
+  grid-column: $column #{'/'} $column + 1;
+  grid-row: $row #{'/'} $row + 2;
+}
+
+@mixin quad($column: 1, $row: 1) {
+  grid-column: $column #{'/'} $column + 2;
+  grid-row: $row #{'/'} $row + 2;
+}
+
+@for $j from 0 through 5 {
+  @for $i from 0 through 9 {
+    [class~="#{$i}_#{$j}"] {
+      @include singleTile($column: $i + 1, $row: $j + 1)
+    }
+  }
+}
+
+@for $j from 0 through 5 {
+  @for $i from 0 through 8 {
+    [class~="h_#{$i}_#{$j}"] {
+      @include horizontal($column: $i + 1, $row: $j + 1)
+    }
+  }
+}
+
+@for $j from 0 through 4 {
+  @for $i from 0 through 9 {
+    [class~="v_#{$i}_#{$j}"] {
+      @include vertical($column: $i + 1, $row: $j + 1)
+    }
+  }
+}
+
+@for $j from 0 through 4 {
+  @for $i from 0 through 5 {
+    [class~="q_#{$i}_#{$j}"] {
+      @include quad($column: $i + 1, $row: $j + 1)
+    }
+  }
+}

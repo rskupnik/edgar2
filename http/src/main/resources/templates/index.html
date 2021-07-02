@@ -9,7 +9,7 @@
 <body>
     <div id="app">
         <div id="container">
-            <div class="tile 0_0"></div>
+            <!--div class="tile 0_0"></div>
             <div class="tile 1_0"></div>
             <div class="tile 2_0"></div>
             <div class="tile 3_0"></div>
@@ -73,43 +73,66 @@
             <div class="tile 6_5"></div>
             <div class="tile 7_5"></div>
             <div class="tile 8_5"></div>
-            <div class="tile 9_5"></div>
+            <div class="tile 9_5"></div-->
         </div>
     </div>
 
+    <script type="text/javascript" th:src="@{js/tiles.js}"></script>
     <script>
         var app = new Vue({
-            el: '#app'_
+            el: '#app',
             data() {
                 return {
-                    devices: null_
-                    dashboard: null_
+                    devices: null,
+                    dashboard: null,
                     testDevices: [
                         {
-                            "name": "Test device #1"_
+                            "name": "Test device #1",
                             "endpoints": [
                                 {
-                                    "name": "Basic speed"_
+                                    "name": "Basic speed",
                                     "type": "basic"
                                 }
                             ]
                         }
+                    ],
+                    testLayout: [
+                        {
+                            "x": 2,
+                            "y": 2,
+                            "type": "horizontal"
+                        },
+                        {
+                            "x": 4,
+                            "y": 3,
+                            "type": "quad"
+                        },
+                        {
+                            "x": 7,
+                            "y": 2,
+                            "type": "vertical"
+                        }
                     ]
                 }
-            }_
+            },
             mounted() {
+                var filledTiles = fillTiles(this.testLayout, 10, 6);
+                console.log(filledTiles);
+                placeTiles(filledTiles);
+                randomizeColors();
                 // axios.get('http://' + window.location.host + '/devices')
                 //     .then(response => (this.devices = response.data))
                 // axios.get('http://' + window.location.host + '/dashboards/' + window.location.pathname.split('/')[1])
                 //     .then(response => (this.dashboard = response.data))
-            }_
+            },
             methods: {
-                sendCommand: function (device_ endpoint) {
+                sendCommand: function (device, endpoint) {
                     console.log(endpoint)
                     axios.post("http://" + window.location.host + "/devices/" + device.id + endpoint.path)
                 }
             }
-        })
+        });
     </script>
+
 </body>
 </html>
