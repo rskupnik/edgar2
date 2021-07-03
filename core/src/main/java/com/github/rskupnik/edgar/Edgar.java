@@ -23,6 +23,7 @@ public interface Edgar {
     Optional<DeviceStatus> getDeviceStatus(String deviceId);
     void setActivationPeriods(String deviceId, List<ActivationPeriod> periods);
     void checkActivationPeriods();
+    void loadDashboard(String name, String filename);
 
     static Edgar defaultImplementation(Database database) {
         return new EdgarImpl(database);

@@ -1,9 +1,6 @@
 package com.github.rskupnik.edgar;
 
-import com.github.rskupnik.edgar.domain.ActivationPeriods;
-import com.github.rskupnik.edgar.domain.Device;
-import com.github.rskupnik.edgar.domain.DeviceLayout;
-import com.github.rskupnik.edgar.domain.DeviceStatus;
+import com.github.rskupnik.edgar.domain.*;
 import io.vavr.control.Option;
 
 import java.util.List;
@@ -25,4 +22,6 @@ public interface Database {
 
     void saveActivationPeriods(String deviceId, ActivationPeriods activationPeriods);
     Optional<ActivationPeriods> getActivationPeriods(String deviceId);
+
+    void saveDashboard(String dashboardId, Dashboard dashboard);
 }

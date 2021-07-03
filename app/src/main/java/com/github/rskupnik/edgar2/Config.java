@@ -11,7 +11,9 @@ public class Config {
 
     @Bean
     public Edgar edgar(Database database) {
-        return Edgar.defaultImplementation(database);
+        var edgar = Edgar.defaultImplementation(database);
+
+        return edgar;
     }
 
     @Bean

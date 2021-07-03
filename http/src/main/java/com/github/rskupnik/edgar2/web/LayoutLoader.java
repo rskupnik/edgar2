@@ -3,7 +3,6 @@ package com.github.rskupnik.edgar2.web;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.rskupnik.edgar.Edgar;
-import com.github.rskupnik.edgar.domain.DeviceLayout;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.stereotype.Component;
 

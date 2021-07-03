@@ -16,6 +16,8 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -113,6 +115,19 @@ class EdgarImpl implements Edgar {
                 .map(d -> new Pair<>(database.findDevice(d.getId()), database.getActivationPeriods(d.getId())))
                 .filter(p -> p.getRight().isPresent() && p.getLeft().isDefined())
                 .forEach(p -> resolveActivationPeriod(p.left.get(), p.right.get()));
+    }
+
+    @Override
+    public void loadDashboard(String id, String filename) {
+        if (filename == null || !Files.exists(Path.of(filename)))
+            return;
+
+        try {
+            var content = Files.readString(Path.of(filename));
+            database.saveDashboard(id, objectMapper.readValue(content, Dashboard.class));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void resolveActivationPeriod(Device device, ActivationPeriods activationPeriods) {
