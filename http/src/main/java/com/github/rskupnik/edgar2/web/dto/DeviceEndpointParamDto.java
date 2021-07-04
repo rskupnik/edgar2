@@ -1,4 +1,4 @@
-package com.github.rskupnik.edgar2.web;
+package com.github.rskupnik.edgar2.web.dto;
 
 import com.github.rskupnik.edgar.domain.DeviceEndpointParam;
 

@@ -1,6 +1,5 @@
-package com.github.rskupnik.edgar2.web;
+package com.github.rskupnik.edgar2.web.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.rskupnik.edgar.domain.EndpointLayout;
 
 import java.util.Collections;

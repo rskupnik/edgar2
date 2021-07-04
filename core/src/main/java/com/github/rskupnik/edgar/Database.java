@@ -24,4 +24,5 @@ public interface Database {
     Optional<ActivationPeriods> getActivationPeriods(String deviceId);
 
     void saveDashboard(String dashboardId, Dashboard dashboard);
+    Optional<Dashboard> getDashboard(String id);
 }

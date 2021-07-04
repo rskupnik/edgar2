@@ -73,4 +73,9 @@ public class InMemoryDatabase implements Database {
     public void saveDashboard(String dashboardId, Dashboard dashboard) {
         dashboards.put(dashboardId, dashboard);
     }
+
+    @Override
+    public Optional<Dashboard> getDashboard(String id) {
+        return Optional.ofNullable(dashboards.get(id));
+    }
 }

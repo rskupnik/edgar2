@@ -4,6 +4,9 @@ import com.github.rskupnik.edgar.Edgar;
 import com.github.rskupnik.edgar.domain.DeviceStatus;
 import com.github.rskupnik.edgar.domain.EndpointBinding;
 import com.github.rskupnik.edgar.domain.EndpointLayout;
+import com.github.rskupnik.edgar2.web.dto.ActivationPeriodsDto;
+import com.github.rskupnik.edgar2.web.dto.DeviceDto;
+import com.github.rskupnik.edgar2.web.dto.DeviceStatusDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

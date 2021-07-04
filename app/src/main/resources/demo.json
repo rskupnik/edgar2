@@ -1,8 +1,22 @@
-[
-  {
-    "deviceId": "test",
-    "x": 2,
-    "y": 2,
-    "type": "single"
-  }
-]
+{
+  "tiles": [
+    {
+      "deviceId": "test",
+      "x": 2,
+      "y": 2,
+      "type": "single"
+    },
+    {
+      "deviceId": "test2",
+      "x": 4,
+      "y": 3,
+      "type": "quad"
+    },
+    {
+      "deviceId": "test3",
+      "x": 7,
+      "y": 2,
+      "type": "vertical"
+    }
+  ]
+}

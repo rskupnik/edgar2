@@ -1,9 +1,6 @@
 package com.github.rskupnik.edgar;
 
-import com.github.rskupnik.edgar.domain.ActivationPeriod;
-import com.github.rskupnik.edgar.domain.Device;
-import com.github.rskupnik.edgar.domain.DeviceLayout;
-import com.github.rskupnik.edgar.domain.DeviceStatus;
+import com.github.rskupnik.edgar.domain.*;
 import io.vavr.Tuple2;
 import io.vavr.control.Either;
 import io.vavr.control.Option;
@@ -24,6 +21,7 @@ public interface Edgar {
     void setActivationPeriods(String deviceId, List<ActivationPeriod> periods);
     void checkActivationPeriods();
     void loadDashboard(String name, String filename);
+    Optional<Dashboard> getDashboard(String id);
 
     static Edgar defaultImplementation(Database database) {
         return new EdgarImpl(database);

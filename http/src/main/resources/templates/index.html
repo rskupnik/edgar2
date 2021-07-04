@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Edgar Dashboard</title>
-    <link th:href="@{main.css}" rel="stylesheet" />
+    <link th:href="@{/main.css}" rel="stylesheet" />
     <script src="https://unpkg.com/vue"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 </head>
@@ -67,7 +67,6 @@
             <div class="tile 0_5"></div>
             <div class="tile 1_5"></div>
             <div class="tile 2_5"></div>
-            <div class="tile 3_5"></div>
             <div class="tile 4_5"></div>
             <div class="tile 5_5"></div>
             <div class="tile 6_5"></div>
@@ -77,7 +76,7 @@
         </div>
     </div>
 
-    <script type="text/javascript" th:src="@{js/tiles.js}"></script>
+    <script type="text/javascript" th:src="@{/js/tiles.js}"></script>
     <script>
         var app = new Vue({
             el: '#app',
@@ -116,14 +115,21 @@
                 }
             },
             mounted() {
-                var filledTiles = fillTiles(this.testLayout, 10, 6);
-                console.log(filledTiles);
-                placeTiles(filledTiles);
-                randomizeColors();
+                // TODO: include that the path is now "/dashboard/id" and not just "/id"
+                axios.get('http://' + window.location.host + '/dashboards/' + window.location.pathname.split('/')[2])
+                    .then(response => {
+                        this.dashboard = response.data;
+                        if (this.dashboard.tiles != null) {
+                            var filledTiles = fillTiles(this.dashboard.tiles, 10, 6);
+                            console.log(filledTiles);
+                            placeTiles(filledTiles);
+                            randomizeColors();
+                        }
+                    })
+
                 // axios.get('http://' + window.location.host + '/devices')
                 //     .then(response => (this.devices = response.data))
-                // axios.get('http://' + window.location.host + '/dashboards/' + window.location.pathname.split('/')[1])
-                //     .then(response => (this.dashboard = response.data))
+
             },
             methods: {
                 sendCommand: function (device, endpoint) {

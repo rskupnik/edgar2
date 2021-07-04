@@ -124,10 +124,26 @@ class EdgarImpl implements Edgar {
 
         try {
             var content = Files.readString(Path.of(filename));
-            database.saveDashboard(id, objectMapper.readValue(content, Dashboard.class));
+            var converted = objectMapper.readValue(content, new TypeReference<HashMap<String, Object>>() {});
+            database.saveDashboard(id, fromMap(converted));
+            System.out.println("Loaded dashboard: " + id);
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public Optional<Dashboard> getDashboard(String id) {
+        return database.getDashboard(id);
+    }
+
+    private Dashboard fromMap(Map<String, Object> map) {
+        var tiles = (List<Map<String, Object>>) map.get("tiles");
+        return new Dashboard(tiles.stream().map(t -> new Tile(
+                (String) t.get("deviceId"),
+                (int) t.get("x"), (int) t.get("y"),
+                (String) t.get("type")
+        )).collect(Collectors.toList()));
     }
 
     private void resolveActivationPeriod(Device device, ActivationPeriods activationPeriods) {
