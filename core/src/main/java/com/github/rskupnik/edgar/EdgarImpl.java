@@ -137,10 +137,12 @@ class EdgarImpl implements Edgar {
         return database.getDashboard(id);
     }
 
+    // TODO: Do this in a better way
     private Dashboard fromMap(Map<String, Object> map) {
         var tiles = (List<Map<String, Object>>) map.get("tiles");
         return new Dashboard(tiles.stream().map(t -> new Tile(
                 (String) t.get("deviceId"),
+                (String) t.get("deviceType"),
                 (int) t.get("x"), (int) t.get("y"),
                 (String) t.get("type")
         )).collect(Collectors.toList()));

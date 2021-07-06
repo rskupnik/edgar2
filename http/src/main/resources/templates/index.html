@@ -76,13 +76,44 @@
         </div>
     </div>
 
+    <script type="text/javascript" th:src="@{/js/components.js}"></script>
     <script type="text/javascript" th:src="@{/js/tiles.js}"></script>
     <script>
+        Vue.component('toggle', {
+            //props: ['endpoint', 'device'],
+            props: [],
+            template: `
+                <div class="singleTile">
+                    <h2>Title</h2>
+                    <!--input type="checkbox" v-on:change="$root.sendCommand(device, endpoint)"/-->
+                </div>
+            `
+        })
+
+        // TODO: Insert a component base on deviceType and test it
+        // 1. A function to get appropriate div by x, y and type
+        // 2. A function to insert device stuff into a tile div
+
+        // TODO: Style the "toggle" os it works like a button
+
         var app = new Vue({
             el: '#app',
             data() {
                 return {
-                    devices: null,
+                    devices: [
+                        {
+                            "id": "test",
+                            "name": "Just a test",
+                            "ip": "localhost",
+                            "endpoints": [
+                                {
+                                    "name": "Toggle",
+                                    "path": "/toggle",
+                                    "method": "POST"
+                                }
+                            ]
+                        }
+                    ],
                     dashboard: null,
                     testDevices: [
                         {
@@ -115,21 +146,27 @@
                 }
             },
             mounted() {
-                // TODO: include that the path is now "/dashboard/id" and not just "/id"
-                axios.get('http://' + window.location.host + '/dashboards/' + window.location.pathname.split('/')[2])
-                    .then(response => {
-                        this.dashboard = response.data;
-                        if (this.dashboard.tiles != null) {
-                            var filledTiles = fillTiles(this.dashboard.tiles, 10, 6);
-                            console.log(filledTiles);
-                            placeTiles(filledTiles);
-                            randomizeColors();
+                let promises = [];
+                promises.push(
+                    axios.get('http://' + window.location.host + '/dashboards/' + window.location.pathname.split('/')[2])
+                        .then(response => {
+                            this.dashboard = response.data;
+                        }),
+                    axios.get('http://' + window.location.host + '/devices')
+                        .then(response => {
+                            //this.devices = response.data;
+                        })
+                );
+
+                Promise.all(promises).then(() => {
+                    if (this.dashboard.tiles != null) {
+                        placeTiles(fillTiles(this.dashboard.tiles, 10, 6));
+                        randomizeColors();
+                        if (this.devices != null) {
+                            populateTiles(this.dashboard, this.devices);
                         }
-                    })
-
-                // axios.get('http://' + window.location.host + '/devices')
-                //     .then(response => (this.devices = response.data))
-
+                    }
+                });
             },
             methods: {
                 sendCommand: function (device, endpoint) {

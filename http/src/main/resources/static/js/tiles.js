@@ -90,3 +90,42 @@ function placeTiles(layout) {
         container.appendChild(div);
     }
 }
+
+function getTile(x, y, type) {
+    switch (type) {
+        case "single":
+            return document.getElementsByClassName(`${x}_${y}`)[0];
+        case "horizontal":
+            return document.getElementsByClassName(`h_${x}_${y}`)[0];
+        case "vertical":
+            return document.getElementsByClassName(`v_${x}_${y}`)[0];
+        case "quad":
+            return document.getElementsByClassName(`q_${x}_${y}`)[0];
+        default:
+            return null;
+    }
+}
+
+function populateTiles(dashboardData, deviceData) {
+    for (const tile of dashboardData.tiles) {
+        if (tile.deviceType == null)
+            return;
+
+        let tileDiv = getTile(tile.x, tile.y, tile.type);
+        let device = findDeviceById(deviceData, tile.deviceId);
+        populateTile(tileDiv, device);
+    }
+}
+
+function populateTile(tileDiv, deviceData) {
+    let div = document.createElement("toggle");
+    tileDiv.appendChild(div);
+}
+
+function findDeviceById(deviceData, id) {
+    for (const device of deviceData) {
+        if (device.id === id)
+            return device;
+    }
+    return null;
+}
