@@ -142,6 +142,7 @@ class EdgarImpl implements Edgar {
         var tiles = (List<Map<String, Object>>) map.get("tiles");
         return new Dashboard(tiles.stream().map(t -> new Tile(
                 (String) t.get("deviceId"),
+                (String) t.get("endpointId"),
                 (String) t.get("deviceType"),
                 (int) t.get("x"), (int) t.get("y"),
                 (String) t.get("type")

@@ -9,6 +9,11 @@ function randomizeColors() {
     }
 }
 
+function chooseRandomColor() {
+    let colors = ["#ff9966", "#ffcc99", "#ff9999", "#8be9fe", "#99ffff"];
+    return colors[Math.floor(Math.random() * colors.length)];
+}
+
 function findTile(x, y, layout) {
     for (const tile of layout) {
         if (tile.x === x && tile.y === y) {
@@ -46,12 +51,17 @@ function fillTiles(layout, boundX, boundY) {
         for (var iy = 0; iy < boundY; iy++) {
             var foundTile = findTile(ix, iy, layout);
             if (foundTile) {
+                foundTile['clazz'] = determineClass(foundTile);
+                foundTile['color'] = chooseRandomColor();
                 output.push(foundTile);
             } else if (notOccupied(ix, iy, layout)) {
                 output.push({
                     "x": ix,
                     "y": iy,
-                    "type": "single"
+                    "type": "single",
+                    "clazz": `${ix}_${iy}`,
+                    "color": chooseRandomColor(),
+                    "deviceType": ''
                 });
             }
         }
@@ -88,6 +98,19 @@ function placeTiles(layout) {
                 break;
         }
         container.appendChild(div);
+    }
+}
+
+function determineClass(tile) {
+    switch (tile.type) {
+        case "single":
+            return `${tile.x}_${tile.y}`;
+        case "horizontal":
+            return `h_${tile.x}_${tile.y}`;
+        case "vertical":
+            return `v_${tile.x}_${tile.y}`;
+        case "quad":
+            return `q_${tile.x}_${tile.y}`;
     }
 }
 

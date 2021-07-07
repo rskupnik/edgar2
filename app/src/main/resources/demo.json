@@ -2,6 +2,7 @@
   "tiles": [
     {
       "deviceId": "test",
+      "endpointId": "toggle",
       "deviceType": "toggle",
       "x": 2,
       "y": 2,

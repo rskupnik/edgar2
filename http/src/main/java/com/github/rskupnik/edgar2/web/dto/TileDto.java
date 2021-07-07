@@ -5,6 +5,7 @@ import com.github.rskupnik.edgar.domain.Tile;
 public class TileDto {
 
     private String deviceId;
+    private String endpointId;
     private String deviceType;
     private Integer x, y;
     private String type;
@@ -14,12 +15,13 @@ public class TileDto {
     }
 
     public Tile toDomainClass() {
-        return new Tile(deviceId, deviceType, x, y, type);
+        return new Tile(deviceId, endpointId, deviceType, x, y, type);
     }
 
     public static TileDto fromDomainClass(Tile tile) {
         TileDto dto = new TileDto();
         dto.setDeviceId(tile.getDeviceId());
+        dto.setEndpointId(tile.getEndpointId());
         dto.setDeviceType(tile.getDeviceType());
         dto.setX(tile.getX());
         dto.setY(tile.getY());
@@ -33,6 +35,14 @@ public class TileDto {
 
     public void setDeviceId(String deviceId) {
         this.deviceId = deviceId;
+    }
+
+    public String getEndpointId() {
+        return endpointId;
+    }
+
+    public void setEndpointId(String endpointId) {
+        this.endpointId = endpointId;
     }
 
     public Integer getX() {

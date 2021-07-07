@@ -9,70 +9,12 @@
 <body>
     <div id="app">
         <div id="container">
-            <!--div class="tile 0_0"></div>
-            <div class="tile 1_0"></div>
-            <div class="tile 2_0"></div>
-            <div class="tile 3_0"></div>
-            <div class="tile 4_0"></div>
-            <div class="tile 5_0"></div>
-            <div class="tile 6_0"></div>
-            <div class="tile 7_0"></div>
-            <div class="tile 8_0"></div>
-            <div class="tile 9_0"></div>
-
-            <div class="tile 0_1"></div>
-            <div class="tile 1_1"></div>
-            <div class="tile 2_1"></div>
-            <div class="tile 3_1"></div>
-            <div class="tile 4_1"></div>
-            <div class="tile 5_1"></div>
-            <div class="tile 6_1"></div>
-            <div class="tile 7_1"></div>
-            <div class="tile 8_1"></div>
-            <div class="tile 9_1"></div>
-
-            <div class="tile 0_2"></div>
-            <div class="tile 1_2"></div>
-            <div class="tile 2_2"></div>
-            <div class="tile 3_2"></div>
-            <div class="tile 4_2"></div>
-            <div class="tile 5_2"></div>
-            <div class="tile 6_2"></div>
-            <div class="tile 7_2"></div>
-            <div class="tile 8_2"></div>
-            <div class="tile 9_2"></div>
-
-            <div class="tile 0_3"></div>
-            <div class="tile 1_3"></div>
-            <div class="tile 2_3"></div>
-            <div class="tile 3_3"></div>
-            <div class="tile 4_3"></div>
-            <div class="tile 5_3"></div>
-            <div class="tile 6_3"></div>
-            <div class="tile 7_3"></div>
-            <div class="tile 8_3"></div>
-            <div class="tile 9_3"></div>
-
-            <div class="tile 0_4"></div>
-            <div class="tile 1_4"></div>
-            <div class="tile 2_4"></div>
-            <div class="tile 3_4"></div>
-            <div class="tile 4_4"></div>
-            <div class="tile 5_4"></div>
-            <div class="tile 6_4"></div>
-            <div class="tile 7_4"></div>
-            <div class="tile 8_4"></div>
-            <div class="tile 9_4"></div>
-
-            <div class="tile 0_5"></div>
-            <div class="tile 1_5"></div>
-            <div class="tile 2_5"></div>
-            <div class="tile 4_5"></div>
-            <div class="tile 5_5"></div>
-            <div class="tile 6_5"></div>
-            <div class="tile 7_5"></div>
-            <div class="tile 8_5"></div>
-            <div class="tile 9_5"></div-->
+            <div :class="['tile', tile.clazz]" :style="{ backgroundColor: tile.color }" v-for="tile in processedTiles">
+                <toggle v-if="tile.deviceType == 'toggle'"
+                        v-bind:tile="tile" v-bind:device="devices[tile.deviceId]"
+                        v-bind:endpoint="devices[tile.deviceId].endpoints[tile.endpointId]">
+                </toggle>
+            </div>
         </div>
     </div>
 
@@ -80,41 +22,41 @@
     <script type="text/javascript" th:src="@{/js/tiles.js}"></script>
     <script>
         Vue.component('toggle', {
-            //props: ['endpoint', 'device'],
-            props: [],
+            props: ['tile', 'device', 'endpoint'],
             template: `
                 <div class="singleTile">
-                    <h2>Title</h2>
-                    <!--input type="checkbox" v-on:change="$root.sendCommand(device, endpoint)"/-->
+                    <h2>{{ endpoint != null ? endpoint.name : (device != null ? device.name : "") }}</h2>
+                    <input type="checkbox" @change="$root.sendCommand(device, endpoint)"/>
                 </div>
             `
         })
 
-        // TODO: Insert a component base on deviceType and test it
-        // 1. A function to get appropriate div by x, y and type
-        // 2. A function to insert device stuff into a tile div
-
         // TODO: Style the "toggle" os it works like a button
+
+        // TODO: Rework the devices endpoint so it returns data like in example devices (keyed) or do that on client side
+        // TODO: How to update devices state periodically?
+        // TODO: Grey-out a device that went down but is expected to be on dashboard
 
         var app = new Vue({
             el: '#app',
             data() {
                 return {
-                    devices: [
-                        {
+                    devices: {
+                        "test": {
                             "id": "test",
                             "name": "Just a test",
                             "ip": "localhost",
-                            "endpoints": [
-                                {
+                            "endpoints": {
+                                "toggle": {
                                     "name": "Toggle",
                                     "path": "/toggle",
                                     "method": "POST"
                                 }
-                            ]
+                            }
                         }
-                    ],
+                    },
                     dashboard: null,
+                    processedTiles: [],
                     testDevices: [
                         {
                             "name": "Test device #1",
@@ -160,11 +102,13 @@
 
                 Promise.all(promises).then(() => {
                     if (this.dashboard.tiles != null) {
-                        placeTiles(fillTiles(this.dashboard.tiles, 10, 6));
-                        randomizeColors();
-                        if (this.devices != null) {
-                            populateTiles(this.dashboard, this.devices);
-                        }
+                        this.processedTiles = fillTiles(this.dashboard.tiles, 10, 6);
+                        console.log(this.processedTiles);
+                        // placeTiles(fillTiles(this.dashboard.tiles, 10, 6));
+                        // randomizeColors();
+                        // if (this.devices != null) {
+                        //     populateTiles(this.dashboard, this.devices);
+                        // }
                     }
                 });
             },
