@@ -26,15 +26,12 @@
             template: `
                 <div class="singleTile">
                     <h2>{{ endpoint != null ? endpoint.name : (device != null ? device.name : "") }}</h2>
-                    <input type="checkbox" @change="$root.sendCommand(device, endpoint)"/>
+                    <input type="checkbox" @change="$root.sendCommand(device, endpoint)" v-model="device.status.endpoints[endpoint.path].enabled"/>
                 </div>
             `
         })
 
         // TODO: Style the "toggle" os it works like a button
-
-        // TODO: Rework the devices endpoint so it returns data like in example devices (keyed) or do that on client side
-        // TODO: How to update devices state periodically?
         // TODO: Grey-out a device that went down but is expected to be on dashboard
 
         var app = new Vue({
@@ -51,6 +48,13 @@
                                     "name": "Toggle",
                                     "path": "/toggle",
                                     "method": "POST"
+                                }
+                            },
+                            "status": {
+                                "endpoints": {
+                                    "/toggle": {
+                                        "enabled": true
+                                    }
                                 }
                             }
                         }
@@ -97,6 +101,7 @@
                     axios.get('http://' + window.location.host + '/devices')
                         .then(response => {
                             //this.devices = response.data;
+                            //this.devices = processDevices(response.data);
                         })
                 );
 
@@ -110,6 +115,15 @@
                         //     populateTiles(this.dashboard, this.devices);
                         // }
                     }
+
+                    setInterval(() => {
+                        axios.get('http://' + window.location.host + '/devices')
+                            .then(response => {
+                                //this.devices = response.data;
+                                //this.devices = processDevices(response.data);
+                                console.log("Polled for devices")
+                            })
+                    }, 5000);
                 });
             },
             methods: {

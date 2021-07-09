@@ -152,3 +152,11 @@ function findDeviceById(deviceData, id) {
     }
     return null;
 }
+
+function processDevices(data) {
+    let output = {};
+    for (const device of data) {
+        output[device.id] = device;
+    }
+    return output;
+}
