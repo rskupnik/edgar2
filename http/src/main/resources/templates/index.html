@@ -5,6 +5,10 @@
     <link th:href="@{/main.css}" rel="stylesheet" />
     <script src="https://unpkg.com/vue"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
 </head>
 <body>
     <div id="app">
@@ -12,7 +16,7 @@
             <div :class="['tile', tile.clazz]" :style="{ backgroundColor: tile.color }" v-for="tile in processedTiles">
                 <toggle v-if="tile.deviceType == 'toggle'"
                         v-bind:tile="tile" v-bind:device="devices[tile.deviceId]"
-                        v-bind:endpoint="devices[tile.deviceId].endpoints[tile.endpointId]">
+                        v-bind:endpoint="devices[tile.deviceId]?.endpoints[tile.endpointId]">
                 </toggle>
             </div>
         </div>
@@ -25,8 +29,11 @@
             props: ['tile', 'device', 'endpoint'],
             template: `
                 <div class="singleTile">
-                    <h2>{{ endpoint != null ? endpoint.name : (device != null ? device.name : "") }}</h2>
-                    <input type="checkbox" @change="$root.sendCommand(device, endpoint)" v-model="device.status.endpoints[endpoint.path].enabled"/>
+                    <h2>{{ tile.name != null ? tile.name : (endpoint != null ? endpoint.name : (device != null ? device.name : "")) }}</h2>
+                    <div class="centerflex">
+                        <input v-bind:id="'toggleCheckbox_' + device.id + '_' + endpoint.name" style="display: none" type="checkbox" @change="$root.sendCommand(device, endpoint)" v-model="device.status.endpoints[endpoint.path].enabled"/>
+                        <label v-bind:for="'toggleCheckbox_' + device.id + '_' + endpoint.name"><!--img src="/img/fan.png" /--></label>
+                    </div>
                 </div>
             `
         })
@@ -38,6 +45,7 @@
             el: '#app',
             data() {
                 return {
+                    // devices: {},
                     devices: {
                         "test": {
                             "id": "test",

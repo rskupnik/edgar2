@@ -17,6 +17,44 @@ body {
   background-color: coral;
 }
 
+.singleTile {
+  h2 {
+    margin-top: 0;
+    font-size: 14px;
+    font-family: 'Roboto Mono', monospace;
+    color: white;
+  }
+}
+
+.centerflex {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 16px;
+}
+
+input[type=checkbox] + label {
+  background-image: url("/img/fan.png");
+  height: 32px;
+  width: 32px;
+  //display:inline-block;
+  padding: 0 0 0 0px;
+}
+
+//:not(:checked) + label::before {
+//  background-image: url(/img/fan.png);
+//  filter: grayscale(1);
+//}
+
+input[type=checkbox]:checked + label {
+  background-image: url("/img/fan.png");
+  height: 32px;
+  width: 32px;
+  //display:inline-block;
+  padding: 0 0 0 0px;
+  opacity: 0.3;
+}
+
 @mixin singleTile($column: 1, $row: 1) {
   grid-column: $column #{'/'} $column + 1;
   grid-row: $row #{'/'} $row + 1;

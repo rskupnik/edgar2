@@ -1,6 +1,7 @@
 {
   "tiles": [
     {
+      "name": "Room fan",
       "deviceId": "test",
       "endpointId": "toggle",
       "deviceType": "toggle",
