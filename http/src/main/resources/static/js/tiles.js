@@ -156,6 +156,12 @@ function findDeviceById(deviceData, id) {
 function processDevices(data) {
     let output = {};
     for (const device of data) {
+        let endpoints = {};
+        for (const endpoint of device.endpoints) {
+            endpoints[endpoint.path] = endpoint;
+        }
+        device.endpoints = endpoints;
+
         output[device.id] = device;
     }
     return output;

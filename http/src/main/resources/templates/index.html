@@ -31,42 +31,46 @@
                 <div class="singleTile">
                     <h2>{{ tile.name != null ? tile.name : (endpoint != null ? endpoint.name : (device != null ? device.name : "")) }}</h2>
                     <div class="centerflex">
-                        <input v-bind:id="'toggleCheckbox_' + device.id + '_' + endpoint.name" style="display: none" type="checkbox" @change="$root.sendCommand(device, endpoint)" v-model="device.status.endpoints[endpoint.path].enabled"/>
+                        <input v-bind:id="'toggleCheckbox_' + device.id + '_' + endpoint.name" style="display: none" type="checkbox" @change="$root.sendCommand(device, endpoint)" v-model="device.status.endpoints[endpoint.path].enabled === 'true'"/>
                         <label v-bind:for="'toggleCheckbox_' + device.id + '_' + endpoint.name"><!--img src="/img/fan.png" /--></label>
                     </div>
                 </div>
             `
         })
 
-        // TODO: Style the "toggle" os it works like a button
         // TODO: Grey-out a device that went down but is expected to be on dashboard
+        // TODO: Suppress errors that are appearing when devices disappears
+        // TODO: Cleanup
+        // TODO: Remove layouts
+        // TODO: Cleanup backend
+        // TODO: Document to reach milestone
 
         var app = new Vue({
             el: '#app',
             data() {
                 return {
-                    // devices: {},
-                    devices: {
-                        "test": {
-                            "id": "test",
-                            "name": "Just a test",
-                            "ip": "localhost",
-                            "endpoints": {
-                                "toggle": {
-                                    "name": "Toggle",
-                                    "path": "/toggle",
-                                    "method": "POST"
-                                }
-                            },
-                            "status": {
-                                "endpoints": {
-                                    "/toggle": {
-                                        "enabled": true
-                                    }
-                                }
-                            }
-                        }
-                    },
+                    devices: {},
+                    // devices: {
+                    //     "test": {
+                    //         "id": "test",
+                    //         "name": "Just a test",
+                    //         "ip": "localhost",
+                    //         "endpoints": {
+                    //             "toggle": {
+                    //                 "name": "Toggle",
+                    //                 "path": "/toggle",
+                    //                 "method": "POST"
+                    //             }
+                    //         },
+                    //         "status": {
+                    //             "endpoints": {
+                    //                 "/toggle": {
+                    //                     "enabled": true
+                    //                 }
+                    //             }
+                    //         }
+                    //     }
+                    // },
                     dashboard: null,
                     processedTiles: [],
                     testDevices: [
@@ -109,7 +113,7 @@
                     axios.get('http://' + window.location.host + '/devices')
                         .then(response => {
                             //this.devices = response.data;
-                            //this.devices = processDevices(response.data);
+                            this.devices = processDevices(response.data);
                         })
                 );
 
@@ -128,8 +132,8 @@
                         axios.get('http://' + window.location.host + '/devices')
                             .then(response => {
                                 //this.devices = response.data;
-                                //this.devices = processDevices(response.data);
-                                console.log("Polled for devices")
+                                this.devices = processDevices(response.data);
+                                console.log(this.devices);
                             })
                     }, 5000);
                 });
