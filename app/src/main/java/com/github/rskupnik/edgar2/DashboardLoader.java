@@ -22,7 +22,11 @@ public class DashboardLoader {
 
     @PostConstruct
     private void loadDashboards() {
-        args.getOptionValues("dashboard").forEach(v -> {
+        var optionValues = args.getOptionValues("dashboard");
+        if (optionValues == null)
+            return;
+
+        optionValues.forEach(v -> {
             System.out.println("Loading dashboard: " + v);
             var matcher = FILENAME_PATTERN.matcher(v);
             matcher.find();
