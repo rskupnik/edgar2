@@ -45,6 +45,7 @@ class EdgarImpl implements Edgar {
 
     @Override
     public List<Device> getDevices() {
+        refreshDeviceStatus();
         return database.getAll();
     }
 
@@ -209,8 +210,8 @@ class EdgarImpl implements Edgar {
                 return new DeviceStatus(response.getStatusLine().getStatusCode() == HttpStatus.SC_OK, Collections.emptyMap(), Collections.emptyMap());
             }
             String body = EntityUtils.toString(entity, StandardCharsets.UTF_8);
-            Map<String, String> params = objectMapper.readValue(body, new TypeReference<>() {});
-            Map<String, Map<String, String>> endpointData = objectMapper.readValue(params.getOrDefault("endpoints", "{}"), new TypeReference<>() {});
+            Map<String, String> params = objectMapper.readValue(body, new TypeReference<HashMap<String, String>>() {});
+            Map<String, Map<String, String>> endpointData = objectMapper.readValue(params.getOrDefault("endpoints", "{}"), new TypeReference<HashMap<String, Map<String, String>>>() {});
             return new DeviceStatus(response.getStatusLine().getStatusCode() == HttpStatus.SC_OK, params, endpointData);
         } catch (IOException e) {
             e.printStackTrace();

@@ -31,7 +31,7 @@
                 <div class="singleTile">
                     <h2>{{ tile.name != null ? tile.name : (endpoint != null ? endpoint.name : (device != null ? device.name : "")) }}</h2>
                     <div class="centerflex">
-                        <input v-bind:id="'toggleCheckbox_' + device.id + '_' + endpoint.name" style="display: none" type="checkbox" @change="$root.sendCommand(device, endpoint)" v-model="device.status.endpoints[endpoint.path].enabled === 'true'"/>
+                        <input v-bind:id="'toggleCheckbox_' + device.id + '_' + endpoint.name" style="display: none" type="checkbox" @change="$root.sendCommand(device, endpoint)" v-model="device.status.params.enabled === 'true'"/>
                         <label v-bind:for="'toggleCheckbox_' + device.id + '_' + endpoint.name"><!--img src="/img/fan.png" /--></label>
                     </div>
                 </div>
@@ -39,6 +39,7 @@
         })
 
         // TODO: Grey-out a device that went down but is expected to be on dashboard
+        // TODO: Instead of params.enabled use endpoints[] for source of truth
         // TODO: Suppress errors that are appearing when devices disappears
         // TODO: Cleanup
         // TODO: Remove layouts
