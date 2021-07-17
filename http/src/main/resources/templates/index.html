@@ -13,7 +13,7 @@
 <body>
     <div id="app">
         <div id="container">
-            <div :class="['tile', tile.clazz]" :style="{ backgroundColor: tile.color }" v-for="tile in processedTiles">
+            <div :class="[tile.deviceType === 'none' ? 'tile' : 'populatedTile', tile.clazz]" :style="{ backgroundColor: tile.color }" v-for="tile in processedTiles">
                 <toggle v-if="tile.deviceType == 'toggle'"
                         v-bind:tile="tile" v-bind:device="devices[tile.deviceId]"
                         v-bind:endpoint="devices[tile.deviceId]?.endpoints[tile.endpointId]">
@@ -28,7 +28,7 @@
         Vue.component('toggle', {
             props: ['tile', 'device', 'endpoint'],
             template: `
-                <div class="singleTile">
+                <div class="singleTile populatedTile">
                     <h2>{{ tile.name != null ? tile.name : (endpoint != null ? endpoint.name : (device != null ? device.name : "")) }}</h2>
                     <div class="centerflex">
                         <input v-bind:id="'toggleCheckbox_' + device.id + '_' + endpoint.name" style="display: none" type="checkbox" @change="$root.sendCommand(device, endpoint)" v-model="device.status.params.enabled === 'true'"/>
@@ -52,27 +52,6 @@
             data() {
                 return {
                     devices: {},
-                    // devices: {
-                    //     "test": {
-                    //         "id": "test",
-                    //         "name": "Just a test",
-                    //         "ip": "localhost",
-                    //         "endpoints": {
-                    //             "toggle": {
-                    //                 "name": "Toggle",
-                    //                 "path": "/toggle",
-                    //                 "method": "POST"
-                    //             }
-                    //         },
-                    //         "status": {
-                    //             "endpoints": {
-                    //                 "/toggle": {
-                    //                     "enabled": true
-                    //                 }
-                    //             }
-                    //         }
-                    //     }
-                    // },
                     dashboard: null,
                     processedTiles: [],
                     testDevices: [
@@ -114,7 +93,6 @@
                         }),
                     axios.get('http://' + window.location.host + '/devices')
                         .then(response => {
-                            //this.devices = response.data;
                             this.devices = processDevices(response.data);
                         })
                 );
@@ -122,20 +100,12 @@
                 Promise.all(promises).then(() => {
                     if (this.dashboard.tiles != null) {
                         this.processedTiles = fillTiles(this.dashboard.tiles, 10, 6);
-                        console.log(this.processedTiles);
-                        // placeTiles(fillTiles(this.dashboard.tiles, 10, 6));
-                        // randomizeColors();
-                        // if (this.devices != null) {
-                        //     populateTiles(this.dashboard, this.devices);
-                        // }
                     }
 
                     setInterval(() => {
                         axios.get('http://' + window.location.host + '/devices')
                             .then(response => {
-                                //this.devices = response.data;
                                 this.devices = processDevices(response.data);
-                                console.log(this.devices);
                             })
                     }, 5000);
                 });

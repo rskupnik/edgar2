@@ -15,6 +15,12 @@ body {
 .tile {
   border-radius: 3px;
   background-color: coral;
+  opacity: 0.4;
+}
+
+.populatedTile {
+  border-radius: 3px;
+  opacity: 1;
 }
 
 .singleTile {
