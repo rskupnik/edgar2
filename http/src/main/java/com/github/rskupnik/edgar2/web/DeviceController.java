@@ -1,5 +1,6 @@
 package com.github.rskupnik.edgar2.web;
 
+import com.github.rskupnik.edgar.CommandResponse;
 import com.github.rskupnik.edgar.Edgar;
 import com.github.rskupnik.edgar.domain.DeviceStatus;
 import com.github.rskupnik.edgar.domain.EndpointBinding;
@@ -7,10 +8,16 @@ import com.github.rskupnik.edgar.domain.EndpointLayout;
 import com.github.rskupnik.edgar2.web.dto.ActivationPeriodsDto;
 import com.github.rskupnik.edgar2.web.dto.DeviceDto;
 import com.github.rskupnik.edgar2.web.dto.DeviceStatusDto;
+import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -62,14 +69,20 @@ public class DeviceController {
     }
 
     @PostMapping("devices/{deviceId}/**")
-    public void sendCommand(@PathVariable("deviceId") String deviceId, HttpServletRequest request,
-                            @RequestParam Map<String, String> requestParams) {
+    public ResponseEntity<?> sendCommand(@PathVariable("deviceId") String deviceId, HttpServletRequest request,
+                                              @RequestParam Map<String, String> requestParams) {
         String command = request.getRequestURI()
                 .split(request.getContextPath() + "/devices/" + deviceId)[1];
         System.out.println("Sending command " + command + " to device " + deviceId);
         requestParams.forEach((k, v) -> System.out.println(k + ": " + v));
-        boolean success = edgar.sendCommand(deviceId, command, requestParams);
-        System.out.println("Result: " + success);
+        CommandResponse response = edgar.sendCommand(deviceId, command, requestParams);
+        System.out.println("Result: " + (response.getStatusCode() == HttpStatus.SC_OK));
+
+        var springResponse = ResponseEntity.status(response.getStatusCode());
+        for (Map.Entry<String, String> entry : response.getHeaders().entrySet()) {
+            springResponse.header(entry.getKey(), entry.getValue());
+        }
+        return springResponse.body(response.getBody());
     }
 
     @PostMapping("devices/{deviceId}/activationPeriods")

@@ -50,19 +50,19 @@ class EdgarImpl implements Edgar {
     }
 
     @Override
-    public boolean sendCommand(String deviceId, String commandName, Map<String, String> params) {
+    public CommandResponse sendCommand(String deviceId, String commandName, Map<String, String> params) {
         // Find device
         final Device device = database.findDevice(deviceId).getOrNull();
         if (device == null) {
             System.out.println("This device doesn't exist");
-            return false;   // TODO: Handle errors with Either
+            return CommandResponse.error("This device doesn't exist");   // TODO: Handle errors with Either
         }
 
         // Find the command in the device
         final DeviceEndpoint endpoint = device.getEndpoints().stream().filter(e -> e.getPath().equals(commandName)).findFirst().orElse(null);
         if (endpoint == null) {
             System.out.println("Endpoint " + commandName + " doesn't exist");
-            return false;
+            return CommandResponse.error("Endpoint " + commandName + " doesn't exist");
         }
 
         // Filter out params that are not defined on the endpoint
@@ -219,7 +219,7 @@ class EdgarImpl implements Edgar {
         }
     }
 
-    private boolean sendCommand(Device device, DeviceEndpoint endpoint, Map<String, String> params) {
+    private CommandResponse sendCommand(Device device, DeviceEndpoint endpoint, Map<String, String> params) {
 
         URI uri = null;
         try {
@@ -242,12 +242,12 @@ class EdgarImpl implements Edgar {
         var httpClient = HttpClients.createDefault();
         try (CloseableHttpResponse response = httpClient.execute(request)) {
             System.out.println("Sent request to: " + uri.toString());
-            return response.getStatusLine().getStatusCode() == HttpStatus.SC_OK;
+            return CommandResponse.fromApacheResponse(response);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        return true;
+        return CommandResponse.error("Unknown error");
     }
 
     private static class Pair<L, R> {

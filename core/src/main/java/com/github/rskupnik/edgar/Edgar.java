@@ -13,7 +13,7 @@ public interface Edgar {
 
     Either<String, Device> registerDevice(Device device);
     List<Device> getDevices();
-    boolean sendCommand(String deviceId, String commandName, Map<String, String> params);
+    CommandResponse sendCommand(String deviceId, String commandName, Map<String, String> params);
     void refreshDeviceStatus();
     void registerLayouts(List<DeviceLayout> layouts);
     List<Tuple2<Device, DeviceLayout>> getLayouts(List<Device> devices);

@@ -8,6 +8,16 @@
       "x": 2,
       "y": 2,
       "type": "single"
+    },
+    {
+      "name": "Gas counter",
+      "deviceId": "basementCamGas",
+      "deviceType": "cam-single-image",
+      "x": 3,
+      "y": 1,
+      "type": "quad",
+      "endpointId": "/pic",
+      "interval": 60
     }
   ]
 }

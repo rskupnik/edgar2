@@ -18,6 +18,10 @@
                         v-bind:tile="tile" v-bind:device="devices[tile.deviceId]"
                         v-bind:endpoint="devices[tile.deviceId]?.endpoints[tile.endpointId]">
                 </toggle>
+                <cam-single-image v-if="tile.deviceType == 'cam-single-image'"
+                        v-bind:tile="tile" v-bind:device="devices[tile.deviceId]"
+                        v-bind:endpoint="devices[tile.deviceId]?.endpoints[tile.endpointId]">
+                </cam-single-image>
             </div>
         </div>
     </div>
@@ -38,6 +42,18 @@
             `
         })
 
+        Vue.component('cam-single-image', {
+            props: ['tile', 'device', 'endpoint'],
+            template: `
+                <div class="singleTile populatedTile">
+                    <h2>{{ tile.name != null ? tile.name : (endpoint != null ? endpoint.name : (device != null ? device.name : "")) }}</h2>
+                    <div class="centerflex">
+                        <img :src="testImg"/>
+                    </div>
+                </div>
+            `
+        })
+
         // TODO: Grey-out a device that went down but is expected to be on dashboard
         // TODO: Instead of params.enabled use endpoints[] for source of truth
         // TODO: Suppress errors that are appearing when devices disappears
@@ -46,6 +62,12 @@
         // TODO: Implement proper logging
         // TODO: Cleanup backend
         // TODO: Document to reach milestone
+
+        // TODO: Use interval to call for the /pic every interval period
+        // TODO: Provide a response handler so that the image gets displayed
+        // TODO: How to make the image from response into the img?
+        // TODO: Pass back the response from device
+        // TODO: BUG: Device gets removed if it doesn't return "enabled": "true" in status response - but that should only indicate if a device is toggled? Doesn't make sense for the cam
 
         var app = new Vue({
             el: '#app',
