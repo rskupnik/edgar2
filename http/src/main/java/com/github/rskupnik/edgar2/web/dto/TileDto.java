@@ -2,6 +2,8 @@ package com.github.rskupnik.edgar2.web.dto;
 
 import com.github.rskupnik.edgar.domain.Tile;
 
+import java.util.Map;
+
 public class TileDto {
 
     private String name;
@@ -10,13 +12,14 @@ public class TileDto {
     private String deviceType;
     private Integer x, y;
     private String type;
+    private Map<String, Object> properties;
 
     public TileDto() {
 
     }
 
     public Tile toDomainClass() {
-        return new Tile(name, deviceId, endpointId, deviceType, x, y, type);
+        return new Tile(name, deviceId, endpointId, deviceType, x, y, type, properties);
     }
 
     public static TileDto fromDomainClass(Tile tile) {
@@ -28,6 +31,7 @@ public class TileDto {
         dto.setX(tile.getX());
         dto.setY(tile.getY());
         dto.setType(tile.getType());
+        dto.setProperties(tile.getProperties());
         return dto;
     }
 
@@ -85,5 +89,13 @@ public class TileDto {
 
     public void setDeviceType(String deviceType) {
         this.deviceType = deviceType;
+    }
+
+    public Map<String, Object> getProperties() {
+        return properties;
+    }
+
+    public void setProperties(Map<String, Object> properties) {
+        this.properties = properties;
     }
 }

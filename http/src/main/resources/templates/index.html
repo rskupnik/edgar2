@@ -44,9 +44,15 @@
 
         Vue.component('cam-single-image', {
             props: ['tile', 'device', 'endpoint'],
+            mounted: function() {
+                console.log("Registering a cam-single-image")
+                this.$parent.sendCommand(device, endpoint, (response) => {
+                    console.log(response.data)
+                })
+            },
             template: `
                 <div class="singleTile populatedTile">
-                    <h2>{{ tile.name != null ? tile.name : (endpoint != null ? endpoint.name : (device != null ? device.name : "")) }}</h2>
+                    <h2>{{ tile.name != null ? tile.name : (endpoint != null ? endpoint.name : (device != null ? device.name : "Blurb")) }}</h2>
                     <div class="centerflex">
                         <img :src="testImg"/>
                     </div>
@@ -76,15 +82,37 @@
                     devices: {},
                     dashboard: null,
                     processedTiles: [],
+                    testImg: "",
+                    tileProcessIntervalDataFuncs: {
+                        "cam-single-image": (response) => {
+                            console.log("Processing response for cam-single-image");
+                        }
+                    },
+                    intervalCheckup: {},
                     testDevices: [
                         {
-                            "name": "Test device #1",
+                            "id": "basementCamGas",
+                            "name": "Gas usage monitor",
+                            "ip": "192.168.0.133",
                             "endpoints": [
                                 {
-                                    "name": "Basic speed",
-                                    "type": "basic"
+                                    "path": "/pic",
+                                    "method": "POST",
+                                    "type": "default",
+                                    "params": []
                                 }
-                            ]
+                            ],
+                            "status": {
+                                "responsive": true,
+                                "params": {
+                                    "enabled": "true"
+                                },
+                                "endpoints": {
+                                    "/pic": {
+                                        "enabled": "true"
+                                    }
+                                }
+                            }
                         }
                     ],
                     testLayout: [
@@ -107,6 +135,7 @@
                 }
             },
             mounted() {
+                console.log("ON MOUNTED")
                 let promises = [];
                 promises.push(
                     axios.get('http://' + window.location.host + '/dashboards/' + window.location.pathname.split('/')[2])
@@ -115,27 +144,48 @@
                         }),
                     axios.get('http://' + window.location.host + '/devices')
                         .then(response => {
-                            this.devices = processDevices(response.data);
+                            //this.devices = processDevices(response.data);
+                            this.devices = this.testDevices;
+                            console.log("DEVICES:");
+                            console.log(this.devices);
                         })
                 );
 
                 Promise.all(promises).then(() => {
                     if (this.dashboard.tiles != null) {
                         this.processedTiles = fillTiles(this.dashboard.tiles, 10, 6);
+                        console.log("PROCESSED TILES")
+                        console.log(this.processedTiles)
+
+                        // Figure out if some intervals need to be set
+                        let tilesWithIntervals = findIntervalDevices(this.processedTiles, this.devices);
+                        console.log(tilesWithIntervals)
+
+                        // TODO: Create an interval if not yet created
+                        // TODO: Add the endpoint to be called on the specific interval
+                        // TODO: Implement the interval so it calls the endpoints
+                        // TODO: Run the functions to process responses as stored in data object
+                        // TODO: Display the goddamn image
                     }
 
                     setInterval(() => {
                         axios.get('http://' + window.location.host + '/devices')
                             .then(response => {
-                                this.devices = processDevices(response.data);
+                                //this.devices = processDevices(response.data);
+                                this.devices = this.testDevices;
+                                console.log("DEVICES:");
+                                console.log(this.devices);
                             })
                     }, 5000);
                 });
             },
             methods: {
-                sendCommand: function (device, endpoint) {
-                    console.log(endpoint)
+                sendCommand: function (device, endpoint, callback = () => {}) {
+                    console.log("Sending command to " + device.id + "/" + endpoint.path)
                     axios.post("http://" + window.location.host + "/devices/" + device.id + endpoint.path)
+                        .then((response) => {
+                            callback(response)
+                        })
                 }
             }
         });

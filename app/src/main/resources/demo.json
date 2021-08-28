@@ -17,7 +17,9 @@
       "y": 1,
       "type": "quad",
       "endpointId": "/pic",
-      "interval": 60
+      "properties": {
+        "interval": 60
+      }
     }
   ]
 }

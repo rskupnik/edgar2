@@ -100,3 +100,17 @@ function processDevices(data) {
     }
     return output;
 }
+
+function findIntervalDevices(tiles, devices) {
+    let output = [];
+    for (const tile of tiles) {
+        if (tile.properties && tile.properties.interval && tile.properties.interval !== 0) {
+            for (const device of devices) {
+                if (device.id === tile.deviceId) {
+                    output.push(tile);
+                }
+            }
+        }
+    }
+    return output;
+}

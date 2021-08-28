@@ -4,6 +4,7 @@ deploy:
 	cp ./app/target/edgar2-0.0.1-SNAPSHOT.jar ./app/target/edgar2.jar
 	ssh pi@192.168.0.154 bash /home/pi/edgarStop.sh
 	scp ./app/target/edgar2.jar pi@192.168.0.154:/home/pi
+	scp ./app/src/main/resources/demo.json pi@192.168.0.154:/home/pi
 	ssh pi@192.168.0.154 'nohup java -jar edgar2.jar --dashboard="/home/pi/demo.json" > edgar.log &'
 
 start:

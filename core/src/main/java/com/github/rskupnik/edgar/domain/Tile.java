@@ -1,5 +1,7 @@
 package com.github.rskupnik.edgar.domain;
 
+import java.util.Map;
+
 public class Tile {
 
     private final String name;
@@ -8,8 +10,9 @@ public class Tile {
     private final String deviceType;
     private final int x, y;
     private final String type;
+    private final Map<String, Object> properties;
 
-    public Tile(String name, String deviceId, String endpointId, String deviceType, int x, int y, String type) {
+    public Tile(String name, String deviceId, String endpointId, String deviceType, int x, int y, String type, Map<String, Object> properties) {
         this.name = name;
         this.deviceId = deviceId;
         this.endpointId = endpointId;
@@ -17,6 +20,7 @@ public class Tile {
         this.x = x;
         this.y = y;
         this.type = type;
+        this.properties = properties;
     }
 
     public String getName() {
@@ -45,5 +49,9 @@ public class Tile {
 
     public String getType() {
         return type;
+    }
+
+    public Map<String, Object> getProperties() {
+        return properties;
     }
 }

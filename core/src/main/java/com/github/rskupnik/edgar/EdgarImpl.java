@@ -147,7 +147,8 @@ class EdgarImpl implements Edgar {
                 (String) t.get("endpointId"),
                 (String) t.get("deviceType"),
                 (int) t.get("x"), (int) t.get("y"),
-                (String) t.get("type")
+                (String) t.get("type"),
+                (Map<String, Object>) t.getOrDefault("properties", Collections.emptyMap())
         )).collect(Collectors.toList()));
     }
 
