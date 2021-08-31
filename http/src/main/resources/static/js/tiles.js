@@ -105,7 +105,7 @@ function findIntervalDevices(tiles, devices) {
     let output = [];
     for (const tile of tiles) {
         if (tile.properties && tile.properties.interval && tile.properties.interval !== 0) {
-            for (const device of devices) {
+            for (const [key, device] of Object.entries(devices)) {
                 if (device.id === tile.deviceId) {
                     output.push(tile);
                 }
@@ -113,4 +113,54 @@ function findIntervalDevices(tiles, devices) {
         }
     }
     return output;
+}
+
+function createIntervalCheckups(intervalCheckups, tilesWithIntervals) {
+    for (const tile of tilesWithIntervals) {
+        let interval = tile.properties.interval;
+        if (!intervalCheckups[interval]) {
+            intervalCheckups[interval] = {};
+        }
+        intervalCheckups[interval][tile.deviceId] = tile;
+    }
+}
+
+function handleIntervalChecks(processedTiles, devices, intervalCheckups, intervals, tileProcessIntervalDataFuncs, responses) {
+    // Figure out if some intervals need to be set
+    let tilesWithIntervals = findIntervalDevices(processedTiles, devices);
+    console.log(tilesWithIntervals)
+
+    // TODO: Add the endpoint to be called on the specific interval
+    createIntervalCheckups(intervalCheckups, tilesWithIntervals)
+    console.log(intervalCheckups)
+
+    /**
+     * {
+     *     60: {
+     *         "basementCamGas": {
+     *             "deviceId": "basementCamGas",
+     *             ...
+     *         }
+     *     }
+     * }
+     */
+    // TODO: Create an interval if not yet created
+    for (const [key, value] of Object.entries(intervalCheckups)) {
+        if (!intervals[key]) {
+            console.log("Adding interval: " + key);
+            intervals[key] = setInterval(() => {
+                // TODO: Implement the interval so it calls the endpoints
+                for (const [id, tile] of Object.entries(value)) {
+                    console.log("Sending request to " + id);
+                    axios({
+                        url: "http://" + window.location.host + "/devices/" + tile.deviceId + tile.endpointId,
+                        method: 'POST',
+                        responseType: 'arraybuffer' // TODO: This isn't always an arraybuffer
+                    }).then((response) => {
+                        responses[tile.deviceId] = tileProcessIntervalDataFuncs[tile.deviceType](response);
+                    });
+                }
+            }, key * 1000);
+        }
+    }
 }

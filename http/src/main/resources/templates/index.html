@@ -54,7 +54,7 @@
                 <div class="singleTile populatedTile">
                     <h2>{{ tile.name != null ? tile.name : (endpoint != null ? endpoint.name : (device != null ? device.name : "Blurb")) }}</h2>
                     <div class="centerflex">
-                        <img :src="testImg"/>
+                        <img v-bind:src="this.$parent.deviceResponses[device.id]">
                     </div>
                 </div>
             `
@@ -68,12 +68,9 @@
         // TODO: Implement proper logging
         // TODO: Cleanup backend
         // TODO: Document to reach milestone
-
-        // TODO: Use interval to call for the /pic every interval period
-        // TODO: Provide a response handler so that the image gets displayed
-        // TODO: How to make the image from response into the img?
-        // TODO: Pass back the response from device
         // TODO: BUG: Device gets removed if it doesn't return "enabled": "true" in status response - but that should only indicate if a device is toggled? Doesn't make sense for the cam
+        // TODO: BUG: WHy Spring duplicates the request to /pic?
+        // TODO: BUG: Why sometimes pic isn't returned in response
 
         var app = new Vue({
             el: '#app',
@@ -82,15 +79,20 @@
                     devices: {},
                     dashboard: null,
                     processedTiles: [],
+                    deviceResponses: {},
                     testImg: "",
                     tileProcessIntervalDataFuncs: {
-                        "cam-single-image": (response) => {
+                        "cam-single-image": function (response) {
                             console.log("Processing response for cam-single-image");
+                            var bytes = new Uint8Array(response.data);
+                            var binary = bytes.reduce((data, b) => data += String.fromCharCode(b), '');
+                            return "data:image/jpeg;base64," + btoa(binary);
                         }
                     },
-                    intervalCheckup: {},
-                    testDevices: [
-                        {
+                    intervalCheckups: {},
+                    intervals: {},
+                    testDevices: {
+                        "basementCamGas": {
                             "id": "basementCamGas",
                             "name": "Gas usage monitor",
                             "ip": "192.168.0.133",
@@ -114,7 +116,7 @@
                                 }
                             }
                         }
-                    ],
+                    },
                     testLayout: [
                         {
                             "x": 2,
@@ -144,8 +146,8 @@
                         }),
                     axios.get('http://' + window.location.host + '/devices')
                         .then(response => {
-                            //this.devices = processDevices(response.data);
-                            this.devices = this.testDevices;
+                            this.devices = processDevices(response.data);
+                            //this.devices = this.testDevices;
                             console.log("DEVICES:");
                             console.log(this.devices);
                         })
@@ -157,24 +159,25 @@
                         console.log("PROCESSED TILES")
                         console.log(this.processedTiles)
 
-                        // Figure out if some intervals need to be set
-                        let tilesWithIntervals = findIntervalDevices(this.processedTiles, this.devices);
-                        console.log(tilesWithIntervals)
+                        handleIntervalChecks(this.processedTiles, this.devices, this.intervalCheckups, this.intervals,
+                            this.tileProcessIntervalDataFuncs, this.deviceResponses);
 
-                        // TODO: Create an interval if not yet created
-                        // TODO: Add the endpoint to be called on the specific interval
-                        // TODO: Implement the interval so it calls the endpoints
                         // TODO: Run the functions to process responses as stored in data object
+                        // TODO: Enclose this in a function and call it after each devices call
                         // TODO: Display the goddamn image
+                        // TODO: Remove the intervals that have nothing to run for anymore
                     }
 
                     setInterval(() => {
                         axios.get('http://' + window.location.host + '/devices')
                             .then(response => {
-                                //this.devices = processDevices(response.data);
-                                this.devices = this.testDevices;
+                                this.devices = processDevices(response.data);
+                                //this.devices = this.testDevices;
                                 console.log("DEVICES:");
                                 console.log(this.devices);
+
+                                handleIntervalChecks(this.processedTiles, this.devices, this.intervalCheckups, this.intervals,
+                                    this.tileProcessIntervalDataFuncs, this.deviceResponses);
                             })
                     }, 5000);
                 });
