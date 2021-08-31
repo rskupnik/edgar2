@@ -10,10 +10,15 @@ deploy:
 start:
 	ssh pi@192.168.0.154 'nohup java -jar edgar2.jar --dashboard="/home/pi/demo.json" > edgar.log &'
 
+start-debug:
+	ssh pi@192.168.0.154 'nohup java -jar edgar2.jar -Dagentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8000 --dashboard="/home/pi/demo.json" > edgar.log &'
+
 stop:
 	ssh pi@192.168.0.154 bash /home/pi/edgarStop.sh
 
 restart: stop start
+
+restart-debug: stop start-debug
 
 ssh:
 	ssh pi@192.168.0.154
