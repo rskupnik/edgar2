@@ -20,14 +20,29 @@ body {
 .populatedTile {
   border-radius: 3px;
   opacity: 1;
-}
 
-.singleTile {
   h2 {
     margin-top: 0;
     font-size: 14px;
     font-family: 'Roboto Mono', monospace;
     color: white;
+  }
+}
+
+.singleTile {
+
+}
+
+.imageTile {
+  position: relative;
+
+  h2 {
+    position: absolute;
+  }
+
+  img {
+    width: 202px;
+    height: 195px;
   }
 }
 

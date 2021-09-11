@@ -36,7 +36,7 @@
                     <h2>{{ tile.name != null ? tile.name : (endpoint != null ? endpoint.name : (device != null ? device.name : "")) }}</h2>
                     <div class="centerflex">
                         <input v-bind:id="'toggleCheckbox_' + device.id + '_' + endpoint.name" style="display: none" type="checkbox" @change="$root.sendCommand(device, endpoint)" v-model="device.status.params.enabled === 'true'"/>
-                        <label v-bind:for="'toggleCheckbox_' + device.id + '_' + endpoint.name"><!--img src="/img/fan.png" /--></label>
+                        <label v-bind:for="'toggleCheckbox_' + device.id + '_' + endpoint.name"></label>
                     </div>
                 </div>
             `
@@ -51,11 +51,9 @@
                 })
             },
             template: `
-                <div class="singleTile populatedTile">
+                <div class="imageTile populatedTile">
                     <h2>{{ tile.name != null ? tile.name : (endpoint != null ? endpoint.name : (device != null ? device.name : "Blurb")) }}</h2>
-                    <div class="centerflex">
-                        <img v-bind:src="this.$parent.deviceResponses[device.id]">
-                    </div>
+                    <img v-bind:src="this.$parent.deviceResponses[device.id]">
                 </div>
             `
         })
@@ -67,10 +65,10 @@
         // TODO: Remove layouts
         // TODO: Implement proper logging
         // TODO: Cleanup backend
-        // TODO: Document to reach milestone
         // TODO: BUG: Device gets removed if it doesn't return "enabled": "true" in status response - but that should only indicate if a device is toggled? Doesn't make sense for the cam
-        // TODO: BUG: WHy Spring duplicates the request to /pic?
-        // TODO: BUG: Why sometimes pic isn't returned in response
+        // TODO: BUG: Why sometimes pic isn't returned in response? Debug that shit
+        // TODO: Cache the image server-side?
+        // TODO: Repeat request if response is empty?
 
         var app = new Vue({
             el: '#app',
@@ -84,6 +82,9 @@
                     tileProcessIntervalDataFuncs: {
                         "cam-single-image": function (response) {
                             console.log("Processing response for cam-single-image");
+                            console.log(response)
+                            if (response.headers["Content-Length"] === "0")
+                                return;
                             var bytes = new Uint8Array(response.data);
                             var binary = bytes.reduce((data, b) => data += String.fromCharCode(b), '');
                             return "data:image/jpeg;base64," + btoa(binary);
@@ -162,9 +163,6 @@
                         handleIntervalChecks(this.processedTiles, this.devices, this.intervalCheckups, this.intervals,
                             this.tileProcessIntervalDataFuncs, this.deviceResponses);
 
-                        // TODO: Run the functions to process responses as stored in data object
-                        // TODO: Enclose this in a function and call it after each devices call
-                        // TODO: Display the goddamn image
                         // TODO: Remove the intervals that have nothing to run for anymore
                     }
 
