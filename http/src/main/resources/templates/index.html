@@ -44,12 +44,6 @@
 
         Vue.component('cam-single-image', {
             props: ['tile', 'device', 'endpoint'],
-            mounted: function() {
-                console.log("Registering a cam-single-image")
-                this.$parent.sendCommand(device, endpoint, (response) => {
-                    console.log(response.data)
-                })
-            },
             template: `
                 <div class="imageTile populatedTile">
                     <h2>{{ tile.name != null ? tile.name : (endpoint != null ? endpoint.name : (device != null ? device.name : "Blurb")) }}</h2>
@@ -66,9 +60,9 @@
         // TODO: Implement proper logging
         // TODO: Cleanup backend
         // TODO: BUG: Device gets removed if it doesn't return "enabled": "true" in status response - but that should only indicate if a device is toggled? Doesn't make sense for the cam
-        // TODO: BUG: Why sometimes pic isn't returned in response? Debug that shit
         // TODO: Cache the image server-side?
-        // TODO: Repeat request if response is empty?
+        // TODO: Remove interval when no device present for it
+        // TODO: Disconnecting a device causes issues when calls are still made to it - introduce a short timeout and/or circuit breaker?
 
         var app = new Vue({
             el: '#app',
@@ -149,21 +143,19 @@
                         .then(response => {
                             this.devices = processDevices(response.data);
                             //this.devices = this.testDevices;
-                            console.log("DEVICES:");
-                            console.log(this.devices);
+                            // console.log("DEVICES:");
+                            // console.log(this.devices);
                         })
                 );
 
                 Promise.all(promises).then(() => {
                     if (this.dashboard.tiles != null) {
                         this.processedTiles = fillTiles(this.dashboard.tiles, 10, 6);
-                        console.log("PROCESSED TILES")
-                        console.log(this.processedTiles)
+                        // console.log("PROCESSED TILES")
+                        // console.log(this.processedTiles)
 
                         handleIntervalChecks(this.processedTiles, this.devices, this.intervalCheckups, this.intervals,
                             this.tileProcessIntervalDataFuncs, this.deviceResponses);
-
-                        // TODO: Remove the intervals that have nothing to run for anymore
                     }
 
                     setInterval(() => {
@@ -171,8 +163,8 @@
                             .then(response => {
                                 this.devices = processDevices(response.data);
                                 //this.devices = this.testDevices;
-                                console.log("DEVICES:");
-                                console.log(this.devices);
+                                // console.log("DEVICES:");
+                                // console.log(this.devices);
 
                                 handleIntervalChecks(this.processedTiles, this.devices, this.intervalCheckups, this.intervals,
                                     this.tileProcessIntervalDataFuncs, this.deviceResponses);

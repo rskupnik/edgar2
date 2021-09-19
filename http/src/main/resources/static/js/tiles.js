@@ -101,6 +101,9 @@ function processDevices(data) {
     return output;
 }
 
+/**
+ * Produces an array of tiles that have the interval property set
+ */
 function findIntervalDevices(tiles, devices) {
     let output = [];
     for (const tile of tiles) {
@@ -115,6 +118,20 @@ function findIntervalDevices(tiles, devices) {
     return output;
 }
 
+/**
+ * Produce an object that contains the intervals and a list of tiles that should call on those intervals:
+ * ex:
+ * {
+ *     60: {
+ *         "myDeviceId": {
+ *             ...
+ *         },
+ *         "myOtherDeviceId": {
+ *             ...
+ *         }
+ *     }
+ * }
+ */
 function createIntervalCheckups(intervalCheckups, tilesWithIntervals) {
     for (const tile of tilesWithIntervals) {
         let interval = tile.properties.interval;
@@ -125,16 +142,33 @@ function createIntervalCheckups(intervalCheckups, tilesWithIntervals) {
     }
 }
 
-function handleIntervalChecks(processedTiles, devices, intervalCheckups, intervals, tileProcessIntervalDataFuncs, responses) {
-    // Figure out if some intervals need to be set
-    let tilesWithIntervals = findIntervalDevices(processedTiles, devices);
-    console.log(tilesWithIntervals)
+function cleanIntervalCheckups(intervalCheckups, devices) {
+    let toBeRemoved = [];
+    for (const [k, v] of Object.entries(intervalCheckups)) {
+        for (const [kk, vv] of Object.entries(v)) {
+            if (!devices[kk]) {
+                toBeRemoved.push(k);
+            }
+        }
+    }
 
-    // TODO: Add the endpoint to be called on the specific interval
+    for (const tbr of toBeRemoved) {
+        console.log("Removing interval checkup: " + tbr);
+        delete intervalCheckups[tbr];
+    }
+}
+
+function handleIntervalChecks(processedTiles, devices, intervalCheckups, intervals, tileProcessIntervalDataFuncs, responses) {
+    // Find tiles with the interval property set
+    let tilesWithIntervals = findIntervalDevices(processedTiles, devices);
+    //console.log(tilesWithIntervals)
+
+    // Populate the interval checkups object
     createIntervalCheckups(intervalCheckups, tilesWithIntervals)
-    console.log(intervalCheckups)
+    cleanIntervalCheckups(intervalCheckups, devices)
 
     /**
+     * For all interval checkups, create an interval if none yet exists and remove one if no devices are present
      * {
      *     60: {
      *         "basementCamGas": {
@@ -144,14 +178,11 @@ function handleIntervalChecks(processedTiles, devices, intervalCheckups, interva
      *     }
      * }
      */
-    // TODO: Create an interval if not yet created
     for (const [key, value] of Object.entries(intervalCheckups)) {
         if (!intervals[key]) {
             console.log("Adding interval: " + key);
             intervals[key] = setInterval(() => {
-                // TODO: Implement the interval so it calls the endpoints
                 for (const [id, tile] of Object.entries(value)) {
-                    console.log("Sending request to " + id);
                     axios({
                         url: "http://" + window.location.host + "/devices/" + tile.deviceId + tile.endpointId,
                         method: 'POST',
@@ -162,5 +193,19 @@ function handleIntervalChecks(processedTiles, devices, intervalCheckups, interva
                 }
             }, key * 1000);
         }
+    }
+
+    // Check to see if some intervals need to be removed
+    let toBeRemoved = [];
+    for (const [intervalValue, intervalInstance] of Object.entries(intervals)) {
+        if (!intervalCheckups[intervalValue]) {
+            clearInterval(intervalInstance);
+            toBeRemoved.push(intervalValue);
+        }
+    }
+
+    for (const tbr of toBeRemoved) {
+        console.log("Removing interval: " + tbr);
+        delete intervals[tbr];
     }
 }

@@ -7,8 +7,12 @@ import io.vavr.Tuple2;
 import io.vavr.control.Either;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.*;
 import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
@@ -27,6 +31,18 @@ class EdgarImpl implements Edgar {
     private final Database database;
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final List<Device> autoActivatedDevices = new ArrayList<>();
+    private final CloseableHttpClient statusHttpClient = HttpClientBuilder.create().setDefaultRequestConfig(
+            RequestConfig.custom()
+                    .setConnectTimeout(2000)
+                    .setConnectionRequestTimeout(2000)
+                    .setSocketTimeout(2000).build()
+    ).build();
+    private final CloseableHttpClient commandHttpClient = HttpClientBuilder.create().setDefaultRequestConfig(
+            RequestConfig.custom()
+                    .setConnectTimeout(4000)
+                    .setConnectionRequestTimeout(4000)
+                    .setSocketTimeout(4000).build()
+    ).build();
 
     public EdgarImpl(Database database) {
         this.database = database;
@@ -204,8 +220,7 @@ class EdgarImpl implements Edgar {
     }
 
     private DeviceStatus getStatus(Device device) {
-        var httpClient = HttpClients.createDefault();
-        try (CloseableHttpResponse response = httpClient.execute(new HttpGet("http://" + device.getIp() + "/status"))) {
+        try (CloseableHttpResponse response = statusHttpClient.execute(new HttpGet("http://" + device.getIp() + "/status"))) {
             HttpEntity entity = response.getEntity();
             if (entity == null) {
                 return new DeviceStatus(response.getStatusLine().getStatusCode() == HttpStatus.SC_OK, Collections.emptyMap(), Collections.emptyMap());
@@ -240,8 +255,7 @@ class EdgarImpl implements Edgar {
             case DELETE -> new HttpDelete(uri);
         };
 
-        var httpClient = HttpClients.createDefault();
-        try (CloseableHttpResponse response = httpClient.execute(request)) {
+        try (CloseableHttpResponse response = commandHttpClient.execute(request)) {
             System.out.println("Sent request to: " + uri.toString());
             return CommandResponse.fromApacheResponse(response);
         } catch (IOException e) {
