@@ -194,7 +194,7 @@ function handleIntervalChecks(processedTiles, devices, intervalCheckups, interva
             }, key * 1000);
         }
     }
-
+    // Dummy comment
     // Check to see if some intervals need to be removed
     let toBeRemoved = [];
     for (const [intervalValue, intervalInstance] of Object.entries(intervals)) {
