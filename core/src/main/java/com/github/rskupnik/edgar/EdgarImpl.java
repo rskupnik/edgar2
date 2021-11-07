@@ -7,13 +7,11 @@ import io.vavr.Tuple2;
 import io.vavr.control.Either;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.*;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
@@ -86,7 +84,24 @@ class EdgarImpl implements Edgar {
                 .filter(e -> endpoint.getParams().stream().anyMatch(edp -> edp.getName().equals(e.getKey())))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-        return sendCommand(device, endpoint, filteredParams);
+        // TODO: If this endpoint is cachable, check cache first
+        int endpointCacheTime = getEndpointCacheTime(deviceId, endpoint.getPath());
+        if (endpointCacheTime > 0) {
+            var cachedResponse = database.getCachedCommandResponse(device, endpoint, endpointCacheTime);
+            if (cachedResponse.isPresent()) {
+                System.out.println("Returning from cache");
+                return cachedResponse.get();
+            }
+        }
+
+        System.out.println("Making a new call");
+        // Cache the response if needed
+        var response =  sendCommand(device, endpoint, filteredParams);
+        if (endpointCacheTime > 0) {
+            System.out.println("Caching response");
+            database.cacheCommandResponse(device, endpoint, response);
+        }
+        return response;
     }
 
     @Override
@@ -152,6 +167,21 @@ class EdgarImpl implements Edgar {
     @Override
     public Optional<Dashboard> getDashboard(String id) {
         return database.getDashboard(id);
+    }
+
+    @Override
+    public void loadDeviceConfig(String filename) {
+        if (filename == null || !Files.exists(Path.of(filename)))
+            return;
+
+        try {
+            var content = Files.readString(Path.of(filename));
+            var converted = objectMapper.readValue(content, new TypeReference<HashMap<String, Object>>() {});
+            database.saveDeviceConfig(converted);
+            System.out.println("Loaded Device Config");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     // TODO: Do this in a better way
@@ -233,6 +263,26 @@ class EdgarImpl implements Edgar {
             e.printStackTrace();
             return new DeviceStatus(false, Collections.emptyMap(), Collections.emptyMap());
         }
+    }
+
+    private int getEndpointCacheTime(String deviceId, String endpointPath) {
+        var deviceConfig = database.getDeviceConfig();
+        var deviceObj = deviceConfig.get(deviceId);
+        if (deviceObj == null) {
+            return 0;
+        }
+
+        var endpointObj = ((Map<String, Object>) deviceObj).get(endpointPath);
+        if (endpointObj == null) {
+            return 0;
+        }
+
+        var cachePeriod = ((Map<String, Object>) endpointObj).get("cachePeriod");
+        if (cachePeriod != null) {
+            return (int) cachePeriod;
+        }
+
+        return 0;
     }
 
     private CommandResponse sendCommand(Device device, DeviceEndpoint endpoint, Map<String, String> params) {

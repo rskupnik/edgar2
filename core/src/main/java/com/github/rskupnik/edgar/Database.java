@@ -4,6 +4,7 @@ import com.github.rskupnik.edgar.domain.*;
 import io.vavr.control.Option;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface Database {
@@ -25,4 +26,11 @@ public interface Database {
 
     void saveDashboard(String dashboardId, Dashboard dashboard);
     Optional<Dashboard> getDashboard(String id);
+
+    void saveDeviceConfig(Map<String, Object> config);
+    Map<String, Object> getDeviceConfig();
+
+    // TODO: Move this to a separate object that deals with cache?
+    void cacheCommandResponse(Device device, DeviceEndpoint endpoint, CommandResponse commandResponse);
+    Optional<CommandResponse> getCachedCommandResponse(Device device, DeviceEndpoint endpoint, int maxSecondsAgo);
 }

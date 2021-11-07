@@ -1,4 +1,4 @@
-package com.github.rskupnik.edgar;
+package com.github.rskupnik.edgar.domain;
 
 import org.apache.http.Header;
 import org.apache.http.client.methods.CloseableHttpResponse;

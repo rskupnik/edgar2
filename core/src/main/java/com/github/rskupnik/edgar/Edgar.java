@@ -3,7 +3,6 @@ package com.github.rskupnik.edgar;
 import com.github.rskupnik.edgar.domain.*;
 import io.vavr.Tuple2;
 import io.vavr.control.Either;
-import io.vavr.control.Option;
 
 import java.util.List;
 import java.util.Map;
@@ -22,6 +21,7 @@ public interface Edgar {
     void checkActivationPeriods();
     void loadDashboard(String name, String filename);
     Optional<Dashboard> getDashboard(String id);
+    void loadDeviceConfig(String filename);
 
     static Edgar defaultImplementation(Database database) {
         return new EdgarImpl(database);

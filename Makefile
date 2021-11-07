@@ -5,13 +5,14 @@ deploy:
 	ssh pi@192.168.0.154 bash /home/pi/edgarStop.sh
 	scp ./app/target/edgar2.jar pi@192.168.0.154:/home/pi
 	scp ./app/src/main/resources/demo.json pi@192.168.0.154:/home/pi
-	ssh pi@192.168.0.154 'nohup java -jar edgar2.jar --dashboard="/home/pi/demo.json" > edgar.log &'
+	scp ./app/src/main/resources/device-config.json pi@192.168.0.154:/home/pi
+	ssh pi@192.168.0.154 'nohup java -jar edgar2.jar --dashboard="/home/pi/demo.json" --deviceConfig="/home/pi/device-config.json" > edgar.log &'
 
 start:
-	ssh pi@192.168.0.154 'nohup java -jar edgar2.jar --dashboard="/home/pi/demo.json" > edgar.log &'
+	ssh pi@192.168.0.154 'nohup java -jar edgar2.jar --dashboard="/home/pi/demo.json" --deviceConfig="/home/pi/device-config.json" > edgar.log &'
 
 start-debug:
-	ssh pi@192.168.0.154 'nohup java -jar edgar2.jar -Dagentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8000 --dashboard="/home/pi/demo.json" > edgar.log &'
+	ssh pi@192.168.0.154 'nohup java -jar edgar2.jar -Dagentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8000 --dashboard="/home/pi/demo.json" --deviceConfig="/home/pi/device-config.json" > edgar.log &'
 
 stop:
 	ssh pi@192.168.0.154 bash /home/pi/edgarStop.sh

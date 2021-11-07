@@ -4,6 +4,9 @@ import com.github.rskupnik.edgar.Database;
 import com.github.rskupnik.edgar.domain.*;
 import io.vavr.control.Option;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.*;
 
 public class InMemoryDatabase implements Database {
@@ -13,6 +16,8 @@ public class InMemoryDatabase implements Database {
     private final Map<String, DeviceStatus> deviceStatus = new HashMap<>();
     private final Map<String, ActivationPeriods> deviceActivationPeriods = new HashMap<>();
     private final Map<String, Dashboard> dashboards = new HashMap<>();
+    private final Map<String, Map<String, CachedCommandResponse>> commandResponseCache = new HashMap<>();
+    private final Map<String, Object> deviceConfig = new HashMap<>();
 
     @Override
     public Option<Device> findDevice(String id) {
@@ -77,5 +82,55 @@ public class InMemoryDatabase implements Database {
     @Override
     public Optional<Dashboard> getDashboard(String id) {
         return Optional.ofNullable(dashboards.get(id));
+    }
+
+    @Override
+    public void cacheCommandResponse(Device device, DeviceEndpoint endpoint, CommandResponse commandResponse) {
+        commandResponseCache.putIfAbsent(device.getId(), new HashMap<>());
+        var cachedEndpoints = commandResponseCache.get(device.getId());
+        cachedEndpoints.put(endpoint.getPath(), new CachedCommandResponse(commandResponse, Instant.now().toEpochMilli()));
+    }
+
+    @Override
+    public Optional<CommandResponse> getCachedCommandResponse(Device device, DeviceEndpoint endpoint, int maxSecondsAgo) {
+        var cachedEndpoints = commandResponseCache.get(device.getId());
+        if (cachedEndpoints == null) {
+            return Optional.empty();
+        }
+
+        var cachedResponse = cachedEndpoints.get(endpoint.getPath());
+        if (cachedResponse == null || Instant.now().toEpochMilli() - (maxSecondsAgo * 1000) > cachedResponse.getTimestamp()) {
+            return Optional.empty();
+        } else return Optional.of(cachedResponse.commandResponse);
+    }
+
+    @Override
+    public void saveDeviceConfig(Map<String, Object> config) {
+        this.deviceConfig.putAll(config);
+    }
+
+    @Override
+    public Map<String, Object> getDeviceConfig() {
+        // TODO: This return the real map underneath instead of a copy
+        return deviceConfig;
+    }
+
+    // TODO: Move to Cache
+    private class CachedCommandResponse {
+        private final CommandResponse commandResponse;
+        private final long timestamp;
+
+        public CachedCommandResponse(CommandResponse commandResponse, long timestamp) {
+            this.commandResponse = commandResponse;
+            this.timestamp = timestamp;
+        }
+
+        public CommandResponse getCommandResponse() {
+            return commandResponse;
+        }
+
+        public long getTimestamp() {
+            return timestamp;
+        }
     }
 }

@@ -1,6 +1,6 @@
 package com.github.rskupnik.edgar2.web;
 
-import com.github.rskupnik.edgar.CommandResponse;
+import com.github.rskupnik.edgar.domain.CommandResponse;
 import com.github.rskupnik.edgar.Edgar;
 import com.github.rskupnik.edgar.domain.DeviceStatus;
 import com.github.rskupnik.edgar.domain.EndpointBinding;
@@ -10,14 +10,10 @@ import com.github.rskupnik.edgar2.web.dto.DeviceDto;
 import com.github.rskupnik.edgar2.web.dto.DeviceStatusDto;
 import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
