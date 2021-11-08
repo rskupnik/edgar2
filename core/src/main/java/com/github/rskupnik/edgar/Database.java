@@ -30,6 +30,9 @@ public interface Database {
     void saveDeviceConfig(Map<String, Object> config);
     Map<String, Object> getDeviceConfig();
 
+    void markDeviceResponsive(String deviceId, boolean responsive);
+    boolean getDeviceResponsive(String deviceId);
+
     // TODO: Move this to a separate object that deals with cache?
     void cacheCommandResponse(Device device, DeviceEndpoint endpoint, CommandResponse commandResponse);
     Optional<CommandResponse> getCachedCommandResponse(Device device, DeviceEndpoint endpoint, int maxSecondsAgo);

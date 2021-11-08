@@ -12,6 +12,7 @@ public interface Edgar {
 
     Either<String, Device> registerDevice(Device device);
     List<Device> getDevices();
+    boolean isDeviceResponsive(String deviceId);
     CommandResponse sendCommand(String deviceId, String commandName, Map<String, String> params);
     void refreshDeviceStatus();
     void registerLayouts(List<DeviceLayout> layouts);

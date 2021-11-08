@@ -43,6 +43,8 @@ public class DeviceController {
     public List<DeviceDto> getDevices() {
         return edgar.getLayouts(edgar.getDevices()).stream().map(t -> {
             var dto = DeviceDto.fromDomainClass(t._1);
+            dto.setResponsive(edgar.isDeviceResponsive(t._1.getId()));
+
             var deviceStatus = edgar.getDeviceStatus(t._1.getId()).orElse(DeviceStatus.unknown());
             dto.getEndpoints().forEach(e -> {
                 var layout = findEndpointLayout(t._2.getEndpoints(), e.getPath());

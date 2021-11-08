@@ -64,6 +64,11 @@ class EdgarImpl implements Edgar {
     }
 
     @Override
+    public boolean isDeviceResponsive(String deviceId) {
+        return database.getDeviceResponsive(deviceId);
+    }
+
+    @Override
     public CommandResponse sendCommand(String deviceId, String commandName, Map<String, String> params) {
         // Find device
         final Device device = database.findDevice(deviceId).getOrNull();
@@ -107,6 +112,7 @@ class EdgarImpl implements Edgar {
     @Override
     public void refreshDeviceStatus() {
         database.getAll().stream()
+                .filter(d -> getStatusCheckEnabled(d.getId()))
                 .map(d -> new Tuple2<>(d, getStatus(d)))
                 .forEach(d -> {
                     if (!d._2.isResponsive()) {
@@ -250,6 +256,7 @@ class EdgarImpl implements Edgar {
     }
 
     private DeviceStatus getStatus(Device device) {
+        System.out.println("Getting status for " + device.getId());
         try (CloseableHttpResponse response = statusHttpClient.execute(new HttpGet("http://" + device.getIp() + "/status"))) {
             HttpEntity entity = response.getEntity();
             if (entity == null) {
@@ -258,21 +265,42 @@ class EdgarImpl implements Edgar {
             String body = EntityUtils.toString(entity, StandardCharsets.UTF_8);
             Map<String, String> params = objectMapper.readValue(body, new TypeReference<HashMap<String, String>>() {});
             Map<String, Map<String, String>> endpointData = objectMapper.readValue(params.getOrDefault("endpoints", "{}"), new TypeReference<HashMap<String, Map<String, String>>>() {});
+
+            database.markDeviceResponsive(device.getId(), true);
             return new DeviceStatus(response.getStatusLine().getStatusCode() == HttpStatus.SC_OK, params, endpointData);
         } catch (IOException e) {
             e.printStackTrace();
+            database.markDeviceResponsive(device.getId(), false);
             return new DeviceStatus(false, Collections.emptyMap(), Collections.emptyMap());
         }
     }
 
+    private boolean getStatusCheckEnabled(String deviceId) {
+        // TODO: Jesus Christ, blast this abomination back to hell
+        var deviceConfig = database.getDeviceConfig();
+        var deviceObj = deviceConfig.get(deviceId);
+        if (deviceObj == null) {
+            return true;
+        }
+
+        var statusCheckEnabled = ((Map<String, Object>) deviceObj).get("statusCheckEnabled");
+        return statusCheckEnabled == null || (boolean) statusCheckEnabled;
+    }
+
     private int getEndpointCacheTime(String deviceId, String endpointPath) {
+        // TODO: Jesus Christ, blast this abomination back to hell
         var deviceConfig = database.getDeviceConfig();
         var deviceObj = deviceConfig.get(deviceId);
         if (deviceObj == null) {
             return 0;
         }
 
-        var endpointObj = ((Map<String, Object>) deviceObj).get(endpointPath);
+        var allEndpointsObj = ((Map<String, Object>) deviceObj).get("endpoints");
+        if (allEndpointsObj == null) {
+            return 0;
+        }
+
+        var endpointObj = ((Map<String, Object>) allEndpointsObj).get(endpointPath);
         if (endpointObj == null) {
             return 0;
         }
@@ -307,9 +335,11 @@ class EdgarImpl implements Edgar {
 
         try (CloseableHttpResponse response = commandHttpClient.execute(request)) {
             System.out.println("Sent request to: " + uri.toString());
+            database.markDeviceResponsive(device.getId(), true);
             return CommandResponse.fromApacheResponse(response);
         } catch (IOException e) {
             e.printStackTrace();
+            database.markDeviceResponsive(device.getId(), false);
         }
 
         return CommandResponse.error("Unknown error");

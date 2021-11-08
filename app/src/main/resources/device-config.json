@@ -1,7 +1,10 @@
 {
   "basementCamGas": {
-    "/pic": {
-      "cachePeriod": 60
+    "statusCheckEnabled": false,
+    "endpoints": {
+      "/pic": {
+        "cachePeriod": 60
+      }
     }
   }
 }

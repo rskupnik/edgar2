@@ -11,6 +11,7 @@ public class DeviceDto {
     private String id;
     private String name;
     private String ip;
+    private Boolean responsive = true;
     private List<DeviceEndpointDto> endpoints;
     private DeviceStatusDto status;
 
@@ -59,6 +60,14 @@ public class DeviceDto {
 
     public void setIp(String ip) {
         this.ip = ip;
+    }
+
+    public Boolean getResponsive() {
+        return responsive;
+    }
+
+    public void setResponsive(Boolean responsive) {
+        this.responsive = responsive;
     }
 
     public List<DeviceEndpointDto> getEndpoints() {
