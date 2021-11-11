@@ -38,6 +38,10 @@ public class CommandResponse {
         );
     }
 
+    public boolean isError() {
+        return statusCode >= 400;
+    }
+
     public int getStatusCode() {
         return statusCode;
     }

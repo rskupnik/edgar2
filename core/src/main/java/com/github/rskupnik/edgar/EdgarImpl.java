@@ -5,19 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.rskupnik.edgar.domain.*;
 import io.vavr.Tuple2;
 import io.vavr.control.Either;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.*;
-import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
@@ -25,22 +14,12 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 class EdgarImpl implements Edgar {
-
     private final Database database;
+
+    private final DeviceClient deviceClient = new ApacheHttpDeviceClient();
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final List<Device> autoActivatedDevices = new ArrayList<>();
-    private final CloseableHttpClient statusHttpClient = HttpClientBuilder.create().setDefaultRequestConfig(
-            RequestConfig.custom()
-                    .setConnectTimeout(2000)
-                    .setConnectionRequestTimeout(2000)
-                    .setSocketTimeout(2000).build()
-    ).build();
-    private final CloseableHttpClient commandHttpClient = HttpClientBuilder.create().setDefaultRequestConfig(
-            RequestConfig.custom()
-                    .setConnectTimeout(4000)
-                    .setConnectionRequestTimeout(4000)
-                    .setSocketTimeout(4000).build()
-    ).build();
+
 
     public EdgarImpl(Database database) {
         this.database = database;
@@ -53,7 +32,7 @@ class EdgarImpl implements Edgar {
         }
 
         database.saveDevice(device);
-        database.saveDeviceStatus(device.getId(), getStatus(device));
+        database.saveDeviceStatus(device.getId(), deviceClient.getStatus(device));
         return Either.right(device);
     }
 
@@ -89,7 +68,7 @@ class EdgarImpl implements Edgar {
                 .filter(e -> endpoint.getParams().stream().anyMatch(edp -> edp.getName().equals(e.getKey())))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-        // TODO: If this endpoint is cachable, check cache first
+        // If this endpoint is cachable, check cache first
         int endpointCacheTime = getEndpointCacheTime(deviceId, endpoint.getPath());
         if (endpointCacheTime > 0) {
             var cachedResponse = database.getCachedCommandResponse(device, endpoint, endpointCacheTime);
@@ -106,6 +85,7 @@ class EdgarImpl implements Edgar {
             System.out.println("Caching response");
             database.cacheCommandResponse(device, endpoint, response);
         }
+
         return response;
     }
 
@@ -113,7 +93,7 @@ class EdgarImpl implements Edgar {
     public void refreshDeviceStatus() {
         database.getAll().stream()
                 .filter(d -> getStatusCheckEnabled(d.getId()))
-                .map(d -> new Tuple2<>(d, getStatus(d)))
+                .map(d -> new Tuple2<>(d, deviceClient.getStatus(d)))
                 .forEach(d -> {
                     if (!d._2.isResponsive()) {
                         System.out.println("Removing device: " + d._1.getId() + " at IP " + d._1.getIp());
@@ -129,7 +109,8 @@ class EdgarImpl implements Edgar {
     public void rediscoverUnresponsiveDevices() {
         database.getAll().stream()
                 .filter(d -> !database.getDeviceResponsive(d.getId()))
-                .forEach(this::getStatus);
+                .map(d -> new Tuple2<>(d, deviceClient.getStatus(d)))
+                .forEach(d -> database.markDeviceResponsive(d._1.getId(), d._2.isResponsive()));
     }
 
     @Override
@@ -237,6 +218,12 @@ class EdgarImpl implements Edgar {
         }
     }
 
+    private CommandResponse sendCommand(Device device, DeviceEndpoint endpoint, Map<String, String> params) {
+        var response = deviceClient.sendCommand(device, endpoint, params);
+        database.markDeviceResponsive(device.getId(), !response.isError());
+        return response;
+    }
+
     private void checkActivation(Device device, ActivationPeriods activationPeriods) {
         LocalDateTime ldt = LocalDateTime.now();
         for (ActivationPeriod period : activationPeriods.getPeriods()) {
@@ -260,26 +247,6 @@ class EdgarImpl implements Edgar {
 
     private DeviceLayout createDefaultLayout(Device device) {
         return new DeviceLayout(device.getId(), device.getEndpoints().stream().map(e -> new EndpointLayout(e.getPath(), "default", Collections.emptyList())).collect(Collectors.toList()));
-    }
-
-    private DeviceStatus getStatus(Device device) {
-        System.out.println("Getting status for " + device.getId());
-        try (CloseableHttpResponse response = statusHttpClient.execute(new HttpGet("http://" + device.getIp() + "/status"))) {
-            HttpEntity entity = response.getEntity();
-            if (entity == null) {
-                return new DeviceStatus(response.getStatusLine().getStatusCode() == HttpStatus.SC_OK, Collections.emptyMap(), Collections.emptyMap());
-            }
-            String body = EntityUtils.toString(entity, StandardCharsets.UTF_8);
-            Map<String, String> params = objectMapper.readValue(body, new TypeReference<HashMap<String, String>>() {});
-            Map<String, Map<String, String>> endpointData = objectMapper.readValue(params.getOrDefault("endpoints", "{}"), new TypeReference<HashMap<String, Map<String, String>>>() {});
-
-            database.markDeviceResponsive(device.getId(), true);
-            return new DeviceStatus(response.getStatusLine().getStatusCode() == HttpStatus.SC_OK, params, endpointData);
-        } catch (IOException e) {
-            e.printStackTrace();
-            database.markDeviceResponsive(device.getId(), false);
-            return new DeviceStatus(false, Collections.emptyMap(), Collections.emptyMap());
-        }
     }
 
     private boolean getStatusCheckEnabled(String deviceId) {
@@ -320,37 +287,7 @@ class EdgarImpl implements Edgar {
         return 0;
     }
 
-    private CommandResponse sendCommand(Device device, DeviceEndpoint endpoint, Map<String, String> params) {
 
-        URI uri = null;
-        try {
-            var uriBuilder = new URIBuilder("http://" + device.getIp() + endpoint.getPath());
-            for (Map.Entry<String, String> entry : params.entrySet()) {
-                uriBuilder.addParameter(entry.getKey(), entry.getValue());
-            }
-            uri = uriBuilder.build();
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-
-        var request = switch (endpoint.getMethod()) {
-            case POST -> new HttpPost(uri);
-            case GET -> new HttpGet(uri);
-            case PUT -> new HttpPut(uri);
-            case DELETE -> new HttpDelete(uri);
-        };
-
-        try (CloseableHttpResponse response = commandHttpClient.execute(request)) {
-            System.out.println("Sent request to: " + uri.toString());
-            database.markDeviceResponsive(device.getId(), true);
-            return CommandResponse.fromApacheResponse(response);
-        } catch (IOException e) {
-            e.printStackTrace();
-            database.markDeviceResponsive(device.getId(), false);
-        }
-
-        return CommandResponse.error("Unknown error");
-    }
 
     private static class Pair<L, R> {
 
