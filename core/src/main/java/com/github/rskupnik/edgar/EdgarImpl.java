@@ -14,6 +14,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 class EdgarImpl implements Edgar {
+
     private final Database database;
 
     private final DeviceClient deviceClient = new ApacheHttpDeviceClient();
@@ -53,7 +54,7 @@ class EdgarImpl implements Edgar {
         final Device device = database.findDevice(deviceId).getOrNull();
         if (device == null) {
             System.out.println("This device doesn't exist");
-            return CommandResponse.error("This device doesn't exist");   // TODO: Handle errors with Either
+            return CommandResponse.error("This device doesn't exist");
         }
 
         // Find the command in the device
