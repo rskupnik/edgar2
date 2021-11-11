@@ -26,4 +26,10 @@ public class ScheduledJobs {
         System.out.println("Checking activation periods");
         edgar.checkActivationPeriods();
     }
+
+    @Scheduled(fixedDelayString = "${devices.rediscoverUnresponsiveDevices.delay}", initialDelayString = "${devices.rediscoverUnresponsiveDevices.initialDelay}")
+    public void rediscoverUnresponsiveDevices() {
+        System.out.println("Rediscovering unresponsive devices");
+        edgar.rediscoverUnresponsiveDevices();
+    }
 }

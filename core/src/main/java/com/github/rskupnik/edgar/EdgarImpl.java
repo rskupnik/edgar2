@@ -126,6 +126,13 @@ class EdgarImpl implements Edgar {
     }
 
     @Override
+    public void rediscoverUnresponsiveDevices() {
+        database.getAll().stream()
+                .filter(d -> !database.getDeviceResponsive(d.getId()))
+                .forEach(this::getStatus);
+    }
+
+    @Override
     public void registerLayouts(List<DeviceLayout> layouts) {
         layouts.forEach(database::saveDeviceLayout);
     }

@@ -23,6 +23,7 @@ public interface Edgar {
     void loadDashboard(String name, String filename);
     Optional<Dashboard> getDashboard(String id);
     void loadDeviceConfig(String filename);
+    void rediscoverUnresponsiveDevices();
 
     static Edgar defaultImplementation(Database database) {
         return new EdgarImpl(database);
