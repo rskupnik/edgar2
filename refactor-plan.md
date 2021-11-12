@@ -38,3 +38,8 @@ trigger the refresh again.
 Do we need Option/Optional? Make the method names coherent. Maybe generalize some stuff that is stored and retrieved
 in the exact same way but is just a different object. Make separate DB entities and make them editable?
 
+## Cleanup stuff
+
+DeviceStatus needed?
+Layouts needed?
+Remove ActivationPeriods for now

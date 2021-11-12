@@ -2,7 +2,6 @@ package com.github.rskupnik.edgar;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.rskupnik.edgar.db.entity.DeviceEndpointEntity;
 import com.github.rskupnik.edgar.db.entity.DeviceEntity;
 import com.github.rskupnik.edgar.db.repository.DeviceRepository;
 import com.github.rskupnik.edgar.domain.*;
@@ -12,7 +11,6 @@ import io.vavr.control.Either;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -23,7 +21,6 @@ class EdgarImpl implements Edgar {
 
     private final DeviceClient deviceClient = new ApacheHttpDeviceClient();
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private final List<Device> autoActivatedDevices = new ArrayList<>();
 
 
     public EdgarImpl(Database database, DeviceRepository deviceRepository) {
@@ -130,10 +127,10 @@ class EdgarImpl implements Edgar {
         layouts.forEach(database::saveDeviceLayout);
     }
 
-    @Override
-    public List<Tuple2<Device, DeviceLayout>> getLayouts(List<Device> devices) {
-        return devices.stream().map(d -> new Tuple2<>(d, database.findDeviceLayout(d.getId()).getOrElse(createDefaultLayout(d)))).collect(Collectors.toList());
-    }
+//    @Override
+//    public List<Tuple2<Device, DeviceLayout>> getLayouts(List<Device> devices) {
+//        return devices.stream().map(d -> new Tuple2<>(d, database.findDeviceLayout(d.getId()).getOrElse(createDefaultLayout(d)))).collect(Collectors.toList());
+//    }
 
     @Override
     public Optional<DeviceStatus> getDeviceStatus(String deviceId) {
@@ -189,57 +186,10 @@ class EdgarImpl implements Edgar {
         )).collect(Collectors.toList()));
     }
 
-    private void resolveActivationPeriod(Device device, ActivationPeriods activationPeriods) {
-        if (autoActivatedDevices.contains(device)) {
-            checkDeactivation(device, activationPeriods);
-        } else {
-            checkActivation(device, activationPeriods);
-        }
-    }
-
-    private void checkDeactivation(Device device, ActivationPeriods activationPeriods) {
-        LocalDateTime ldt = LocalDateTime.now();
-        for (ActivationPeriod period : activationPeriods.getPeriods()) {
-            if (ldt.getHour() > period.getEndHour() || (period.getEndHour() == ldt.getHour() && ldt.getMinute() >= period.getEndMinute())) {
-                autoActivatedDevices.remove(device);
-                deactivate(device);
-            }
-        }
-    }
-
-    private void deactivate(Device device) {
-        for (DeviceEndpoint endpoint : device.getEndpoints()) {
-            if (endpoint.getPath().equals("/off")) {
-                sendCommand(device, endpoint, Collections.emptyMap());
-            }
-        }
-    }
-
     private CommandResponse sendCommand(Device device, DeviceEndpoint endpoint, Map<String, String> params) {
         var response = deviceClient.sendCommand(device, endpoint, params);
         database.markDeviceResponsive(device.getId(), !response.isError());
         return response;
-    }
-
-    private void checkActivation(Device device, ActivationPeriods activationPeriods) {
-        LocalDateTime ldt = LocalDateTime.now();
-        for (ActivationPeriod period : activationPeriods.getPeriods()) {
-            if (
-                    (ldt.getHour() > period.getStartHour() || (ldt.getHour() == period.getStartHour() || ldt.getMinute() >= period.getStartMinute()))
-                    && (ldt.getHour() < period.getEndHour() || (ldt.getHour() == period.getEndHour() && ldt.getMinute() <= period.getEndMinute()))
-            ) {
-                autoActivatedDevices.add(device);
-                activate(device);
-            }
-        }
-    }
-
-    private void activate(Device device) {
-        for (DeviceEndpoint endpoint : device.getEndpoints()) {
-            if (endpoint.getPath().equals("/on")) {
-                sendCommand(device, endpoint, Collections.emptyMap());
-            }
-        }
     }
 
     private DeviceLayout createDefaultLayout(Device device) {
@@ -282,26 +232,5 @@ class EdgarImpl implements Edgar {
         }
 
         return 0;
-    }
-
-
-
-    private static class Pair<L, R> {
-
-        private final L left;
-        private final R right;
-
-        private Pair(L left, R right) {
-            this.left = left;
-            this.right = right;
-        }
-
-        public L getLeft() {
-            return left;
-        }
-
-        public R getRight() {
-            return right;
-        }
     }
 }
