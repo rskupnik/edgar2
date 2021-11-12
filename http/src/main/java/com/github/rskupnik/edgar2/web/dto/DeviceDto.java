@@ -24,8 +24,7 @@ public class DeviceDto {
             id,
             name,
             ip,
-            endpoints == null ? Collections.emptyList() : endpoints.stream().map(DeviceEndpointDto::toDomainClass).collect(Collectors.toList()),
-            Collections.emptyList()
+            endpoints == null ? Collections.emptyList() : endpoints.stream().map(DeviceEndpointDto::toDomainClass).collect(Collectors.toList())
         );
     }
 
