@@ -1,5 +1,6 @@
 package com.github.rskupnik.edgar;
 
+import com.github.rskupnik.edgar.db.repository.DeviceRepository;
 import com.github.rskupnik.edgar.domain.*;
 import io.vavr.Tuple2;
 import io.vavr.control.Either;
@@ -18,15 +19,13 @@ public interface Edgar {
     void registerLayouts(List<DeviceLayout> layouts);
     List<Tuple2<Device, DeviceLayout>> getLayouts(List<Device> devices);
     Optional<DeviceStatus> getDeviceStatus(String deviceId);
-    void setActivationPeriods(String deviceId, List<ActivationPeriod> periods);
-    void checkActivationPeriods();
     void loadDashboard(String name, String filename);
     Optional<Dashboard> getDashboard(String id);
     void loadDeviceConfig(String filename);
     void rediscoverUnresponsiveDevices();
 
-    static Edgar defaultImplementation(Database database) {
-        return new EdgarImpl(database);
+    static Edgar defaultImplementation(Database database, DeviceRepository deviceRepository) {
+        return new EdgarImpl(database, deviceRepository);
     }
 }
 

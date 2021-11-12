@@ -1,26 +1,25 @@
-package com.github.rskupnik.edgar2.web.dto;
+package com.github.rskupnik.edgar.db.entity;
 
 import com.github.rskupnik.edgar.domain.DeviceEndpointParam;
 import com.github.rskupnik.edgar.domain.DeviceEndpointParamType;
 
-public class DeviceEndpointParamDto {
+public class DeviceEndpointParamEntity implements DbEntity{
 
     private String name;
     private DeviceEndpointParamType type;
 
-    public DeviceEndpointParamDto() {
+    public DeviceEndpointParamEntity() {}
 
+    public DeviceEndpointParamEntity(String name, DeviceEndpointParamType type) {
+        this.name = name;
+        this.type = type;
     }
 
-    public DeviceEndpointParam toDomainClass() {
-        return new DeviceEndpointParam(name, type);
-    }
-
-    public static DeviceEndpointParamDto fromDomainClass(DeviceEndpointParam param) {
-        DeviceEndpointParamDto dto = new DeviceEndpointParamDto();
-        dto.setName(param.getName());
-        dto.setType(param.getType());
-        return dto;
+    public static DeviceEndpointParamEntity fromDomainObject(DeviceEndpointParam param) {
+        return new DeviceEndpointParamEntity(
+                param.getName(),
+                param.getType()
+        );
     }
 
     public String getName() {

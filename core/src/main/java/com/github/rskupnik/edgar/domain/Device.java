@@ -1,5 +1,8 @@
 package com.github.rskupnik.edgar.domain;
 
+import com.github.rskupnik.edgar.db.entity.DeviceEntity;
+
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -17,6 +20,16 @@ public class Device {
         this.ip = ip;
         this.endpoints = endpoints;
         this.activationPeriods = activationPeriods;
+    }
+
+    public static Device fromEntity(DeviceEntity entity) {
+        return new Device(
+                entity.getId(),
+                entity.getName(),
+                entity.getIp(),
+                Collections.emptyList(),
+                Collections.emptyList()
+        );
     }
 
     public String getId() {

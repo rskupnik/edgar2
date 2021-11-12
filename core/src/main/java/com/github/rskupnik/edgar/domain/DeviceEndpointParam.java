@@ -3,9 +3,9 @@ package com.github.rskupnik.edgar.domain;
 public class DeviceEndpointParam {
 
     private final String name;
-    private final Type type;
+    private final DeviceEndpointParamType type;
 
-    public DeviceEndpointParam(String name, Type type) {
+    public DeviceEndpointParam(String name, DeviceEndpointParamType type) {
         this.name = name;
         this.type = type;
     }
@@ -14,11 +14,7 @@ public class DeviceEndpointParam {
         return name;
     }
 
-    public Type getType() {
+    public DeviceEndpointParamType getType() {
         return type;
-    }
-
-    public enum Type {
-        BOOL, INT, STRING
     }
 }

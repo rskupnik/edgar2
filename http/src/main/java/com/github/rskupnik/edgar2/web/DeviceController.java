@@ -1,11 +1,10 @@
 package com.github.rskupnik.edgar2.web;
 
-import com.github.rskupnik.edgar.domain.CommandResponse;
 import com.github.rskupnik.edgar.Edgar;
+import com.github.rskupnik.edgar.domain.CommandResponse;
 import com.github.rskupnik.edgar.domain.DeviceStatus;
 import com.github.rskupnik.edgar.domain.EndpointBinding;
 import com.github.rskupnik.edgar.domain.EndpointLayout;
-import com.github.rskupnik.edgar2.web.dto.ActivationPeriodsDto;
 import com.github.rskupnik.edgar2.web.dto.DeviceDto;
 import com.github.rskupnik.edgar2.web.dto.DeviceStatusDto;
 import org.apache.http.HttpStatus;
@@ -81,11 +80,6 @@ public class DeviceController {
             springResponse.header(entry.getKey(), entry.getValue());
         }
         return springResponse.body(response.getBody());
-    }
-
-    @PostMapping("devices/{deviceId}/activationPeriods")
-    public void setActivationPeriods(@PathVariable("deviceId") String deviceId, @RequestBody ActivationPeriodsDto dto) {
-        edgar.setActivationPeriods(deviceId, dto.toDomainClass().getPeriods());
     }
 
     private Optional<EndpointLayout> findEndpointLayout(List<EndpointLayout> list, String path) {

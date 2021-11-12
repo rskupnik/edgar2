@@ -9,10 +9,10 @@ import java.util.Optional;
 
 public interface Database {
 
-    Option<Device> findDevice(String id);
-    void saveDevice(Device device);
-    List<Device> getAll();
-    void removeDevice(String id);
+//    Option<Device> findDevice(String id);
+//    void saveDevice(Device device);
+//    List<Device> getAll();
+//    void removeDevice(String id);
 
     Option<DeviceLayout> findDeviceLayout(String id);
     void saveDeviceLayout(DeviceLayout deviceLayout);

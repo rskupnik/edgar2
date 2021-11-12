@@ -11,7 +11,7 @@ import java.util.*;
 
 public class InMemoryDatabase implements Database {
 
-    private final Map<String, Device> devices = new HashMap<>();
+    //private final Map<String, Device> devices = new HashMap<>();
     private final Map<String, DeviceLayout> deviceLayouts = new HashMap<>();
     private final Map<String, DeviceStatus> deviceStatus = new HashMap<>();
     private final Map<String, ActivationPeriods> deviceActivationPeriods = new HashMap<>();
@@ -20,25 +20,25 @@ public class InMemoryDatabase implements Database {
     private final Map<String, Boolean> deviceResponsiveness = new HashMap<>();
     private final Map<String, Object> deviceConfig = new HashMap<>();
 
-    @Override
-    public Option<Device> findDevice(String id) {
-        return Option.of(devices.get(id));
-    }
-
-    @Override
-    public void saveDevice(Device device) {
-        devices.put(device.getId(), device);
-    }
-
-    @Override
-    public List<Device> getAll() {
-        return new ArrayList<>(devices.values());
-    }
-
-    @Override
-    public void removeDevice(String id) {
-        devices.remove(id);
-    }
+//    @Override
+//    public Option<Device> findDevice(String id) {
+//        return Option.of(devices.get(id));
+//    }
+//
+//    @Override
+//    public void saveDevice(Device device) {
+//        devices.put(device.getId(), device);
+//    }
+//
+//    @Override
+//    public List<Device> getAll() {
+//        return new ArrayList<>(devices.values());
+//    }
+//
+//    @Override
+//    public void removeDevice(String id) {
+//        devices.remove(id);
+//    }
 
     @Override
     public Option<DeviceLayout> findDeviceLayout(String id) {

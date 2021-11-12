@@ -2,6 +2,9 @@ package com.github.rskupnik.edgar;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.rskupnik.edgar.db.entity.DeviceEndpointEntity;
+import com.github.rskupnik.edgar.db.entity.DeviceEntity;
+import com.github.rskupnik.edgar.db.repository.DeviceRepository;
 import com.github.rskupnik.edgar.domain.*;
 import io.vavr.Tuple2;
 import io.vavr.control.Either;
@@ -16,23 +19,25 @@ import java.util.stream.Collectors;
 class EdgarImpl implements Edgar {
 
     private final Database database;
+    private final DeviceRepository deviceRepository;
 
     private final DeviceClient deviceClient = new ApacheHttpDeviceClient();
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final List<Device> autoActivatedDevices = new ArrayList<>();
 
 
-    public EdgarImpl(Database database) {
+    public EdgarImpl(Database database, DeviceRepository deviceRepository) {
         this.database = database;
+        this.deviceRepository = deviceRepository;
     }
 
     @Override
     public Either<String, Device> registerDevice(Device device) {
-        if (database.findDevice(device.getId()).isDefined()) {
+        if (deviceRepository.find(device.getId()).isPresent()) {
             return Either.left("This device is already registered");
         }
 
-        database.saveDevice(device);
+        deviceRepository.save(device.getId(), DeviceEntity.fromDomainObject(device));
         database.saveDeviceStatus(device.getId(), deviceClient.getStatus(device));
         return Either.right(device);
     }
@@ -40,7 +45,9 @@ class EdgarImpl implements Edgar {
     @Override
     public List<Device> getDevices() {
         refreshDeviceStatus();
-        return database.getAll();
+        return deviceRepository.findAll().stream()
+                .map(Device::fromEntity)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -51,7 +58,7 @@ class EdgarImpl implements Edgar {
     @Override
     public CommandResponse sendCommand(String deviceId, String commandName, Map<String, String> params) {
         // Find device
-        final Device device = database.findDevice(deviceId).getOrNull();
+        final Device device = deviceRepository.find(deviceId).map(Device::fromEntity).orElse(null);
         if (device == null) {
             System.out.println("This device doesn't exist");
             return CommandResponse.error("This device doesn't exist");
@@ -92,13 +99,15 @@ class EdgarImpl implements Edgar {
 
     @Override
     public void refreshDeviceStatus() {
-        database.getAll().stream()
+        deviceRepository.findAll()
+                .stream()
+                .map(Device::fromEntity)
                 .filter(d -> getStatusCheckEnabled(d.getId()))
                 .map(d -> new Tuple2<>(d, deviceClient.getStatus(d)))
                 .forEach(d -> {
                     if (!d._2.isResponsive()) {
                         System.out.println("Removing device: " + d._1.getId() + " at IP " + d._1.getIp());
-                        database.removeDevice(d._1.getId());
+                        deviceRepository.delete(d._1.getId());
                     } else {
                         System.out.println("Saving device status for device " + d._1.getId());
                         database.saveDeviceStatus(d._1.getId(), d._2);
@@ -108,7 +117,9 @@ class EdgarImpl implements Edgar {
 
     @Override
     public void rediscoverUnresponsiveDevices() {
-        database.getAll().stream()
+        deviceRepository.findAll()
+                .stream()
+                .map(Device::fromEntity)
                 .filter(d -> !database.getDeviceResponsive(d.getId()))
                 .map(d -> new Tuple2<>(d, deviceClient.getStatus(d)))
                 .forEach(d -> database.markDeviceResponsive(d._1.getId(), d._2.isResponsive()));
@@ -127,21 +138,6 @@ class EdgarImpl implements Edgar {
     @Override
     public Optional<DeviceStatus> getDeviceStatus(String deviceId) {
         return database.getDeviceStatus(deviceId);
-    }
-
-    @Override
-    public void setActivationPeriods(String deviceId, List<ActivationPeriod> periods) {
-        // TODO: Validate - hours: 0-23, minutes: 0-59, cannot overlap
-        database.saveActivationPeriods(deviceId, new ActivationPeriods(periods));
-    }
-
-    @Override
-    public void checkActivationPeriods() {
-        // TODO: Go through all devices' activation periods and (de)activate them if needed
-        database.getAll().stream()
-                .map(d -> new Pair<>(database.findDevice(d.getId()), database.getActivationPeriods(d.getId())))
-                .filter(p -> p.getRight().isPresent() && p.getLeft().isDefined())
-                .forEach(p -> resolveActivationPeriod(p.left.get(), p.right.get()));
     }
 
     @Override
