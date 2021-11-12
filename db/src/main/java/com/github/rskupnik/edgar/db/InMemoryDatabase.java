@@ -65,15 +65,15 @@ public class InMemoryDatabase implements Database {
         return Optional.ofNullable(deviceStatus.get(deviceId));
     }
 
-    @Override
-    public void saveActivationPeriods(String deviceId, ActivationPeriods activationPeriods) {
-        deviceActivationPeriods.put(deviceId, activationPeriods);
-    }
-
-    @Override
-    public Optional<ActivationPeriods> getActivationPeriods(String deviceId) {
-        return Optional.ofNullable(deviceActivationPeriods.get(deviceId));
-    }
+//    @Override
+//    public void saveActivationPeriods(String deviceId, ActivationPeriods activationPeriods) {
+//        deviceActivationPeriods.put(deviceId, activationPeriods);
+//    }
+//
+//    @Override
+//    public Optional<ActivationPeriods> getActivationPeriods(String deviceId) {
+//        return Optional.ofNullable(deviceActivationPeriods.get(deviceId));
+//    }
 
     @Override
     public void saveDashboard(String dashboardId, Dashboard dashboard) {

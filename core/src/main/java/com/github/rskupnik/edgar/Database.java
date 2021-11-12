@@ -21,8 +21,8 @@ public interface Database {
     void removeDeviceStatus(String deviceId);
     Optional<DeviceStatus> getDeviceStatus(String deviceId);
 
-    void saveActivationPeriods(String deviceId, ActivationPeriods activationPeriods);
-    Optional<ActivationPeriods> getActivationPeriods(String deviceId);
+//    void saveActivationPeriods(String deviceId, ActivationPeriods activationPeriods);
+//    Optional<ActivationPeriods> getActivationPeriods(String deviceId);
 
     void saveDashboard(String dashboardId, Dashboard dashboard);
     Optional<Dashboard> getDashboard(String id);
