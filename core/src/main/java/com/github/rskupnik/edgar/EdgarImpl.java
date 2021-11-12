@@ -2,6 +2,9 @@ package com.github.rskupnik.edgar;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.rskupnik.edgar.config.device.DeviceConfig;
+import com.github.rskupnik.edgar.config.device.DeviceConfigStorage;
+import com.github.rskupnik.edgar.config.device.EndpointConfig;
 import com.github.rskupnik.edgar.db.entity.DashboardEntity;
 import com.github.rskupnik.edgar.db.entity.DeviceEntity;
 import com.github.rskupnik.edgar.db.repository.DashboardRepository;
@@ -23,6 +26,7 @@ class EdgarImpl implements Edgar {
     private final DashboardRepository dashboardRepository;
 
     private final DeviceClient deviceClient = new ApacheHttpDeviceClient();
+    private final DeviceConfigStorage deviceConfigStorage = new DeviceConfigStorage();
     private final ObjectMapper objectMapper = new ObjectMapper();
 
 
@@ -103,7 +107,7 @@ class EdgarImpl implements Edgar {
         deviceRepository.findAll()
                 .stream()
                 .map(Device::fromEntity)
-                .filter(d -> getStatusCheckEnabled(d.getId()))
+                .filter(d -> deviceConfigStorage.get(d.getId()).orElse(DeviceConfig.empty()).isStatusCheckEnabled())
                 .map(d -> new Tuple2<>(d, deviceClient.getStatus(d)))
                 .forEach(d -> {
                     if (!d._2.isResponsive()) {
@@ -168,8 +172,8 @@ class EdgarImpl implements Edgar {
 
         try {
             var content = Files.readString(Path.of(filename));
-            var converted = objectMapper.readValue(content, new TypeReference<HashMap<String, Object>>() {});
-            database.saveDeviceConfig(converted);
+            var config = objectMapper.readValue(content, new TypeReference<List<DeviceConfig>>() {});
+            deviceConfigStorage.save(config);
             System.out.println("Loaded Device Config");
         } catch (IOException e) {
             e.printStackTrace();
@@ -196,45 +200,12 @@ class EdgarImpl implements Edgar {
         return response;
     }
 
-    private DeviceLayout createDefaultLayout(Device device) {
-        return new DeviceLayout(device.getId(), device.getEndpoints().stream().map(e -> new EndpointLayout(e.getPath(), "default", Collections.emptyList())).collect(Collectors.toList()));
-    }
-
-    private boolean getStatusCheckEnabled(String deviceId) {
-        // TODO: Jesus Christ, blast this abomination back to hell
-        var deviceConfig = database.getDeviceConfig();
-        var deviceObj = deviceConfig.get(deviceId);
-        if (deviceObj == null) {
-            return true;
-        }
-
-        var statusCheckEnabled = ((Map<String, Object>) deviceObj).get("statusCheckEnabled");
-        return statusCheckEnabled == null || (boolean) statusCheckEnabled;
-    }
-
     private int getEndpointCacheTime(String deviceId, String endpointPath) {
-        // TODO: Jesus Christ, blast this abomination back to hell
-        var deviceConfig = database.getDeviceConfig();
-        var deviceObj = deviceConfig.get(deviceId);
-        if (deviceObj == null) {
-            return 0;
-        }
-
-        var allEndpointsObj = ((Map<String, Object>) deviceObj).get("endpoints");
-        if (allEndpointsObj == null) {
-            return 0;
-        }
-
-        var endpointObj = ((Map<String, Object>) allEndpointsObj).get(endpointPath);
-        if (endpointObj == null) {
-            return 0;
-        }
-
-        var cachePeriod = ((Map<String, Object>) endpointObj).get("cachePeriod");
-        if (cachePeriod != null) {
-            return (int) cachePeriod;
-        }
-
-        return 0;
+        return deviceConfigStorage.get(deviceId).orElse(DeviceConfig.empty()).getEndpoints()
+                .stream()
+                .filter(c -> c.getPath().equals(endpointPath))
+                .findFirst()
+                .orElse(EndpointConfig.empty())
+                .getCachePeriod();
     }
 }

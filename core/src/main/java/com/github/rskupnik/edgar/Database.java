@@ -1,5 +1,6 @@
 package com.github.rskupnik.edgar;
 
+import com.github.rskupnik.edgar.config.device.DeviceConfig;
 import com.github.rskupnik.edgar.domain.*;
 import io.vavr.control.Option;
 
@@ -17,7 +18,7 @@ public interface Database {
 //    Option<DeviceLayout> findDeviceLayout(String id);
 //    void saveDeviceLayout(DeviceLayout deviceLayout);
 
-    // TODO: Repository?
+    // TODO: Can probably be removed once toggle device stops using params.enabled
     void saveDeviceStatus(String deviceId, DeviceStatus status);
     void removeDeviceStatus(String deviceId);
     Optional<DeviceStatus> getDeviceStatus(String deviceId);
@@ -27,10 +28,6 @@ public interface Database {
 
 //    void saveDashboard(String dashboardId, Dashboard dashboard);
 //    Optional<Dashboard> getDashboard(String id);
-
-    // TODO: Make this a concrete object and create a repository
-    void saveDeviceConfig(Map<String, Object> config);
-    Map<String, Object> getDeviceConfig();
 
     // TODO: Set this directly on DeviceEntity?
     void markDeviceResponsive(String deviceId, boolean responsive);

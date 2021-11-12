@@ -1,10 +1,12 @@
-{
-  "basementCamGas": {
+[
+  {
+    "id": "basementCamGas",
     "statusCheckEnabled": false,
-    "endpoints": {
-      "/pic": {
+    "endpoints": [
+      {
+        "path": "/pic",
         "cachePeriod": 60
       }
-    }
+    ]
   }
-}
+]

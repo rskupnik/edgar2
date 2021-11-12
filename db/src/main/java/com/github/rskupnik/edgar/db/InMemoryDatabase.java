@@ -20,7 +20,6 @@ public class InMemoryDatabase implements Database {
 //    private final Map<String, Dashboard> dashboards = new HashMap<>();
     private final Map<String, Map<String, CachedCommandResponse>> commandResponseCache = new HashMap<>();
     private final Map<String, Boolean> deviceResponsiveness = new HashMap<>();
-    private final Map<String, Object> deviceConfig = new HashMap<>();
 
 //    @Override
 //    public Option<Device> findDevice(String id) {
@@ -115,17 +114,6 @@ public class InMemoryDatabase implements Database {
     @Override
     public boolean getDeviceResponsive(String deviceId) {
         return deviceResponsiveness.getOrDefault(deviceId, true);
-    }
-
-    @Override
-    public void saveDeviceConfig(Map<String, Object> config) {
-        this.deviceConfig.putAll(config);
-    }
-
-    @Override
-    public Map<String, Object> getDeviceConfig() {
-        // TODO: This return the real map underneath instead of a copy
-        return deviceConfig;
     }
 
     // TODO: Move to Cache
