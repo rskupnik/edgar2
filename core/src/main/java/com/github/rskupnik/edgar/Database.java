@@ -14,8 +14,8 @@ public interface Database {
 //    List<Device> getAll();
 //    void removeDevice(String id);
 
-    Option<DeviceLayout> findDeviceLayout(String id);
-    void saveDeviceLayout(DeviceLayout deviceLayout);
+//    Option<DeviceLayout> findDeviceLayout(String id);
+//    void saveDeviceLayout(DeviceLayout deviceLayout);
 
     void saveDeviceStatus(String deviceId, DeviceStatus status);
     void removeDeviceStatus(String deviceId);

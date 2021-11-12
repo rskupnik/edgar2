@@ -12,7 +12,7 @@ import java.util.*;
 public class InMemoryDatabase implements Database {
 
     //private final Map<String, Device> devices = new HashMap<>();
-    private final Map<String, DeviceLayout> deviceLayouts = new HashMap<>();
+//    private final Map<String, DeviceLayout> deviceLayouts = new HashMap<>();
     private final Map<String, DeviceStatus> deviceStatus = new HashMap<>();
     private final Map<String, ActivationPeriods> deviceActivationPeriods = new HashMap<>();
     private final Map<String, Dashboard> dashboards = new HashMap<>();
@@ -40,15 +40,15 @@ public class InMemoryDatabase implements Database {
 //        devices.remove(id);
 //    }
 
-    @Override
-    public Option<DeviceLayout> findDeviceLayout(String id) {
-        return Option.of(deviceLayouts.get(id));
-    }
-
-    @Override
-    public void saveDeviceLayout(DeviceLayout deviceLayout) {
-        deviceLayouts.put(deviceLayout.getId(), deviceLayout);
-    }
+//    @Override
+//    public Option<DeviceLayout> findDeviceLayout(String id) {
+//        return Option.of(deviceLayouts.get(id));
+//    }
+//
+//    @Override
+//    public void saveDeviceLayout(DeviceLayout deviceLayout) {
+//        deviceLayouts.put(deviceLayout.getId(), deviceLayout);
+//    }
 
     @Override
     public void saveDeviceStatus(String deviceId, DeviceStatus status) {

@@ -122,10 +122,10 @@ class EdgarImpl implements Edgar {
                 .forEach(d -> database.markDeviceResponsive(d._1.getId(), d._2.isResponsive()));
     }
 
-    @Override
-    public void registerLayouts(List<DeviceLayout> layouts) {
-        layouts.forEach(database::saveDeviceLayout);
-    }
+//    @Override
+//    public void registerLayouts(List<DeviceLayout> layouts) {
+//        layouts.forEach(database::saveDeviceLayout);
+//    }
 
 //    @Override
 //    public List<Tuple2<Device, DeviceLayout>> getLayouts(List<Device> devices) {

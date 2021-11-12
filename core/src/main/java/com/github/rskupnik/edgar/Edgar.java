@@ -16,7 +16,7 @@ public interface Edgar {
     boolean isDeviceResponsive(String deviceId);
     CommandResponse sendCommand(String deviceId, String commandName, Map<String, String> params);
     void refreshDeviceStatus();
-    void registerLayouts(List<DeviceLayout> layouts);
+//    void registerLayouts(List<DeviceLayout> layouts);
     //List<Tuple2<Device, DeviceLayout>> getLayouts(List<Device> devices);
     Optional<DeviceStatus> getDeviceStatus(String deviceId);
     void loadDashboard(String name, String filename);

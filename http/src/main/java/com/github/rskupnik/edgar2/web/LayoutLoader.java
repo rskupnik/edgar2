@@ -28,17 +28,17 @@ public class LayoutLoader {
 
     @PostConstruct
     private void loadLayouts() {
-        List<String> values = args.getOptionValues("layout-file");
-        if (values == null || values.size() <= 0)
-            return;
-
-        String filePath = values.get(0);
-        System.out.println("Loading layouts from: " + filePath);
-        try {
-            var layouts = objectMapper.readValue(Paths.get(filePath).toFile(), new TypeReference<List<DeviceLayoutDto>>(){});
-            edgar.registerLayouts(layouts.stream().map(DeviceLayoutDto::toDomainClass).collect(Collectors.toList()));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        List<String> values = args.getOptionValues("layout-file");
+//        if (values == null || values.size() <= 0)
+//            return;
+//
+//        String filePath = values.get(0);
+//        System.out.println("Loading layouts from: " + filePath);
+//        try {
+//            var layouts = objectMapper.readValue(Paths.get(filePath).toFile(), new TypeReference<List<DeviceLayoutDto>>(){});
+//            edgar.registerLayouts(layouts.stream().map(DeviceLayoutDto::toDomainClass).collect(Collectors.toList()));
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 }
