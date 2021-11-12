@@ -2,7 +2,9 @@ package com.github.rskupnik.edgar;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.rskupnik.edgar.db.entity.DashboardEntity;
 import com.github.rskupnik.edgar.db.entity.DeviceEntity;
+import com.github.rskupnik.edgar.db.repository.DashboardRepository;
 import com.github.rskupnik.edgar.db.repository.DeviceRepository;
 import com.github.rskupnik.edgar.domain.*;
 import io.vavr.Tuple2;
@@ -18,14 +20,16 @@ class EdgarImpl implements Edgar {
 
     private final Database database;
     private final DeviceRepository deviceRepository;
+    private final DashboardRepository dashboardRepository;
 
     private final DeviceClient deviceClient = new ApacheHttpDeviceClient();
     private final ObjectMapper objectMapper = new ObjectMapper();
 
 
-    public EdgarImpl(Database database, DeviceRepository deviceRepository) {
+    public EdgarImpl(Database database, DeviceRepository deviceRepository, DashboardRepository dashboardRepository) {
         this.database = database;
         this.deviceRepository = deviceRepository;
+        this.dashboardRepository = dashboardRepository;
     }
 
     @Override
@@ -145,7 +149,7 @@ class EdgarImpl implements Edgar {
         try {
             var content = Files.readString(Path.of(filename));
             var converted = objectMapper.readValue(content, new TypeReference<HashMap<String, Object>>() {});
-            database.saveDashboard(id, fromMap(converted));
+            dashboardRepository.save(id, DashboardEntity.fromDomainObject(fromMap(converted)));
             System.out.println("Loaded dashboard: " + id);
         } catch (IOException e) {
             e.printStackTrace();
@@ -154,7 +158,7 @@ class EdgarImpl implements Edgar {
 
     @Override
     public Optional<Dashboard> getDashboard(String id) {
-        return database.getDashboard(id);
+        return dashboardRepository.find(id).map(Dashboard::fromEntity);
     }
 
     @Override

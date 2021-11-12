@@ -1,5 +1,6 @@
 package com.github.rskupnik.edgar;
 
+import com.github.rskupnik.edgar.db.repository.DashboardRepository;
 import com.github.rskupnik.edgar.db.repository.DeviceRepository;
 import com.github.rskupnik.edgar.domain.*;
 import io.vavr.Tuple2;
@@ -24,8 +25,8 @@ public interface Edgar {
     void loadDeviceConfig(String filename);
     void rediscoverUnresponsiveDevices();
 
-    static Edgar defaultImplementation(Database database, DeviceRepository deviceRepository) {
-        return new EdgarImpl(database, deviceRepository);
+    static Edgar defaultImplementation(Database database, DeviceRepository deviceRepository, DashboardRepository dashboardRepository) {
+        return new EdgarImpl(database, deviceRepository, dashboardRepository);
     }
 }
 

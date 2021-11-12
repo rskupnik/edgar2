@@ -1,21 +1,23 @@
 package com.github.rskupnik.edgar.db;
 
 import com.github.rskupnik.edgar.Database;
-import com.github.rskupnik.edgar.domain.*;
-import io.vavr.control.Option;
+import com.github.rskupnik.edgar.domain.CommandResponse;
+import com.github.rskupnik.edgar.domain.Device;
+import com.github.rskupnik.edgar.domain.DeviceEndpoint;
+import com.github.rskupnik.edgar.domain.DeviceStatus;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 public class InMemoryDatabase implements Database {
 
     //private final Map<String, Device> devices = new HashMap<>();
 //    private final Map<String, DeviceLayout> deviceLayouts = new HashMap<>();
     private final Map<String, DeviceStatus> deviceStatus = new HashMap<>();
-    private final Map<String, ActivationPeriods> deviceActivationPeriods = new HashMap<>();
-    private final Map<String, Dashboard> dashboards = new HashMap<>();
+//    private final Map<String, ActivationPeriods> deviceActivationPeriods = new HashMap<>();
+//    private final Map<String, Dashboard> dashboards = new HashMap<>();
     private final Map<String, Map<String, CachedCommandResponse>> commandResponseCache = new HashMap<>();
     private final Map<String, Boolean> deviceResponsiveness = new HashMap<>();
     private final Map<String, Object> deviceConfig = new HashMap<>();
@@ -75,15 +77,15 @@ public class InMemoryDatabase implements Database {
 //        return Optional.ofNullable(deviceActivationPeriods.get(deviceId));
 //    }
 
-    @Override
-    public void saveDashboard(String dashboardId, Dashboard dashboard) {
-        dashboards.put(dashboardId, dashboard);
-    }
-
-    @Override
-    public Optional<Dashboard> getDashboard(String id) {
-        return Optional.ofNullable(dashboards.get(id));
-    }
+//    @Override
+//    public void saveDashboard(String dashboardId, Dashboard dashboard) {
+//        dashboards.put(dashboardId, dashboard);
+//    }
+//
+//    @Override
+//    public Optional<Dashboard> getDashboard(String id) {
+//        return Optional.ofNullable(dashboards.get(id));
+//    }
 
     @Override
     public void cacheCommandResponse(Device device, DeviceEndpoint endpoint, CommandResponse commandResponse) {

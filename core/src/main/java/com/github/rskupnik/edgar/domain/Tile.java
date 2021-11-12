@@ -1,5 +1,7 @@
 package com.github.rskupnik.edgar.domain;
 
+import com.github.rskupnik.edgar.db.entity.TileEntity;
+
 import java.util.Map;
 
 public class Tile {
@@ -21,6 +23,19 @@ public class Tile {
         this.y = y;
         this.type = type;
         this.properties = properties;
+    }
+
+    public static Tile fromEntity(TileEntity entity) {
+        return new Tile(
+                entity.getName(),
+                entity.getDeviceId(),
+                entity.getEndpointId(),
+                entity.getDeviceType(),
+                entity.getX(),
+                entity.getY(),
+                entity.getType(),
+                entity.getProperties()
+        );
     }
 
     public String getName() {

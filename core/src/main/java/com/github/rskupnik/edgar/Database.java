@@ -17,6 +17,7 @@ public interface Database {
 //    Option<DeviceLayout> findDeviceLayout(String id);
 //    void saveDeviceLayout(DeviceLayout deviceLayout);
 
+    // TODO: Repository?
     void saveDeviceStatus(String deviceId, DeviceStatus status);
     void removeDeviceStatus(String deviceId);
     Optional<DeviceStatus> getDeviceStatus(String deviceId);
@@ -24,12 +25,14 @@ public interface Database {
 //    void saveActivationPeriods(String deviceId, ActivationPeriods activationPeriods);
 //    Optional<ActivationPeriods> getActivationPeriods(String deviceId);
 
-    void saveDashboard(String dashboardId, Dashboard dashboard);
-    Optional<Dashboard> getDashboard(String id);
+//    void saveDashboard(String dashboardId, Dashboard dashboard);
+//    Optional<Dashboard> getDashboard(String id);
 
+    // TODO: Make this a concrete object and create a repository
     void saveDeviceConfig(Map<String, Object> config);
     Map<String, Object> getDeviceConfig();
 
+    // TODO: Set this directly on DeviceEntity?
     void markDeviceResponsive(String deviceId, boolean responsive);
     boolean getDeviceResponsive(String deviceId);
 

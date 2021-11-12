@@ -1,6 +1,9 @@
 package com.github.rskupnik.edgar.domain;
 
+import com.github.rskupnik.edgar.db.entity.DashboardEntity;
+
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Dashboard {
 
@@ -8,6 +11,12 @@ public class Dashboard {
 
     public Dashboard(List<Tile> tiles) {
         this.tiles = tiles;
+    }
+
+    public static Dashboard fromEntity(DashboardEntity entity) {
+        return new Dashboard(
+                entity.getTiles().stream().map(Tile::fromEntity).collect(Collectors.toList())
+        );
     }
 
     public List<Tile> getTiles() {
