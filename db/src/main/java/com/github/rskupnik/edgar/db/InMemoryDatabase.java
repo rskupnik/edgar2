@@ -13,43 +13,8 @@ import java.util.Optional;
 
 public class InMemoryDatabase implements Database {
 
-    //private final Map<String, Device> devices = new HashMap<>();
-//    private final Map<String, DeviceLayout> deviceLayouts = new HashMap<>();
     private final Map<String, DeviceStatus> deviceStatus = new HashMap<>();
-//    private final Map<String, ActivationPeriods> deviceActivationPeriods = new HashMap<>();
-//    private final Map<String, Dashboard> dashboards = new HashMap<>();
     private final Map<String, Map<String, CachedCommandResponse>> commandResponseCache = new HashMap<>();
-//    private final Map<String, Boolean> deviceResponsiveness = new HashMap<>();
-
-//    @Override
-//    public Option<Device> findDevice(String id) {
-//        return Option.of(devices.get(id));
-//    }
-//
-//    @Override
-//    public void saveDevice(Device device) {
-//        devices.put(device.getId(), device);
-//    }
-//
-//    @Override
-//    public List<Device> getAll() {
-//        return new ArrayList<>(devices.values());
-//    }
-//
-//    @Override
-//    public void removeDevice(String id) {
-//        devices.remove(id);
-//    }
-
-//    @Override
-//    public Option<DeviceLayout> findDeviceLayout(String id) {
-//        return Option.of(deviceLayouts.get(id));
-//    }
-//
-//    @Override
-//    public void saveDeviceLayout(DeviceLayout deviceLayout) {
-//        deviceLayouts.put(deviceLayout.getId(), deviceLayout);
-//    }
 
     @Override
     public void saveDeviceStatus(String deviceId, DeviceStatus status) {
@@ -65,26 +30,6 @@ public class InMemoryDatabase implements Database {
     public Optional<DeviceStatus> getDeviceStatus(String deviceId) {
         return Optional.ofNullable(deviceStatus.get(deviceId));
     }
-
-//    @Override
-//    public void saveActivationPeriods(String deviceId, ActivationPeriods activationPeriods) {
-//        deviceActivationPeriods.put(deviceId, activationPeriods);
-//    }
-//
-//    @Override
-//    public Optional<ActivationPeriods> getActivationPeriods(String deviceId) {
-//        return Optional.ofNullable(deviceActivationPeriods.get(deviceId));
-//    }
-
-//    @Override
-//    public void saveDashboard(String dashboardId, Dashboard dashboard) {
-//        dashboards.put(dashboardId, dashboard);
-//    }
-//
-//    @Override
-//    public Optional<Dashboard> getDashboard(String id) {
-//        return Optional.ofNullable(dashboards.get(id));
-//    }
 
     @Override
     public void cacheCommandResponse(Device device, DeviceEndpoint endpoint, CommandResponse commandResponse) {
@@ -105,16 +50,6 @@ public class InMemoryDatabase implements Database {
             return Optional.empty();
         } else return Optional.of(cachedResponse.commandResponse);
     }
-
-//    @Override
-//    public void markDeviceResponsive(String deviceId, boolean responsive) {
-//        deviceResponsiveness.put(deviceId, responsive);
-//    }
-//
-//    @Override
-//    public boolean getDeviceResponsive(String deviceId) {
-//        return deviceResponsiveness.getOrDefault(deviceId, true);
-//    }
 
     // TODO: Move to Cache
     private class CachedCommandResponse {
