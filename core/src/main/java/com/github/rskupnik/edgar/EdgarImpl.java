@@ -57,7 +57,7 @@ class EdgarImpl implements Edgar {
 
     @Override
     public boolean isDeviceResponsive(String deviceId) {
-        return database.getDeviceResponsive(deviceId);
+        return deviceRepository.find(deviceId).map(DeviceEntity::isResponsive).orElse(false);
     }
 
     @Override
@@ -124,10 +124,12 @@ class EdgarImpl implements Edgar {
     public void rediscoverUnresponsiveDevices() {
         deviceRepository.findAll()
                 .stream()
-                .map(Device::fromEntity)
-                .filter(d -> !database.getDeviceResponsive(d.getId()))
-                .map(d -> new Tuple2<>(d, deviceClient.getStatus(d)))
-                .forEach(d -> database.markDeviceResponsive(d._1.getId(), d._2.isResponsive()));
+                .filter(d -> !d.isResponsive())
+                .map(d -> new Tuple2<>(d, deviceClient.getStatus(Device.fromEntity(d))))
+                .forEach(d -> {
+                    d._1.setResponsive(d._2.isResponsive());
+                    deviceRepository.save(d._1.getId(), d._1);
+                });
     }
 
 //    @Override
@@ -196,7 +198,9 @@ class EdgarImpl implements Edgar {
 
     private CommandResponse sendCommand(Device device, DeviceEndpoint endpoint, Map<String, String> params) {
         var response = deviceClient.sendCommand(device, endpoint, params);
-        database.markDeviceResponsive(device.getId(), !response.isError());
+        if (device.isResponsive() == response.isError()) {  // Only change when they differ
+            handleDeviceResponsivenessChange(device.getId(), !response.isError());
+        }
         return response;
     }
 
@@ -207,5 +211,12 @@ class EdgarImpl implements Edgar {
                 .findFirst()
                 .orElse(EndpointConfig.empty())
                 .getCachePeriod();
+    }
+
+    private void handleDeviceResponsivenessChange(String id, boolean responsive) {
+        deviceRepository.find(id).ifPresent(e -> {
+            e.setResponsive(responsive);
+            deviceRepository.save(id, e);
+        });
     }
 }

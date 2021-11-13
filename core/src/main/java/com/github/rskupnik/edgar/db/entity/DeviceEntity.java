@@ -10,14 +10,16 @@ public class DeviceEntity implements DbEntity {
     private String id;
     private String name;
     private String ip;
+    private boolean responsive = true;
     private List<DeviceEndpointEntity> endpoints;
 
     public DeviceEntity() {}
 
-    public DeviceEntity(String id, String name, String ip, List<DeviceEndpointEntity> endpoints) {
+    public DeviceEntity(String id, String name, String ip, boolean responsive, List<DeviceEndpointEntity> endpoints) {
         this.id = id;
         this.name = name;
         this.ip = ip;
+        this.responsive = responsive;
         this.endpoints = endpoints;
     }
 
@@ -26,6 +28,7 @@ public class DeviceEntity implements DbEntity {
                 device.getId(),
                 device.getName(),
                 device.getIp(),
+                device.isResponsive(),
                 device.getEndpoints().stream().map(DeviceEndpointEntity::fromDomainObject).collect(Collectors.toList())
         );
     }
@@ -52,6 +55,14 @@ public class DeviceEntity implements DbEntity {
 
     public void setIp(String ip) {
         this.ip = ip;
+    }
+
+    public boolean isResponsive() {
+        return responsive;
+    }
+
+    public void setResponsive(boolean responsive) {
+        this.responsive = responsive;
     }
 
     public List<DeviceEndpointEntity> getEndpoints() {

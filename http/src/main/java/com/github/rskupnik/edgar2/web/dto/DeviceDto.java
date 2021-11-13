@@ -24,6 +24,7 @@ public class DeviceDto {
             id,
             name,
             ip,
+            responsive,
             endpoints == null ? Collections.emptyList() : endpoints.stream().map(DeviceEndpointDto::toDomainClass).collect(Collectors.toList())
         );
     }
@@ -33,6 +34,7 @@ public class DeviceDto {
         dto.setId(device.getId());
         dto.setName(device.getName());
         dto.setIp(device.getIp());
+        dto.setResponsive(device.isResponsive());
         dto.setEndpoints(device.getEndpoints() == null ? Collections.emptyList() : device.getEndpoints().stream().map(DeviceEndpointDto::fromDomainClass).collect(Collectors.toList()));
         return dto;
     }

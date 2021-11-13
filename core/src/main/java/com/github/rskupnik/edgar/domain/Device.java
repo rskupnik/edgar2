@@ -11,12 +11,14 @@ public class Device {
     private final String id;
     private final String name;
     private final String ip;
+    private final boolean responsive;
     private final List<DeviceEndpoint> endpoints;
 
-    public Device(String id, String name, String ip, List<DeviceEndpoint> endpoints) {
+    public Device(String id, String name, String ip, boolean responsive, List<DeviceEndpoint> endpoints) {
         this.id = id;
         this.name = name;
         this.ip = ip;
+        this.responsive = responsive;
         this.endpoints = endpoints;
     }
 
@@ -25,6 +27,7 @@ public class Device {
                 entity.getId(),
                 entity.getName(),
                 entity.getIp(),
+                entity.isResponsive(),
                 entity.getEndpoints().stream().map(DeviceEndpoint::fromEntity).collect(Collectors.toList())
         );
     }
@@ -39,6 +42,10 @@ public class Device {
 
     public String getIp() {
         return ip;
+    }
+
+    public Boolean isResponsive() {
+        return responsive;
     }
 
     public List<DeviceEndpoint> getEndpoints() {

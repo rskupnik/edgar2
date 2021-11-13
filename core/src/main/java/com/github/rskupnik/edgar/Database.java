@@ -29,9 +29,9 @@ public interface Database {
 //    void saveDashboard(String dashboardId, Dashboard dashboard);
 //    Optional<Dashboard> getDashboard(String id);
 
-    // TODO: Set this directly on DeviceEntity?
-    void markDeviceResponsive(String deviceId, boolean responsive);
-    boolean getDeviceResponsive(String deviceId);
+//    // TODO: Set this directly on DeviceEntity?
+//    void markDeviceResponsive(String deviceId, boolean responsive);
+//    boolean getDeviceResponsive(String deviceId);
 
     // TODO: Move this to a separate object that deals with cache?
     void cacheCommandResponse(Device device, DeviceEndpoint endpoint, CommandResponse commandResponse);

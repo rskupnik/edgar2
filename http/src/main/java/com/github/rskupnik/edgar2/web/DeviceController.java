@@ -44,7 +44,6 @@ public class DeviceController {
                 .stream()
                 .map(d -> {
                     var dto = DeviceDto.fromDomainClass(d);
-                    dto.setResponsive(edgar.isDeviceResponsive(d.getId())); // TODO: Should this be a separate call?
 
                     // TODO: Seems parts of this are still used somewhere but is this needed?
                     var deviceStatus = edgar.getDeviceStatus(d.getId()).orElse(DeviceStatus.unknown());

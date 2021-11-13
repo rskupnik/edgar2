@@ -19,7 +19,7 @@ public class InMemoryDatabase implements Database {
 //    private final Map<String, ActivationPeriods> deviceActivationPeriods = new HashMap<>();
 //    private final Map<String, Dashboard> dashboards = new HashMap<>();
     private final Map<String, Map<String, CachedCommandResponse>> commandResponseCache = new HashMap<>();
-    private final Map<String, Boolean> deviceResponsiveness = new HashMap<>();
+//    private final Map<String, Boolean> deviceResponsiveness = new HashMap<>();
 
 //    @Override
 //    public Option<Device> findDevice(String id) {
@@ -106,15 +106,15 @@ public class InMemoryDatabase implements Database {
         } else return Optional.of(cachedResponse.commandResponse);
     }
 
-    @Override
-    public void markDeviceResponsive(String deviceId, boolean responsive) {
-        deviceResponsiveness.put(deviceId, responsive);
-    }
-
-    @Override
-    public boolean getDeviceResponsive(String deviceId) {
-        return deviceResponsiveness.getOrDefault(deviceId, true);
-    }
+//    @Override
+//    public void markDeviceResponsive(String deviceId, boolean responsive) {
+//        deviceResponsiveness.put(deviceId, responsive);
+//    }
+//
+//    @Override
+//    public boolean getDeviceResponsive(String deviceId) {
+//        return deviceResponsiveness.getOrDefault(deviceId, true);
+//    }
 
     // TODO: Move to Cache
     private class CachedCommandResponse {
