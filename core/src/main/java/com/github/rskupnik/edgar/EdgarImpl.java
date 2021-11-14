@@ -149,17 +149,8 @@ class EdgarImpl implements Edgar {
 
     @Override
     public void loadDashboard(String id, String filename) {
-        if (filename == null || !Files.exists(Path.of(filename)))
-            return;
-
-        try {
-            var content = Files.readString(Path.of(filename));
-            var converted = objectMapper.readValue(content, new TypeReference<HashMap<String, Object>>() {});
-            dashboardRepository.save(id, DashboardEntity.fromDomainObject(fromMap(converted)));
-            System.out.println("Loaded dashboard: " + id);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        loadFile(filename, new TypeReference<DashboardEntity>() {}).ifPresent(f -> dashboardRepository.save(id, f));
+        System.out.println("Loaded Dashboard: " + id);
     }
 
     @Override
@@ -169,31 +160,22 @@ class EdgarImpl implements Edgar {
 
     @Override
     public void loadDeviceConfig(String filename) {
+        loadFile(filename, new TypeReference<List<DeviceConfig>>() {}).ifPresent(deviceConfigStorage::save);
+        System.out.println("Loaded Device Config");
+    }
+
+    private <T> Optional<T> loadFile(String filename, TypeReference<T> ref) {
         if (filename == null || !Files.exists(Path.of(filename)))
-            return;
+            return Optional.empty();
 
         try {
             var content = Files.readString(Path.of(filename));
-            var config = objectMapper.readValue(content, new TypeReference<List<DeviceConfig>>() {});
-            deviceConfigStorage.save(config);
-            System.out.println("Loaded Device Config");
+            return Optional.of(objectMapper.readValue(content, ref));
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
 
-    // TODO: Do this in a better way
-    private Dashboard fromMap(Map<String, Object> map) {
-        var tiles = (List<Map<String, Object>>) map.get("tiles");
-        return new Dashboard(tiles.stream().map(t -> new Tile(
-                (String) t.get("name"),
-                (String) t.get("deviceId"),
-                (String) t.get("endpointId"),
-                (String) t.get("deviceType"),
-                (int) t.get("x"), (int) t.get("y"),
-                (String) t.get("type"),
-                (Map<String, Object>) t.getOrDefault("properties", Collections.emptyMap())
-        )).collect(Collectors.toList()));
+        return Optional.empty();
     }
 
     private CommandResponse sendCommand(Device device, DeviceEndpoint endpoint, Map<String, String> params) {
