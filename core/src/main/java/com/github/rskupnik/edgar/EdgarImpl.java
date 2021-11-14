@@ -25,9 +25,13 @@ class EdgarImpl implements Edgar {
     private final DeviceRepository deviceRepository;
     private final DashboardRepository dashboardRepository;
 
-    private final DeviceClient deviceClient = new ApacheHttpDeviceClient();
     private final DeviceConfigStorage deviceConfigStorage = new DeviceConfigStorage();
     private final ObjectMapper objectMapper = new ObjectMapper();
+
+    private final DeviceClient deviceClient = new CachedDeviceClient(
+            new ApacheHttpDeviceClient(),
+            (key) -> getEndpointCacheTime(key) * 1000
+    );
 
 
     public EdgarImpl(Database database, DeviceRepository deviceRepository, DashboardRepository dashboardRepository) {
@@ -82,24 +86,24 @@ class EdgarImpl implements Edgar {
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         // If this endpoint is cachable, check cache first
-        int endpointCacheTime = getEndpointCacheTime(deviceId, endpoint.getPath());
-        if (endpointCacheTime > 0) {
-            var cachedResponse = database.getCachedCommandResponse(device, endpoint, endpointCacheTime);
-            if (cachedResponse.isPresent()) {
-                System.out.println("Returning from cache");
-                return cachedResponse.get();
-            }
-        }
+//        int endpointCacheTime = getEndpointCacheTime(deviceId, endpoint.getPath());
+//        if (endpointCacheTime > 0) {
+//            var cachedResponse = database.getCachedCommandResponse(device, endpoint, endpointCacheTime);
+//            if (cachedResponse.isPresent()) {
+//                System.out.println("Returning from cache");
+//                return cachedResponse.get();
+//            }
+//        }
 
-        System.out.println("Making a new call");
+//        System.out.println("Making a new call");
         // Cache the response if needed
-        var response =  sendCommand(device, endpoint, filteredParams);
-        if (endpointCacheTime > 0) {
-            System.out.println("Caching response");
-            database.cacheCommandResponse(device, endpoint, response);
-        }
+//        var response =  sendCommand(device, endpoint, filteredParams);
+//        if (endpointCacheTime > 0) {
+//            System.out.println("Caching response");
+//            database.cacheCommandResponse(device, endpoint, response);
+//        }
 
-        return response;
+        return sendCommand(device, endpoint, filteredParams);
     }
 
     @Override
@@ -186,7 +190,10 @@ class EdgarImpl implements Edgar {
         return response;
     }
 
-    private int getEndpointCacheTime(String deviceId, String endpointPath) {
+    private int getEndpointCacheTime(String cacheKey) {
+        String[] split = cacheKey.split(":");
+        var deviceId = split[0];
+        var endpointPath = split[1];
         return deviceConfigStorage.get(deviceId).orElse(DeviceConfig.empty()).getEndpoints()
                 .stream()
                 .filter(c -> c.getPath().equals(endpointPath))

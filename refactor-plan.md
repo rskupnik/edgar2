@@ -27,6 +27,10 @@ That way we avoid making useless calls to devices.
 
 If a device is dead, grey it out on UI side. For such device, query `isAlive` on every refresh.
 
+If a device is unresponsive, block command calls to it. Make an `isAlive` call to it on every `refreshStatus` and only
+resume command calls once it becomes responsive again. Can probably remove the handleDeviceResponsiveness func on command
+calls then.
+
 ## Trigger refreshStatus on a clock server-side instead of each getDevices call
 
 Right now we trigger refreshStatus on each call to getDevices. Instead, make the server refresh status of devices

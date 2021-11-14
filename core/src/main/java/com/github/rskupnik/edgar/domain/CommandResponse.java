@@ -1,5 +1,6 @@
 package com.github.rskupnik.edgar.domain;
 
+import com.github.rskupnik.edgar.DeviceResponse;
 import org.apache.http.Header;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.util.EntityUtils;
@@ -10,7 +11,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class CommandResponse {
+public class CommandResponse implements DeviceResponse {
 
     private final int statusCode;
     private final byte[] body;
