@@ -64,6 +64,17 @@ class ApacheHttpDeviceClient implements DeviceClient {
     }
 
     @Override
+    public boolean isAlive(Device device) {
+        System.out.println("Checking if " + device.getId() + " is alive");
+        try (CloseableHttpResponse response = statusHttpClient.execute(new HttpGet("http://" + device.getIp() + "/isAlive"))) {
+            return response != null && response.getStatusLine().getStatusCode() == 200;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
     public CommandResponse sendCommand(Device device, DeviceEndpoint endpoint, Map<String, String> params) {
 
         URI uri = null;

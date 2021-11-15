@@ -42,18 +42,20 @@ class EdgarImpl implements Edgar {
 
     @Override
     public Either<String, Device> registerDevice(Device device) {
-        if (deviceRepository.find(device.getId()).isPresent()) {
-            return Either.left("This device is already registered");
+        var deviceEntity = deviceRepository.find(device.getId());
+        if (deviceEntity.isPresent()) {
+            deviceEntity.get().setResponsive(true);
+            deviceRepository.save(device.getId(), deviceEntity.get());
+        } else {
+            deviceRepository.save(device.getId(), DeviceEntity.fromDomainObject(device));
+            database.saveDeviceStatus(device.getId(), deviceClient.getStatus(device));  // TODO: Get rid of this and then simplify?
         }
-
-        deviceRepository.save(device.getId(), DeviceEntity.fromDomainObject(device));
-        database.saveDeviceStatus(device.getId(), deviceClient.getStatus(device));
         return Either.right(device);
     }
 
     @Override
     public List<Device> getDevices() {
-        refreshDeviceStatus();
+        //refreshDeviceStatus();
         return deviceRepository.findAll().stream()
                 .map(Device::fromEntity)
                 .collect(Collectors.toList());
@@ -71,6 +73,12 @@ class EdgarImpl implements Edgar {
         if (device == null) {
             System.out.println("This device doesn't exist");
             return CommandResponse.error("This device doesn't exist");
+        }
+
+        // Reject if device is unresponsive
+        if (!device.isResponsive()) {
+            System.out.println("Rejecting command call because device is unresponsive");
+            return CommandResponse.error("This device is unresponsive");
         }
 
         // Find the command in the device
@@ -103,7 +111,11 @@ class EdgarImpl implements Edgar {
 //            database.cacheCommandResponse(device, endpoint, response);
 //        }
 
-        return sendCommand(device, endpoint, filteredParams);
+        var response = deviceClient.sendCommand(device, endpoint, filteredParams);
+        if (device.isResponsive() == response.isError()) {  // Only change when they differ
+            handleDeviceResponsivenessChange(device.getId(), !response.isError());
+        }
+        return response;
     }
 
     @Override
@@ -126,12 +138,20 @@ class EdgarImpl implements Edgar {
 
     @Override
     public void rediscoverUnresponsiveDevices() {
+//        deviceRepository.findAll()
+//                .stream()
+//                .filter(d -> !d.isResponsive())
+//                .map(d -> new Tuple2<>(d, deviceClient.getStatus(Device.fromEntity(d))))
+//                .forEach(d -> {
+//                    d._1.setResponsive(d._2.isResponsive());
+//                    deviceRepository.save(d._1.getId(), d._1);
+//                });
         deviceRepository.findAll()
                 .stream()
                 .filter(d -> !d.isResponsive())
-                .map(d -> new Tuple2<>(d, deviceClient.getStatus(Device.fromEntity(d))))
+                .map(d -> new Tuple2<>(d, deviceClient.isAlive(Device.fromEntity(d))))
                 .forEach(d -> {
-                    d._1.setResponsive(d._2.isResponsive());
+                    d._1.setResponsive(d._2);
                     deviceRepository.save(d._1.getId(), d._1);
                 });
     }
@@ -180,14 +200,6 @@ class EdgarImpl implements Edgar {
         }
 
         return Optional.empty();
-    }
-
-    private CommandResponse sendCommand(Device device, DeviceEndpoint endpoint, Map<String, String> params) {
-        var response = deviceClient.sendCommand(device, endpoint, params);
-        if (device.isResponsive() == response.isError()) {  // Only change when they differ
-            handleDeviceResponsivenessChange(device.getId(), !response.isError());
-        }
-        return response;
     }
 
     private int getEndpointCacheTime(String cacheKey) {

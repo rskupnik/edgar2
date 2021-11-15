@@ -29,6 +29,11 @@ class CachedDeviceClient implements DeviceClient {
     }
 
     @Override
+    public boolean isAlive(Device device) {
+        return delegate.isAlive(device);
+    }
+
+    @Override
     public CommandResponse sendCommand(Device device, DeviceEndpoint endpoint, Map<String, String> params) {
         final String cacheKey = buildCacheKey(device.getId(), endpoint.getPath());
         System.out.println("Cache key is: " + cacheKey);

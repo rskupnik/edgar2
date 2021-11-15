@@ -47,3 +47,11 @@ in the exact same way but is just a different object. Make separate DB entities 
 DeviceStatus needed?
 Layouts needed?
 Remove ActivationPeriods for now
+
+## Get rid of status check scheduled job
+
+## Make TOGGLE use /status as just another command
+
+## Get rid of getStatus() from DeviceClient
+
+## Get rid of DeviceStatus and everything that uses it

@@ -17,8 +17,8 @@ public class ScheduledJobs {
 
     @Scheduled(fixedDelayString = "${devices.statusCheck.delay}", initialDelayString = "${devices.statusCheck.initialDelay}")
     public void checkDeviceStatus() {
-        System.out.println("Checking device status");
-        edgar.refreshDeviceStatus();
+        //System.out.println("Checking device status");
+        //edgar.refreshDeviceStatus();
     }
 
     @Scheduled(fixedDelayString = "${devices.rediscoverUnresponsiveDevices.delay}", initialDelayString = "${devices.rediscoverUnresponsiveDevices.initialDelay}")

@@ -10,5 +10,6 @@ import java.util.Map;
 interface DeviceClient {
 
     DeviceStatus getStatus(Device device);
+    boolean isAlive(Device device);
     CommandResponse sendCommand(Device device, DeviceEndpoint endpoint, Map<String, String> params);
 }
