@@ -36,7 +36,7 @@ class CachedDeviceClient implements DeviceClient {
         System.out.println("Cache time is: " + cacheTime + "ms");
         if (cacheTime == 0) {
             System.out.println("Making a new call (no caching)");
-            return sendCommand(device, endpoint, params);
+            return delegate.sendCommand(device, endpoint, params);
         }
 
         var cachedResponse = cache.get(cacheKey);
