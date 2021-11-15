@@ -3,11 +3,16 @@
     {
       "name": "Room fan",
       "deviceId": "testDevice",
-      "endpointId": "/toggle",
       "deviceType": "toggle",
       "x": 2,
       "y": 2,
-      "type": "single"
+      "type": "single",
+      "endpoints": [
+        {
+          "id": "/toggle",
+          "activationType": "MANUAL"
+        }
+      ]
     },
     {
       "name": "Gas counter",
@@ -16,10 +21,15 @@
       "x": 3,
       "y": 1,
       "type": "quad",
-      "endpointId": "/pic",
-      "properties": {
-        "interval": 20
-      }
+      "endpoints": [
+        {
+          "id": "/pic",
+          "activationType": "INTERVAL",
+          "properties": {
+            "interval": 20
+          }
+        }
+      ]
     }
   ]
 }

@@ -2,41 +2,39 @@ package com.github.rskupnik.edgar.db.entity;
 
 import com.github.rskupnik.edgar.domain.Tile;
 
-import java.util.Map;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class TileEntity implements DbEntity {
 
     private String name;
     private String deviceId;
-    private String endpointId;
     private String deviceType;
     private int x, y;
     private String type;
-    private Map<String, Object> properties;
+    private List<DashboardEndpointEntity> endpoints;
 
     public TileEntity() {}
 
-    public TileEntity(String name, String deviceId, String endpointId, String deviceType, int x, int y, String type, Map<String, Object> properties) {
+    public TileEntity(String name, String deviceId, String deviceType, int x, int y, String type, List<DashboardEndpointEntity> endpoints) {
         this.name = name;
         this.deviceId = deviceId;
-        this.endpointId = endpointId;
         this.deviceType = deviceType;
         this.x = x;
         this.y = y;
         this.type = type;
-        this.properties = properties;
+        this.endpoints = endpoints;
     }
 
     public static TileEntity fromDomainObject(Tile tile) {
         return new TileEntity(
                 tile.getName(),
                 tile.getDeviceId(),
-                tile.getEndpointId(),
                 tile.getDeviceType(),
                 tile.getX(),
                 tile.getY(),
                 tile.getType(),
-                tile.getProperties()
+                tile.getEndpoints().stream().map(DashboardEndpointEntity::fromDomainObject).collect(Collectors.toList())
         );
     }
 
@@ -54,14 +52,6 @@ public class TileEntity implements DbEntity {
 
     public void setDeviceId(String deviceId) {
         this.deviceId = deviceId;
-    }
-
-    public String getEndpointId() {
-        return endpointId;
-    }
-
-    public void setEndpointId(String endpointId) {
-        this.endpointId = endpointId;
     }
 
     public String getDeviceType() {
@@ -96,11 +86,11 @@ public class TileEntity implements DbEntity {
         this.type = type;
     }
 
-    public Map<String, Object> getProperties() {
-        return properties;
+    public List<DashboardEndpointEntity> getEndpoints() {
+        return endpoints;
     }
 
-    public void setProperties(Map<String, Object> properties) {
-        this.properties = properties;
+    public void setEndpoints(List<DashboardEndpointEntity> endpoints) {
+        this.endpoints = endpoints;
     }
 }

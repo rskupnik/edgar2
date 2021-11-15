@@ -50,7 +50,11 @@ Remove ActivationPeriods for now
 
 ## Get rid of status check scheduled job
 
-## Make TOGGLE use /status as just another command
+## Make TOGGLE use /isEnabled as just another command
+
+TODO NEXT: Adjust frontend to new form of dashboard config file.
+Make TRIGGER call the endpoint defined as manual on click.
+Make CAM_SINGLE_IMAGE call the /pic endpoint on interval, same as now, but defined in a different way
 
 ## Get rid of getStatus() from DeviceClient
 

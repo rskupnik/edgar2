@@ -2,36 +2,43 @@ package com.github.rskupnik.edgar2.web.dto;
 
 import com.github.rskupnik.edgar.domain.Tile;
 
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class TileDto {
 
     private String name;
     private String deviceId;
-    private String endpointId;
     private String deviceType;
     private Integer x, y;
     private String type;
-    private Map<String, Object> properties;
+    private List<DashboardEndpointDto> endpoints;
 
     public TileDto() {
 
     }
 
     public Tile toDomainClass() {
-        return new Tile(name, deviceId, endpointId, deviceType, x, y, type, properties);
+        return new Tile(
+                name,
+                deviceId,
+                deviceType,
+                x, y,
+                type,
+                endpoints.stream().map(DashboardEndpointDto::toDomainClass).collect(Collectors.toList())
+        );
     }
 
     public static TileDto fromDomainClass(Tile tile) {
         TileDto dto = new TileDto();
         dto.setName(tile.getName());
         dto.setDeviceId(tile.getDeviceId());
-        dto.setEndpointId(tile.getEndpointId());
         dto.setDeviceType(tile.getDeviceType());
         dto.setX(tile.getX());
         dto.setY(tile.getY());
         dto.setType(tile.getType());
-        dto.setProperties(tile.getProperties());
+        dto.setEndpoints(tile.getEndpoints().stream().map(DashboardEndpointDto::fromDomainClass).collect(Collectors.toList()));
         return dto;
     }
 
@@ -49,14 +56,6 @@ public class TileDto {
 
     public void setDeviceId(String deviceId) {
         this.deviceId = deviceId;
-    }
-
-    public String getEndpointId() {
-        return endpointId;
-    }
-
-    public void setEndpointId(String endpointId) {
-        this.endpointId = endpointId;
     }
 
     public Integer getX() {
@@ -91,11 +90,11 @@ public class TileDto {
         this.deviceType = deviceType;
     }
 
-    public Map<String, Object> getProperties() {
-        return properties;
+    public List<DashboardEndpointDto> getEndpoints() {
+        return endpoints;
     }
 
-    public void setProperties(Map<String, Object> properties) {
-        this.properties = properties;
+    public void setEndpoints(List<DashboardEndpointDto> endpoints) {
+        this.endpoints = endpoints;
     }
 }

@@ -2,39 +2,38 @@ package com.github.rskupnik.edgar.domain;
 
 import com.github.rskupnik.edgar.db.entity.TileEntity;
 
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Tile {
 
     private final String name;
     private final String deviceId;
-    private final String endpointId;
     private final String deviceType;
     private final int x, y;
     private final String type;
-    private final Map<String, Object> properties;
+    private final List<DashboardEndpoint> endpoints;
 
-    public Tile(String name, String deviceId, String endpointId, String deviceType, int x, int y, String type, Map<String, Object> properties) {
+    public Tile(String name, String deviceId, String deviceType, int x, int y, String type, List<DashboardEndpoint> endpoints) {
         this.name = name;
         this.deviceId = deviceId;
-        this.endpointId = endpointId;
         this.deviceType = deviceType;
         this.x = x;
         this.y = y;
         this.type = type;
-        this.properties = properties;
+        this.endpoints = endpoints;
     }
 
     public static Tile fromEntity(TileEntity entity) {
         return new Tile(
                 entity.getName(),
                 entity.getDeviceId(),
-                entity.getEndpointId(),
                 entity.getDeviceType(),
                 entity.getX(),
                 entity.getY(),
                 entity.getType(),
-                entity.getProperties()
+                entity.getEndpoints().stream().map(DashboardEndpoint::fromEntity).collect(Collectors.toList())
         );
     }
 
@@ -44,10 +43,6 @@ public class Tile {
 
     public String getDeviceId() {
         return deviceId;
-    }
-
-    public String getEndpointId() {
-        return endpointId;
     }
 
     public String getDeviceType() {
@@ -66,7 +61,7 @@ public class Tile {
         return type;
     }
 
-    public Map<String, Object> getProperties() {
-        return properties;
+    public List<DashboardEndpoint> getEndpoints() {
+        return endpoints;
     }
 }
