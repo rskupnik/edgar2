@@ -55,3 +55,5 @@ Remove ActivationPeriods for now
 ## Get rid of getStatus() from DeviceClient
 
 ## Get rid of DeviceStatus and everything that uses it
+
+## Completely remove unresponsive devices from memory once they fail x isAlive checks (or after time period) - configurable
