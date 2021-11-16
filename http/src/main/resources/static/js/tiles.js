@@ -107,10 +107,17 @@ function processDevices(data) {
 function findIntervalDevices(tiles, devices) {
     let output = [];
     for (const tile of tiles) {
-        if (tile.properties && tile.properties.interval && tile.properties.interval !== 0) {
-            for (const [key, device] of Object.entries(devices)) {
-                if (device.id === tile.deviceId) {
-                    output.push(tile);
+        if (tile.endpoints) {
+            for (const endpoint of tile.endpoints) {
+                if (endpoint.activationType !== "INTERVAL")
+                    continue
+
+                if (endpoint.properties && endpoint.properties.interval && endpoint.properties.interval !== 0) {
+                    for (const [key, device] of Object.entries(devices)) {
+                        if (device.id === tile.deviceId) {
+                            output.push(tile);
+                        }
+                    }
                 }
             }
         }
@@ -134,11 +141,18 @@ function findIntervalDevices(tiles, devices) {
  */
 function createIntervalCheckups(intervalCheckups, tilesWithIntervals) {
     for (const tile of tilesWithIntervals) {
-        let interval = tile.properties.interval;
-        if (!intervalCheckups[interval]) {
-            intervalCheckups[interval] = {};
+        for (const endpoint of tile.endpoints) {
+            if (endpoint.activationType !== "INTERVAL")
+                continue
+
+            if (endpoint.properties && endpoint.properties.interval && endpoint.properties.interval !== 0) {
+                let interval = endpoint.properties.interval
+                if (!intervalCheckups[interval]) {
+                    intervalCheckups[interval] = {};
+                }
+                intervalCheckups[interval][tile.deviceId] = tile;
+            }
         }
-        intervalCheckups[interval][tile.deviceId] = tile;
     }
 }
 
@@ -161,11 +175,15 @@ function cleanIntervalCheckups(intervalCheckups, devices) {
 function handleIntervalChecks(processedTiles, devices, intervalCheckups, intervals, tileProcessIntervalDataFuncs, responses) {
     // Find tiles with the interval property set
     let tilesWithIntervals = findIntervalDevices(processedTiles, devices);
-    //console.log(tilesWithIntervals)
+    console.log("TILES WITH INTERVALS")
+    console.log(tilesWithIntervals)
 
     // Populate the interval checkups object
     createIntervalCheckups(intervalCheckups, tilesWithIntervals)
     cleanIntervalCheckups(intervalCheckups, devices)
+
+    console.log("INTERVAL CHECKUPS")
+    console.log(intervalCheckups)
 
     /**
      * For all interval checkups, create an interval if none yet exists and remove one if no devices are present
@@ -183,18 +201,26 @@ function handleIntervalChecks(processedTiles, devices, intervalCheckups, interva
             console.log("Adding interval: " + key);
             intervals[key] = setInterval(() => {
                 for (const [id, tile] of Object.entries(value)) {
-                    axios({
-                        url: "http://" + window.location.host + "/devices/" + tile.deviceId + tile.endpointId,
-                        method: 'POST',
-                        responseType: 'arraybuffer' // TODO: This isn't always an arraybuffer
-                    }).then((response) => {
-                        responses[tile.deviceId] = tileProcessIntervalDataFuncs[tile.deviceType](response);
-                    });
+                    for (const endpoint of tile.endpoints) {
+                        axios({
+                            url: "http://" + window.location.host + "/devices/" + tile.deviceId + endpoint.id,
+                            method: 'POST',
+                            responseType: 'arraybuffer' // TODO: This isn't always an arraybuffer
+                        }).then((response) => {
+                            console.log("Putting response to ["+tile.deviceId+"]["+endpoint.id+"]")
+                            if (!responses[tile.deviceId]) {
+                                responses[tile.deviceId] = {}
+                            }
+                            responses[tile.deviceId][endpoint.id] = tileProcessIntervalDataFuncs[tile.deviceType][endpoint.id](response);
+                            console.log("Responses object:")
+                            console.log(responses)
+                        });
+                    }
                 }
             }, key * 1000);
         }
     }
-    // Dummy comment
+
     // Check to see if some intervals need to be removed
     let toBeRemoved = [];
     for (const [intervalValue, intervalInstance] of Object.entries(intervals)) {

@@ -52,7 +52,8 @@ Remove ActivationPeriods for now
 
 ## Make TOGGLE use /isEnabled as just another command
 
-TODO NEXT: Adjust frontend to new form of dashboard config file.
+Adjust frontend to new form of dashboard config file. DONE?
+NEXT: Remove intervals on unresponsive device? Or just delete devices if unresponsive for too long (see other point)
 Make TRIGGER call the endpoint defined as manual on click.
 Make CAM_SINGLE_IMAGE call the /pic endpoint on interval, same as now, but defined in a different way
 

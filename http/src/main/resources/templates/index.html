@@ -15,12 +15,10 @@
         <div id="container">
             <div :class="[tile.deviceType === 'none' ? 'tile' : 'populatedTile', tile.clazz]" :style="{ backgroundColor: tile.color }" v-for="tile in processedTiles">
                 <toggle v-if="tile.deviceType == 'toggle'"
-                        v-bind:tile="tile" v-bind:device="devices[tile.deviceId]"
-                        v-bind:endpoint="devices[tile.deviceId]?.endpoints[tile.endpointId]">
+                        v-bind:tile="tile" v-bind:device="devices[tile.deviceId]">
                 </toggle>
                 <cam-single-image v-if="tile.deviceType == 'cam-single-image'"
-                        v-bind:tile="tile" v-bind:device="devices[tile.deviceId]"
-                        v-bind:endpoint="devices[tile.deviceId]?.endpoints[tile.endpointId]">
+                        v-bind:tile="tile" v-bind:device="devices[tile.deviceId]">
                 </cam-single-image>
             </div>
         </div>
@@ -30,24 +28,24 @@
     <script type="text/javascript" th:src="@{/js/tiles.js}"></script>
     <script>
         Vue.component('toggle', {
-            props: ['tile', 'device', 'endpoint'],
+            props: ['tile', 'device'],
             template: `
                 <div class="singleTile populatedTile">
-                    <h2>{{ tile.name != null ? tile.name : (endpoint != null ? endpoint.name : (device != null ? device.name : "")) }}</h2>
+                    <h2>{{ tile.name != null ? tile.name : (device != null ? device.name : "") }}</h2>
                     <div class="centerflex">
-                        <input v-bind:id="'toggleCheckbox_' + device.id + '_' + endpoint.name" style="display: none" type="checkbox" @change="$root.sendCommand(device, endpoint)" v-model="device.status.params.enabled === 'true'"/>
-                        <label v-bind:for="'toggleCheckbox_' + device.id + '_' + endpoint.name"></label>
+                        <input v-bind:id="'toggleCheckbox_' + device.id" style="display: none" type="checkbox" @change="$root.sendCommand(device, '/toggle')" v-model="device.status.params.enabled === 'true'"/>
+                        <label v-bind:for="'toggleCheckbox_' + device.id"></label>
                     </div>
                 </div>
             `
         })
 
         Vue.component('cam-single-image', {
-            props: ['tile', 'device', 'endpoint'],
+            props: ['tile', 'device'],
             template: `
                 <div class="imageTile populatedTile">
-                    <h2>{{ tile.name != null ? tile.name : (endpoint != null ? endpoint.name : (device != null ? device.name : "Blurb")) }}</h2>
-                    <img v-bind:src="this.$parent.deviceResponses[device.id]">
+                    <h2>{{ tile.name != null ? tile.name : (device != null ? device.name : "Blurb") }}</h2>
+                    <img v-if="this.$parent.deviceResponses[device.id] != null" v-bind:src="this.$parent.deviceResponses[device.id]['/pic']">
                 </div>
             `
         })
@@ -74,14 +72,16 @@
                     deviceResponses: {},
                     testImg: "",
                     tileProcessIntervalDataFuncs: {
-                        "cam-single-image": function (response) {
-                            console.log("Processing response for cam-single-image");
-                            console.log(response)
-                            if (response.headers["Content-Length"] === "0")
-                                return;
-                            var bytes = new Uint8Array(response.data);
-                            var binary = bytes.reduce((data, b) => data += String.fromCharCode(b), '');
-                            return "data:image/jpeg;base64," + btoa(binary);
+                        "cam-single-image": {
+                            "/pic": function (response) {
+                                console.log("Processing response for cam-single-image, /pic endpoint");
+                                console.log(response)
+                                if (response.headers["Content-Length"] === "0")
+                                    return;
+                                var bytes = new Uint8Array(response.data);
+                                var binary = bytes.reduce((data, b) => data += String.fromCharCode(b), '');
+                                return "data:image/jpeg;base64," + btoa(binary);
+                            }
                         }
                     },
                     intervalCheckups: {},
@@ -173,12 +173,17 @@
                 });
             },
             methods: {
-                sendCommand: function (device, endpoint, callback = () => {}) {
-                    console.log("Sending command to " + device.id + "/" + endpoint.path)
-                    axios.post("http://" + window.location.host + "/devices/" + device.id + endpoint.path)
-                        .then((response) => {
-                            callback(response)
-                        })
+                sendCommand: function (device, endpointId, callback = () => {}) {
+                    console.log("Sending command to " + device.id + endpointId)
+                    for (const endpoint of device.endpoints) {
+                        if (endpoint.path === endpointId) {
+                            axios.post("http://" + window.location.host + "/devices/" + device.id + endpoint.path)
+                                .then((response) => {
+                                    callback(response)
+                                })
+                        }
+                    }
+
                 }
             }
         });
