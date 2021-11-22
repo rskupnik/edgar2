@@ -53,11 +53,15 @@ Remove ActivationPeriods for now
 ## Make TOGGLE use /isEnabled as just another command
 
 Adjust frontend to new form of dashboard config file. DONE?
-NEXT: Remove intervals on unresponsive device? Or just delete devices if unresponsive for too long (see other point)
-Make TRIGGER call the endpoint defined as manual on click.
-Make CAM_SINGLE_IMAGE call the /pic endpoint on interval, same as now, but defined in a different way
+Remove intervals on unresponsive device (DONE)? Or just delete devices if unresponsive for too long (see other point)
+Make TRIGGER call the endpoint defined as manual on click. DONE
+Make CAM_SINGLE_IMAGE call the /pic endpoint on interval, same as now, but defined in a different way DONE
 
 ## Get rid of getStatus() from DeviceClient
+
+To do that, we need to get rid of `device.status.params.enabled === 'true'` bit and replace it with an interval call
+to `/isEnabled`, store the result of that in the responses array and refer to that to enable or disable the checkbox.
+Would be best to update it at once when the value is changed and then overwrite with the response of isEnabled later on.
 
 ## Get rid of DeviceStatus and everything that uses it
 

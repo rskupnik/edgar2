@@ -175,7 +175,7 @@
             methods: {
                 sendCommand: function (device, endpointId, callback = () => {}) {
                     console.log("Sending command to " + device.id + endpointId)
-                    for (const endpoint of device.endpoints) {
+                    for (const [key, endpoint] of Object.entries(device.endpoints)) {
                         if (endpoint.path === endpointId) {
                             axios.post("http://" + window.location.host + "/devices/" + device.id + endpoint.path)
                                 .then((response) => {

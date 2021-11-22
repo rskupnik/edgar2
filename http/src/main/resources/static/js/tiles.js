@@ -160,14 +160,13 @@ function cleanIntervalCheckups(intervalCheckups, devices) {
     let toBeRemoved = [];
     for (const [k, v] of Object.entries(intervalCheckups)) {
         for (const [kk, vv] of Object.entries(v)) {
-            if (!devices[kk]) {
+            if (!devices[kk] || !devices[kk].responsive) {
                 toBeRemoved.push(k);
             }
         }
     }
 
     for (const tbr of toBeRemoved) {
-        console.log("Removing interval checkup: " + tbr);
         delete intervalCheckups[tbr];
     }
 }
