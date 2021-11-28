@@ -1,7 +1,6 @@
 package com.github.rskupnik.edgar.domain;
 
 import com.github.rskupnik.edgar.db.entity.DashboardEndpointEntity;
-import com.github.rskupnik.edgar.db.entity.DashboardEntity;
 
 import java.util.Map;
 
@@ -9,11 +8,13 @@ public class DashboardEndpoint {
 
     private final String id;
     private final EndpointActivationType activationType;
+    private final String responseType;
     private final Map<String, Object> properties;
 
-    public DashboardEndpoint(String id, EndpointActivationType activationType, Map<String, Object> properties) {
+    public DashboardEndpoint(String id, EndpointActivationType activationType, String responseType, Map<String, Object> properties) {
         this.id = id;
         this.activationType = activationType;
+        this.responseType = responseType;
         this.properties = properties;
     }
 
@@ -21,6 +22,7 @@ public class DashboardEndpoint {
         return new DashboardEndpoint(
                 entity.getId(),
                 entity.getActivationType(),
+                entity.getResponseType(),
                 entity.getProperties()
         );
     }
@@ -31,6 +33,10 @@ public class DashboardEndpoint {
 
     public EndpointActivationType getActivationType() {
         return activationType;
+    }
+
+    public String getResponseType() {
+        return responseType;
     }
 
     public Map<String, Object> getProperties() {

@@ -1,6 +1,7 @@
 package com.github.rskupnik.edgar2.web.dto;
 
 import com.github.rskupnik.edgar.domain.DeviceEndpoint;
+import com.github.rskupnik.edgar.domain.HttpMethod;
 
 import java.util.Collections;
 import java.util.List;
@@ -9,7 +10,7 @@ import java.util.stream.Collectors;
 public class DeviceEndpointDto {
 
     private String path;
-    private DeviceEndpoint.HttpMethod method;
+    private HttpMethod method;
     private String type;
     private List<DeviceEndpointParamDto> params;
 
@@ -38,11 +39,11 @@ public class DeviceEndpointDto {
         this.path = path;
     }
 
-    public DeviceEndpoint.HttpMethod getMethod() {
+    public HttpMethod getMethod() {
         return method;
     }
 
-    public void setMethod(DeviceEndpoint.HttpMethod method) {
+    public void setMethod(HttpMethod method) {
         this.method = method;
     }
 

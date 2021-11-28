@@ -109,10 +109,7 @@ function findIntervalDevices(tiles, devices) {
     for (const tile of tiles) {
         if (tile.endpoints) {
             for (const endpoint of tile.endpoints) {
-                if (endpoint.activationType !== "INTERVAL")
-                    continue
-
-                if (endpoint.properties && endpoint.properties.interval && endpoint.properties.interval !== 0) {
+                if (endpoint.activationType === "INTERVAL" && endpoint.properties && endpoint.properties.interval && endpoint.properties.interval !== 0) {
                     for (const [key, device] of Object.entries(devices)) {
                         if (device.id === tile.deviceId) {
                             output.push(tile);
@@ -201,12 +198,17 @@ function handleIntervalChecks(processedTiles, devices, intervalCheckups, interva
             intervals[key] = setInterval(() => {
                 for (const [id, tile] of Object.entries(value)) {
                     for (const endpoint of tile.endpoints) {
+                        if (endpoint.activationType !== "INTERVAL")
+                            continue
+
                         axios({
                             url: "http://" + window.location.host + "/devices/" + tile.deviceId + endpoint.id,
                             method: 'POST',
-                            responseType: 'arraybuffer' // TODO: This isn't always an arraybuffer
+                            responseType: endpoint.responseType ? endpoint.responseType : "json"
                         }).then((response) => {
                             console.log("Putting response to ["+tile.deviceId+"]["+endpoint.id+"]")
+                            console.log("The response is: ")
+                            console.log(response)
                             if (!responses[tile.deviceId]) {
                                 responses[tile.deviceId] = {}
                             }

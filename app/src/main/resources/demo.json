@@ -11,6 +11,13 @@
         {
           "id": "/toggle",
           "activationType": "MANUAL"
+        },
+        {
+          "id": "/isEnabled",
+          "activationType": "INTERVAL",
+          "properties": {
+            "interval": 20
+          }
         }
       ]
     },
@@ -25,6 +32,7 @@
         {
           "id": "/pic",
           "activationType": "INTERVAL",
+          "responseType": "arraybuffer",
           "properties": {
             "interval": 20
           }

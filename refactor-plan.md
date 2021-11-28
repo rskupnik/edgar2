@@ -63,6 +63,13 @@ To do that, we need to get rid of `device.status.params.enabled === 'true'` bit 
 to `/isEnabled`, store the result of that in the responses array and refer to that to enable or disable the checkbox.
 Would be best to update it at once when the value is changed and then overwrite with the response of isEnabled later on.
 
+Need to either change the "enabled" param to boolean or do a string compare.
+
+Need to figure out an approach where pressing the toggle flicks a local state which is also bound to the model, but
+at the same time we need to override that local state each time we get a response from the `/isEnabled` call.
+In such setup we will get immediate feedback and the isEnabled call will make sure we display the correct state
+eventually (after 20s at worst with current config).
+
 ## Get rid of DeviceStatus and everything that uses it
 
 ## Completely remove unresponsive devices from memory once they fail x isAlive checks (or after time period) - configurable

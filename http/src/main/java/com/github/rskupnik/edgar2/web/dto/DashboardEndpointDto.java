@@ -9,12 +9,14 @@ public class DashboardEndpointDto {
 
     private String id;
     private EndpointActivationType activationType;
+    private String responseType;
     private Map<String, Object> properties;
 
     public DashboardEndpoint toDomainClass() {
         return new DashboardEndpoint(
                 id,
                 activationType,
+                responseType,
                 properties
         );
     }
@@ -23,6 +25,7 @@ public class DashboardEndpointDto {
         var dto = new DashboardEndpointDto();
         dto.setId(endpoint.getId());
         dto.setActivationType(endpoint.getActivationType());
+        dto.setResponseType(endpoint.getResponseType());
         dto.setProperties(endpoint.getProperties());
         return dto;
     }
@@ -41,6 +44,14 @@ public class DashboardEndpointDto {
 
     public void setActivationType(EndpointActivationType activationType) {
         this.activationType = activationType;
+    }
+
+    public String getResponseType() {
+        return responseType;
+    }
+
+    public void setResponseType(String responseType) {
+        this.responseType = responseType;
     }
 
     public Map<String, Object> getProperties() {

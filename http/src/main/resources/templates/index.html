@@ -29,11 +29,24 @@
     <script>
         Vue.component('toggle', {
             props: ['tile', 'device'],
+            // mounted() {
+            //     this.$root.deviceResponses[this.device.id]['isEnabled'] = false
+            // },
+            // computed: {
+            //     deviceEnabled: function() {
+            //         return this.$root.deviceResponses[this.device.id] ? (this.$root.deviceResponses[this.device.id]['isEnabled'] ? this.$root.deviceResponses[this.device.id]['isEnabled'] : false) : false
+            //     }
+            // },
+            // methods: {
+            //     deviceEnabled: function(deviceId) {
+            //         return this.$root.deviceResponses[deviceId] ? (this.$root.deviceResponses[deviceId]['isEnabled'] ? this.$root.deviceResponses[deviceId]['isEnabled'] : false) : false
+            //     }
+            // },
             template: `
                 <div class="singleTile populatedTile">
                     <h2>{{ tile.name != null ? tile.name : (device != null ? device.name : "") }}</h2>
                     <div class="centerflex">
-                        <input v-bind:id="'toggleCheckbox_' + device.id" style="display: none" type="checkbox" @change="$root.sendCommand(device, '/toggle')" v-model="device.status.params.enabled === 'true'"/>
+                        <input v-bind:id="'toggleCheckbox_' + device.id" style="display: none" type="checkbox" v-if="$root.deviceResponses[device.id] && $root.deviceResponses[device.id]['/isEnabled']" @change="$root.sendCommand(device, '/toggle')" v-model="$root.deviceResponses[device.id]['/isEnabled']"/>
                         <label v-bind:for="'toggleCheckbox_' + device.id"></label>
                     </div>
                 </div>
@@ -81,6 +94,15 @@
                                 var bytes = new Uint8Array(response.data);
                                 var binary = bytes.reduce((data, b) => data += String.fromCharCode(b), '');
                                 return "data:image/jpeg;base64," + btoa(binary);
+                            }
+                        },
+                        "toggle": {
+                            "/isEnabled": function (response) {
+                                console.log("Processing response for toggle, /isEnabled endpoint")
+                                console.log("Response that we got")
+                                console.log(response)
+                                console.log("Output is: " + response.data.enabled)
+                                return response.data.enabled
                             }
                         }
                     },

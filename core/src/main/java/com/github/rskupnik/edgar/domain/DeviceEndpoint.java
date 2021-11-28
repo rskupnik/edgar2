@@ -36,8 +36,4 @@ public class DeviceEndpoint {
     public List<DeviceEndpointParam> getParams() {
         return params;
     }
-
-    public enum HttpMethod {
-        GET, POST, PUT, DELETE
-    }
 }

@@ -9,13 +9,15 @@ public class DashboardEndpointEntity {
 
     private String id;
     private EndpointActivationType activationType;
+    private String responseType;
     private Map<String, Object> properties;
 
     public DashboardEndpointEntity() {}
 
-    public DashboardEndpointEntity(String id, EndpointActivationType activationType, Map<String, Object> properties) {
+    public DashboardEndpointEntity(String id, EndpointActivationType activationType, String responseType, Map<String, Object> properties) {
         this.id = id;
         this.activationType = activationType;
+        this.responseType = responseType;
         this.properties = properties;
     }
 
@@ -23,6 +25,7 @@ public class DashboardEndpointEntity {
         return new DashboardEndpointEntity(
                 endpoint.getId(),
                 endpoint.getActivationType(),
+                endpoint.getResponseType(),
                 endpoint.getProperties()
         );
     }
@@ -41,6 +44,14 @@ public class DashboardEndpointEntity {
 
     public void setActivationType(EndpointActivationType activationType) {
         this.activationType = activationType;
+    }
+
+    public String getResponseType() {
+        return responseType;
+    }
+
+    public void setResponseType(String responseType) {
+        this.responseType = responseType;
     }
 
     public Map<String, Object> getProperties() {
