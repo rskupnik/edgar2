@@ -2,21 +2,15 @@ package com.github.rskupnik.edgar2.web;
 
 import com.github.rskupnik.edgar.Edgar;
 import com.github.rskupnik.edgar.domain.CommandResponse;
-import com.github.rskupnik.edgar.domain.DeviceStatus;
-import com.github.rskupnik.edgar.domain.EndpointBinding;
-import com.github.rskupnik.edgar.domain.EndpointLayout;
 import com.github.rskupnik.edgar2.web.dto.DeviceDto;
-import com.github.rskupnik.edgar2.web.dto.DeviceStatusDto;
 import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -42,18 +36,8 @@ public class DeviceController {
     public List<DeviceDto> getDevices() {
         return edgar.getDevices()
                 .stream()
-                .map(d -> {
-                    var dto = DeviceDto.fromDomainClass(d);
-
-                    // TODO: Seems parts of this are still used somewhere but is this needed?
-                    var deviceStatus = edgar.getDeviceStatus(d.getId()).orElse(DeviceStatus.unknown());
-                    dto.setStatus(DeviceStatusDto.fromDomainClass(deviceStatus));
-
-                    // Skipped the endpoints layouts
-                    // Skipped setting endpoints status?
-
-                    return dto;
-                }).collect(Collectors.toList());
+                .map(DeviceDto::fromDomainClass)
+                .collect(Collectors.toList());
     }
 
 //    @GetMapping("devices")
@@ -100,18 +84,5 @@ public class DeviceController {
             springResponse.header(entry.getKey(), entry.getValue());
         }
         return springResponse.body(response.getBody());
-    }
-
-    private Optional<EndpointLayout> findEndpointLayout(List<EndpointLayout> list, String path) {
-        return list.stream().filter(l -> l.getPath().equals(path)).findFirst();
-    }
-
-    private Map<String, String> convertBindings(List<EndpointBinding> bindings, DeviceStatus status) {
-        // TODO: Refactor to be more functional
-        Map<String, String> output = new HashMap<>();
-        bindings.forEach(b -> {
-            output.put(b.getUiParam(), status.getData().get(b.getDeviceParam()));
-        });
-        return output;
     }
 }

@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 
 class EdgarImpl implements Edgar {
 
-    private final Database database;
+//    private final Database database;
     private final DeviceRepository deviceRepository;
     private final DashboardRepository dashboardRepository;
 
@@ -34,8 +34,8 @@ class EdgarImpl implements Edgar {
     );
 
 
-    public EdgarImpl(Database database, DeviceRepository deviceRepository, DashboardRepository dashboardRepository) {
-        this.database = database;
+    public EdgarImpl(DeviceRepository deviceRepository, DashboardRepository dashboardRepository) {
+//        this.database = database;
         this.deviceRepository = deviceRepository;
         this.dashboardRepository = dashboardRepository;
     }
@@ -48,7 +48,7 @@ class EdgarImpl implements Edgar {
             deviceRepository.save(device.getId(), deviceEntity.get());
         } else {
             deviceRepository.save(device.getId(), DeviceEntity.fromDomainObject(device));
-            database.saveDeviceStatus(device.getId(), deviceClient.getStatus(device));  // TODO: Get rid of this and then simplify?
+//            database.saveDeviceStatus(device.getId(), deviceClient.getStatus(device));  // TODO: Get rid of this and then simplify?
         }
         return Either.right(device);
     }
@@ -118,23 +118,23 @@ class EdgarImpl implements Edgar {
         return response;
     }
 
-    @Override
-    public void refreshDeviceStatus() {
-        deviceRepository.findAll()
-                .stream()
-                .map(Device::fromEntity)
-                .filter(d -> deviceConfigStorage.get(d.getId()).orElse(DeviceConfig.empty()).isStatusCheckEnabled())
-                .map(d -> new Tuple2<>(d, deviceClient.getStatus(d)))
-                .forEach(d -> {
-                    if (!d._2.isResponsive()) {
-                        System.out.println("Removing device: " + d._1.getId() + " at IP " + d._1.getIp());
-                        deviceRepository.delete(d._1.getId());
-                    } else {
-                        System.out.println("Saving device status for device " + d._1.getId());
-                        database.saveDeviceStatus(d._1.getId(), d._2);
-                    }
-                });
-    }
+//    @Override
+//    public void refreshDeviceStatus() {
+//        deviceRepository.findAll()
+//                .stream()
+//                .map(Device::fromEntity)
+//                .filter(d -> deviceConfigStorage.get(d.getId()).orElse(DeviceConfig.empty()).isStatusCheckEnabled())
+//                .map(d -> new Tuple2<>(d, deviceClient.getStatus(d)))
+//                .forEach(d -> {
+//                    if (!d._2.isResponsive()) {
+//                        System.out.println("Removing device: " + d._1.getId() + " at IP " + d._1.getIp());
+//                        deviceRepository.delete(d._1.getId());
+//                    } else {
+//                        System.out.println("Saving device status for device " + d._1.getId());
+//                        database.saveDeviceStatus(d._1.getId(), d._2);
+//                    }
+//                });
+//    }
 
     @Override
     public void rediscoverUnresponsiveDevices() {
@@ -166,10 +166,10 @@ class EdgarImpl implements Edgar {
 //        return devices.stream().map(d -> new Tuple2<>(d, database.findDeviceLayout(d.getId()).getOrElse(createDefaultLayout(d)))).collect(Collectors.toList());
 //    }
 
-    @Override
-    public Optional<DeviceStatus> getDeviceStatus(String deviceId) {
-        return database.getDeviceStatus(deviceId);
-    }
+//    @Override
+//    public Optional<DeviceStatus> getDeviceStatus(String deviceId) {
+//        return database.getDeviceStatus(deviceId);
+//    }
 
     @Override
     public void loadDashboard(String id, String filename) {

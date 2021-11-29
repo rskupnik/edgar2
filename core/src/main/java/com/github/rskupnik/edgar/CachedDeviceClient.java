@@ -3,7 +3,6 @@ package com.github.rskupnik.edgar;
 import com.github.rskupnik.edgar.domain.CommandResponse;
 import com.github.rskupnik.edgar.domain.Device;
 import com.github.rskupnik.edgar.domain.DeviceEndpoint;
-import com.github.rskupnik.edgar.domain.DeviceStatus;
 
 import java.time.Instant;
 import java.util.HashMap;
@@ -21,11 +20,6 @@ class CachedDeviceClient implements DeviceClient {
     public CachedDeviceClient(DeviceClient delegate, Function<String, Integer> cacheTimeSupplier) {
         this.delegate = delegate;
         this.cacheTimeSupplier = cacheTimeSupplier;
-    }
-
-    @Override
-    public DeviceStatus getStatus(Device device) {
-        return delegate.getStatus(device);
     }
 
     @Override

@@ -16,17 +16,17 @@ public interface Edgar {
     List<Device> getDevices();
     boolean isDeviceResponsive(String deviceId);
     CommandResponse sendCommand(String deviceId, String commandName, Map<String, String> params);
-    void refreshDeviceStatus();
+//    void refreshDeviceStatus();
 //    void registerLayouts(List<DeviceLayout> layouts);
     //List<Tuple2<Device, DeviceLayout>> getLayouts(List<Device> devices);
-    Optional<DeviceStatus> getDeviceStatus(String deviceId);
+//    Optional<DeviceStatus> getDeviceStatus(String deviceId);
     void loadDashboard(String name, String filename);
     Optional<Dashboard> getDashboard(String id);
     void loadDeviceConfig(String filename);
     void rediscoverUnresponsiveDevices();
 
-    static Edgar defaultImplementation(Database database, DeviceRepository deviceRepository, DashboardRepository dashboardRepository) {
-        return new EdgarImpl(database, deviceRepository, dashboardRepository);
+    static Edgar defaultImplementation( DeviceRepository deviceRepository, DashboardRepository dashboardRepository) {
+        return new EdgarImpl(deviceRepository, dashboardRepository);
     }
 }
 
