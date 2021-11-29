@@ -15,7 +15,7 @@
         <div id="container">
             <div :class="[tile.deviceType === 'none' ? 'tile' : 'populatedTile', tile.clazz]" :style="{ backgroundColor: tile.color }" v-for="tile in processedTiles">
                 <toggle v-if="tile.deviceType == 'toggle'"
-                        v-bind:tile="tile" v-bind:device="devices[tile.deviceId]">
+                        v-bind:tile="tile" v-bind:device="devices[tile.deviceId]" v-bind:responses="deviceResponses[tile.deviceId]">
                 </toggle>
                 <cam-single-image v-if="tile.deviceType == 'cam-single-image'"
                         v-bind:tile="tile" v-bind:device="devices[tile.deviceId]">
@@ -28,25 +28,27 @@
     <script type="text/javascript" th:src="@{/js/tiles.js}"></script>
     <script>
         Vue.component('toggle', {
-            props: ['tile', 'device'],
-            // mounted() {
-            //     this.$root.deviceResponses[this.device.id]['isEnabled'] = false
-            // },
-            // computed: {
-            //     deviceEnabled: function() {
-            //         return this.$root.deviceResponses[this.device.id] ? (this.$root.deviceResponses[this.device.id]['isEnabled'] ? this.$root.deviceResponses[this.device.id]['isEnabled'] : false) : false
-            //     }
-            // },
-            // methods: {
-            //     deviceEnabled: function(deviceId) {
-            //         return this.$root.deviceResponses[deviceId] ? (this.$root.deviceResponses[deviceId]['isEnabled'] ? this.$root.deviceResponses[deviceId]['isEnabled'] : false) : false
-            //     }
-            // },
+            props: ['tile', 'device', 'responses'],
+            data: function() {
+                return {
+                    id: this.device.id
+                }
+            },
+            computed: {
+                deviceEnabled: {
+                    get: function() {
+                        return this.$root.deviceResponses[this.id] ? (this.$root.deviceResponses[this.id]['/isEnabled'] ? this.$root.deviceResponses[this.id]['/isEnabled'] === "true" : false) : false
+                    },
+                    set: function(newValue) {
+
+                    }
+                }
+            },
             template: `
                 <div class="singleTile populatedTile">
                     <h2>{{ tile.name != null ? tile.name : (device != null ? device.name : "") }}</h2>
                     <div class="centerflex">
-                        <input v-bind:id="'toggleCheckbox_' + device.id" style="display: none" type="checkbox" v-if="$root.deviceResponses[device.id] && $root.deviceResponses[device.id]['/isEnabled']" @change="$root.sendCommand(device, '/toggle')" v-model="$root.deviceResponses[device.id]['/isEnabled']"/>
+                        <input v-bind:id="'toggleCheckbox_' + device.id" style="display: none" type="checkbox" @change="$root.sendCommand(device, '/toggle')" v-model="deviceEnabled"/>
                         <label v-bind:for="'toggleCheckbox_' + device.id"></label>
                     </div>
                 </div>
