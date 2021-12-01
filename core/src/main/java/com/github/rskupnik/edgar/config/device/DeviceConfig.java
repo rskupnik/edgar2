@@ -6,7 +6,7 @@ import java.util.List;
 public class DeviceConfig {
 
     private String id;
-    private boolean statusCheckEnabled = true;
+    private int unresponsiveTimeout;
     private List<EndpointConfig> endpoints = Collections.emptyList();
 
     public static DeviceConfig empty() {
@@ -21,12 +21,12 @@ public class DeviceConfig {
         this.id = id;
     }
 
-    public boolean isStatusCheckEnabled() {
-        return statusCheckEnabled;
+    public int getUnresponsiveTimeout() {
+        return unresponsiveTimeout;
     }
 
-    public void setStatusCheckEnabled(boolean statusCheckEnabled) {
-        this.statusCheckEnabled = statusCheckEnabled;
+    public void setUnresponsiveTimeout(int unresponsiveTimeout) {
+        this.unresponsiveTimeout = unresponsiveTimeout;
     }
 
     public List<EndpointConfig> getEndpoints() {

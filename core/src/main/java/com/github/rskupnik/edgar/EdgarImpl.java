@@ -9,14 +9,20 @@ import com.github.rskupnik.edgar.db.entity.DashboardEntity;
 import com.github.rskupnik.edgar.db.entity.DeviceEntity;
 import com.github.rskupnik.edgar.db.repository.DashboardRepository;
 import com.github.rskupnik.edgar.db.repository.DeviceRepository;
-import com.github.rskupnik.edgar.domain.*;
+import com.github.rskupnik.edgar.domain.CommandResponse;
+import com.github.rskupnik.edgar.domain.Dashboard;
+import com.github.rskupnik.edgar.domain.Device;
+import com.github.rskupnik.edgar.domain.DeviceEndpoint;
 import io.vavr.Tuple2;
 import io.vavr.control.Either;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.time.Instant;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 class EdgarImpl implements Edgar {
@@ -112,9 +118,18 @@ class EdgarImpl implements Edgar {
 //        }
 
         var response = deviceClient.sendCommand(device, endpoint, filteredParams);
+
         if (device.isResponsive() == response.isError()) {  // Only change when they differ
             handleDeviceResponsivenessChange(device.getId(), !response.isError());
         }
+
+        if (device.isResponsive()) {
+            deviceRepository.find(device.getId()).ifPresent(e -> {
+                e.setLastSuccessResponseTimestamp(Instant.now().toEpochMilli());
+                deviceRepository.save(e.getId(), e);
+            });
+        }
+
         return response;
     }
 
@@ -146,6 +161,18 @@ class EdgarImpl implements Edgar {
 //                    d._1.setResponsive(d._2.isResponsive());
 //                    deviceRepository.save(d._1.getId(), d._1);
 //                });
+        deviceRepository.findAll()
+                .stream()
+                .filter(d -> !d.isResponsive())
+                .map(d -> new Tuple2<>(deviceConfigStorage.get(d.getId()), deviceRepository.find(d.getId())))
+                .filter(t -> t._1.isPresent() && t._2.isPresent())
+                .map(t -> new Tuple2<>(t._1.get(), t._2.get()))
+                .filter(t -> Instant.now().toEpochMilli() - (t._1.getUnresponsiveTimeout() * 1000) > t._2.getLastSuccessResponseTimestamp())
+                .forEach(t -> {
+                    System.out.println("Removing unresponsive device: " + t._1.getId());
+                    deviceRepository.delete(t._1.getId());
+                });
+
         deviceRepository.findAll()
                 .stream()
                 .filter(d -> !d.isResponsive())

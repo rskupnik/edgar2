@@ -73,3 +73,7 @@ eventually (after 20s at worst with current config).
 ## Get rid of DeviceStatus and everything that uses it
 
 ## Completely remove unresponsive devices from memory once they fail x isAlive checks (or after time period) - configurable
+
+ALMOST DONE
+
+TODO: Remove the display on frontend (or grey it out to mark a device that should be there but is not?)

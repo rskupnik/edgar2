@@ -2,6 +2,7 @@ package com.github.rskupnik.edgar.db.entity;
 
 import com.github.rskupnik.edgar.domain.Device;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -11,6 +12,7 @@ public class DeviceEntity implements DbEntity {
     private String name;
     private String ip;
     private boolean responsive = true;
+    private long lastSuccessResponseTimestamp = Instant.now().toEpochMilli();
     private List<DeviceEndpointEntity> endpoints;
 
     public DeviceEntity() {}
@@ -63,6 +65,14 @@ public class DeviceEntity implements DbEntity {
 
     public void setResponsive(boolean responsive) {
         this.responsive = responsive;
+    }
+
+    public long getLastSuccessResponseTimestamp() {
+        return lastSuccessResponseTimestamp;
+    }
+
+    public void setLastSuccessResponseTimestamp(long lastSuccessResponseTimestamp) {
+        this.lastSuccessResponseTimestamp = lastSuccessResponseTimestamp;
     }
 
     public List<DeviceEndpointEntity> getEndpoints() {
