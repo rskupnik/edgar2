@@ -13,11 +13,11 @@
 <body>
     <div id="app">
         <div id="container">
-            <div :class="[tile.deviceType === 'none' ? 'tile' : 'populatedTile', tile.clazz]" :style="{ backgroundColor: tile.color }" v-for="tile in processedTiles">
-                <toggle v-if="tile.deviceType == 'toggle'"
+            <div :class="[tile.deviceType === 'none' || !devices[tile.deviceId] ? 'tile' : 'populatedTile', tile.clazz, tile.deviceType === 'none' || (devices[tile.deviceId] && devices[tile.deviceId].responsive) ? 'nop' : 'unresponsiveTile']" :style="{ backgroundColor: tile.color }" v-for="tile in processedTiles">
+                <toggle v-if="tile.deviceType == 'toggle' && devices[tile.deviceId]"
                         v-bind:tile="tile" v-bind:device="devices[tile.deviceId]" v-bind:responses="deviceResponses[tile.deviceId]">
                 </toggle>
-                <cam-single-image v-if="tile.deviceType == 'cam-single-image'"
+                <cam-single-image v-if="tile.deviceType == 'cam-single-image' && devices[tile.deviceId]"
                         v-bind:tile="tile" v-bind:device="devices[tile.deviceId]">
                 </cam-single-image>
             </div>
