@@ -27,7 +27,6 @@ import java.util.stream.Collectors;
 
 class EdgarImpl implements Edgar {
 
-//    private final Database database;
     private final DeviceRepository deviceRepository;
     private final DashboardRepository dashboardRepository;
 
@@ -41,7 +40,6 @@ class EdgarImpl implements Edgar {
 
 
     public EdgarImpl(DeviceRepository deviceRepository, DashboardRepository dashboardRepository) {
-//        this.database = database;
         this.deviceRepository = deviceRepository;
         this.dashboardRepository = dashboardRepository;
     }
@@ -54,22 +52,15 @@ class EdgarImpl implements Edgar {
             deviceRepository.save(device.getId(), deviceEntity.get());
         } else {
             deviceRepository.save(device.getId(), DeviceEntity.fromDomainObject(device));
-//            database.saveDeviceStatus(device.getId(), deviceClient.getStatus(device));  // TODO: Get rid of this and then simplify?
         }
         return Either.right(device);
     }
 
     @Override
     public List<Device> getDevices() {
-        //refreshDeviceStatus();
         return deviceRepository.findAll().stream()
                 .map(Device::fromEntity)
                 .collect(Collectors.toList());
-    }
-
-    @Override
-    public boolean isDeviceResponsive(String deviceId) {
-        return deviceRepository.find(deviceId).map(DeviceEntity::isResponsive).orElse(false);
     }
 
     @Override
@@ -99,24 +90,6 @@ class EdgarImpl implements Edgar {
                 .filter(e -> endpoint.getParams().stream().anyMatch(edp -> edp.getName().equals(e.getKey())))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-        // If this endpoint is cachable, check cache first
-//        int endpointCacheTime = getEndpointCacheTime(deviceId, endpoint.getPath());
-//        if (endpointCacheTime > 0) {
-//            var cachedResponse = database.getCachedCommandResponse(device, endpoint, endpointCacheTime);
-//            if (cachedResponse.isPresent()) {
-//                System.out.println("Returning from cache");
-//                return cachedResponse.get();
-//            }
-//        }
-
-//        System.out.println("Making a new call");
-        // Cache the response if needed
-//        var response =  sendCommand(device, endpoint, filteredParams);
-//        if (endpointCacheTime > 0) {
-//            System.out.println("Caching response");
-//            database.cacheCommandResponse(device, endpoint, response);
-//        }
-
         var response = deviceClient.sendCommand(device, endpoint, filteredParams);
 
         if (device.isResponsive() == response.isError()) {  // Only change when they differ
@@ -133,34 +106,8 @@ class EdgarImpl implements Edgar {
         return response;
     }
 
-//    @Override
-//    public void refreshDeviceStatus() {
-//        deviceRepository.findAll()
-//                .stream()
-//                .map(Device::fromEntity)
-//                .filter(d -> deviceConfigStorage.get(d.getId()).orElse(DeviceConfig.empty()).isStatusCheckEnabled())
-//                .map(d -> new Tuple2<>(d, deviceClient.getStatus(d)))
-//                .forEach(d -> {
-//                    if (!d._2.isResponsive()) {
-//                        System.out.println("Removing device: " + d._1.getId() + " at IP " + d._1.getIp());
-//                        deviceRepository.delete(d._1.getId());
-//                    } else {
-//                        System.out.println("Saving device status for device " + d._1.getId());
-//                        database.saveDeviceStatus(d._1.getId(), d._2);
-//                    }
-//                });
-//    }
-
     @Override
     public void rediscoverUnresponsiveDevices() {
-//        deviceRepository.findAll()
-//                .stream()
-//                .filter(d -> !d.isResponsive())
-//                .map(d -> new Tuple2<>(d, deviceClient.getStatus(Device.fromEntity(d))))
-//                .forEach(d -> {
-//                    d._1.setResponsive(d._2.isResponsive());
-//                    deviceRepository.save(d._1.getId(), d._1);
-//                });
         deviceRepository.findAll()
                 .stream()
                 .filter(d -> !d.isResponsive())
@@ -182,21 +129,6 @@ class EdgarImpl implements Edgar {
                     deviceRepository.save(d._1.getId(), d._1);
                 });
     }
-
-//    @Override
-//    public void registerLayouts(List<DeviceLayout> layouts) {
-//        layouts.forEach(database::saveDeviceLayout);
-//    }
-
-//    @Override
-//    public List<Tuple2<Device, DeviceLayout>> getLayouts(List<Device> devices) {
-//        return devices.stream().map(d -> new Tuple2<>(d, database.findDeviceLayout(d.getId()).getOrElse(createDefaultLayout(d)))).collect(Collectors.toList());
-//    }
-
-//    @Override
-//    public Optional<DeviceStatus> getDeviceStatus(String deviceId) {
-//        return database.getDeviceStatus(deviceId);
-//    }
 
     @Override
     public void loadDashboard(String id, String filename) {

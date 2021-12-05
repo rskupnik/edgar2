@@ -24,7 +24,6 @@
         </div>
     </div>
 
-    <script type="text/javascript" th:src="@{/js/components.js}"></script>
     <script type="text/javascript" th:src="@{/js/tiles.js}"></script>
     <script>
         Vue.component('toggle', {
@@ -65,18 +64,6 @@
             `
         })
 
-        // TODO: Grey-out a device that went down but is expected to be on dashboard
-        // TODO: Instead of params.enabled use endpoints[] for source of truth
-        // TODO: Suppress errors that are appearing when devices disappears
-        // TODO: Cleanup
-        // TODO: Remove layouts
-        // TODO: Implement proper logging
-        // TODO: Cleanup backend
-        // TODO: BUG: Device gets removed if it doesn't return "enabled": "true" in status response - but that should only indicate if a device is toggled? Doesn't make sense for the cam
-        // TODO: Cache the image server-side?
-        // TODO: Remove interval when no device present for it
-        // TODO: Disconnecting a device causes issues when calls are still made to it - introduce a short timeout and/or circuit breaker?
-
         var app = new Vue({
             el: '#app',
             data() {
@@ -85,12 +72,11 @@
                     dashboard: null,
                     processedTiles: [],
                     deviceResponses: {},
-                    testImg: "",
                     tileProcessIntervalDataFuncs: {
                         "cam-single-image": {
                             "/pic": function (response) {
-                                console.log("Processing response for cam-single-image, /pic endpoint");
-                                console.log(response)
+                                // console.log("Processing response for cam-single-image, /pic endpoint");
+                                // console.log(response)
                                 if (response.headers["Content-Length"] === "0")
                                     return;
                                 var bytes = new Uint8Array(response.data);
@@ -100,63 +86,20 @@
                         },
                         "toggle": {
                             "/isEnabled": function (response) {
-                                console.log("Processing response for toggle, /isEnabled endpoint")
-                                console.log("Response that we got")
-                                console.log(response)
-                                console.log("Output is: " + response.data.enabled)
+                                // console.log("Processing response for toggle, /isEnabled endpoint")
+                                // console.log("Response that we got")
+                                // console.log(response)
+                                // console.log("Output is: " + response.data.enabled)
                                 return response.data.enabled
                             }
                         }
                     },
                     intervalCheckups: {},
-                    intervals: {},
-                    testDevices: {
-                        "basementCamGas": {
-                            "id": "basementCamGas",
-                            "name": "Gas usage monitor",
-                            "ip": "192.168.0.133",
-                            "endpoints": [
-                                {
-                                    "path": "/pic",
-                                    "method": "POST",
-                                    "type": "default",
-                                    "params": []
-                                }
-                            ],
-                            "status": {
-                                "responsive": true,
-                                "params": {
-                                    "enabled": "true"
-                                },
-                                "endpoints": {
-                                    "/pic": {
-                                        "enabled": "true"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    testLayout: [
-                        {
-                            "x": 2,
-                            "y": 2,
-                            "type": "horizontal"
-                        },
-                        {
-                            "x": 4,
-                            "y": 3,
-                            "type": "quad"
-                        },
-                        {
-                            "x": 7,
-                            "y": 2,
-                            "type": "vertical"
-                        }
-                    ]
+                    intervals: {}
                 }
             },
             mounted() {
-                console.log("ON MOUNTED")
+                // console.log("ON MOUNTED")
                 let promises = [];
                 promises.push(
                     axios.get('http://' + window.location.host + '/dashboards/' + window.location.pathname.split('/')[2])
@@ -198,7 +141,7 @@
             },
             methods: {
                 sendCommand: function (device, endpointId, callback = () => {}) {
-                    console.log("Sending command to " + device.id + endpointId)
+                    // console.log("Sending command to " + device.id + endpointId)
                     for (const [key, endpoint] of Object.entries(device.endpoints)) {
                         if (endpoint.path === endpointId) {
                             axios.post("http://" + window.location.host + "/devices/" + device.id + endpoint.path)

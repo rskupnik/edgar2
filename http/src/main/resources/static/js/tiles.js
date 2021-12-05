@@ -1,5 +1,4 @@
 function chooseRandomColor() {
-    //let colors = ["#ff9966", "#ffcc99", "#ff9999", "#8be9fe", "#99ffff"];
     let colors = ["#a7226e", "#ec2049", "#f26b38", "#f7db4f", "#2f9599"];
     return colors[Math.floor(Math.random() * colors.length)];
 }
@@ -69,21 +68,6 @@ function determineClass(tile) {
             return `v_${tile.x}_${tile.y}`;
         case "quad":
             return `q_${tile.x}_${tile.y}`;
-    }
-}
-
-function getTile(x, y, type) {
-    switch (type) {
-        case "single":
-            return document.getElementsByClassName(`${x}_${y}`)[0];
-        case "horizontal":
-            return document.getElementsByClassName(`h_${x}_${y}`)[0];
-        case "vertical":
-            return document.getElementsByClassName(`v_${x}_${y}`)[0];
-        case "quad":
-            return document.getElementsByClassName(`q_${x}_${y}`)[0];
-        default:
-            return null;
     }
 }
 
@@ -171,15 +155,15 @@ function cleanIntervalCheckups(intervalCheckups, devices) {
 function handleIntervalChecks(processedTiles, devices, intervalCheckups, intervals, tileProcessIntervalDataFuncs, responses) {
     // Find tiles with the interval property set
     let tilesWithIntervals = findIntervalDevices(processedTiles, devices);
-    console.log("TILES WITH INTERVALS")
-    console.log(tilesWithIntervals)
+    // console.log("TILES WITH INTERVALS")
+    // console.log(tilesWithIntervals)
 
     // Populate the interval checkups object
     createIntervalCheckups(intervalCheckups, tilesWithIntervals)
     cleanIntervalCheckups(intervalCheckups, devices)
 
-    console.log("INTERVAL CHECKUPS")
-    console.log(intervalCheckups)
+    // console.log("INTERVAL CHECKUPS")
+    // console.log(intervalCheckups)
 
     /**
      * For all interval checkups, create an interval if none yet exists and remove one if no devices are present
@@ -194,7 +178,7 @@ function handleIntervalChecks(processedTiles, devices, intervalCheckups, interva
      */
     for (const [key, value] of Object.entries(intervalCheckups)) {
         if (!intervals[key]) {
-            console.log("Adding interval: " + key);
+            // console.log("Adding interval: " + key);
             intervals[key] = setInterval(() => {
                 for (const [id, tile] of Object.entries(value)) {
                     for (const endpoint of tile.endpoints) {
@@ -206,15 +190,15 @@ function handleIntervalChecks(processedTiles, devices, intervalCheckups, interva
                             method: 'POST',
                             responseType: endpoint.responseType ? endpoint.responseType : "json"
                         }).then((response) => {
-                            console.log("Putting response to ["+tile.deviceId+"]["+endpoint.id+"]")
-                            console.log("The response is: ")
-                            console.log(response)
+                            // console.log("Putting response to ["+tile.deviceId+"]["+endpoint.id+"]")
+                            // console.log("The response is: ")
+                            // console.log(response)
                             if (!responses[tile.deviceId]) {
                                 responses[tile.deviceId] = {}
                             }
                             responses[tile.deviceId][endpoint.id] = tileProcessIntervalDataFuncs[tile.deviceType][endpoint.id](response);
-                            console.log("Responses object:")
-                            console.log(responses)
+                            // console.log("Responses object:")
+                            // console.log(responses)
                         });
                     }
                 }
@@ -232,7 +216,7 @@ function handleIntervalChecks(processedTiles, devices, intervalCheckups, interva
     }
 
     for (const tbr of toBeRemoved) {
-        console.log("Removing interval: " + tbr);
+        // console.log("Removing interval: " + tbr);
         delete intervals[tbr];
     }
 }

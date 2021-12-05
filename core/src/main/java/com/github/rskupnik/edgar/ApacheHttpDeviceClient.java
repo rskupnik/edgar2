@@ -65,11 +65,9 @@ class ApacheHttpDeviceClient implements DeviceClient {
 
         try (CloseableHttpResponse response = commandHttpClient.execute(request)) {
             System.out.println("Sent request to: " + uri.toString());
-            //database.markDeviceResponsive(device.getId(), true);
             return CommandResponse.fromApacheResponse(response);
         } catch (IOException e) {
             e.printStackTrace();
-            //database.markDeviceResponsive(device.getId(), false);
         }
 
         return CommandResponse.error("Unknown error");

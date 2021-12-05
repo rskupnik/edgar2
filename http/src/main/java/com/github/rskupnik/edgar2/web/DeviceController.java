@@ -40,33 +40,6 @@ public class DeviceController {
                 .collect(Collectors.toList());
     }
 
-//    @GetMapping("devices")
-//    public List<DeviceDto> getDevices() {
-//        return edgar.getLayouts(edgar.getDevices()).stream().map(t -> {
-//            var dto = DeviceDto.fromDomainClass(t._1);
-//            dto.setResponsive(edgar.isDeviceResponsive(t._1.getId()));
-//
-//            var deviceStatus = edgar.getDeviceStatus(t._1.getId()).orElse(DeviceStatus.unknown());
-//            dto.getEndpoints().forEach(e -> {
-//                var layout = findEndpointLayout(t._2.getEndpoints(), e.getPath());
-//                if (layout.isEmpty()) {
-//                    System.out.println("ERROR, layout not present");
-//                    return;
-//                }
-//                e.setType(layout.get().getType());
-//                //e.setBindings(convertBindings(layout.get().getBindings(), deviceStatus));
-//            });
-//            dto.setStatus(DeviceStatusDto.fromDomainClass(deviceStatus));
-//
-//            // TODO: REMOVE
-//            var endpoints = new HashMap<String, Map<String, String>>();
-//            dto.getEndpoints().forEach(e -> endpoints.put(e.getPath(), Map.of("enabled", "true")));
-//            dto.getStatus().setEndpoints(endpoints);
-//
-//            return dto;
-//        }).collect(Collectors.toList());
-//    }
-
     @PostMapping("devices/{deviceId}/**")
     public ResponseEntity<?> sendCommand(@PathVariable("deviceId") String deviceId, HttpServletRequest request,
                                               @RequestParam Map<String, String> requestParams) {
