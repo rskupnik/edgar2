@@ -8,6 +8,8 @@ import org.apache.http.client.methods.*;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URI;
@@ -17,6 +19,8 @@ import java.util.Map;
 // TODO: Switch to okHttp + Retrofit?
 
 class ApacheHttpDeviceClient implements DeviceClient {
+
+    private static final Logger logger = LoggerFactory.getLogger(ApacheHttpDeviceClient.class);
 
     private final CloseableHttpClient statusHttpClient = HttpClientBuilder.create().setDefaultRequestConfig(
             RequestConfig.custom()
@@ -33,7 +37,7 @@ class ApacheHttpDeviceClient implements DeviceClient {
 
     @Override
     public boolean isAlive(Device device) {
-        System.out.println("Checking if " + device.getId() + " is alive");
+        logger.debug("Checking if " + device.getId() + " is alive");
         try (CloseableHttpResponse response = statusHttpClient.execute(new HttpGet("http://" + device.getIp() + "/isAlive"))) {
             return response != null && response.getStatusLine().getStatusCode() == 200;
         } catch (IOException e) {
@@ -64,7 +68,7 @@ class ApacheHttpDeviceClient implements DeviceClient {
         };
 
         try (CloseableHttpResponse response = commandHttpClient.execute(request)) {
-            System.out.println("Sent request to: " + uri.toString());
+            logger.debug("Sent request to: " + uri.toString());
             return CommandResponse.fromApacheResponse(response);
         } catch (IOException e) {
             e.printStackTrace();

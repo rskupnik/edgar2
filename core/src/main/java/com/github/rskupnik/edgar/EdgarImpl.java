@@ -15,6 +15,8 @@ import com.github.rskupnik.edgar.domain.Device;
 import com.github.rskupnik.edgar.domain.DeviceEndpoint;
 import io.vavr.Tuple2;
 import io.vavr.control.Either;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -26,6 +28,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 class EdgarImpl implements Edgar {
+
+    private static final Logger logger = LoggerFactory.getLogger(Edgar.class);
 
     private final DeviceRepository deviceRepository;
     private final DashboardRepository dashboardRepository;
@@ -68,20 +72,20 @@ class EdgarImpl implements Edgar {
         // Find device
         final Device device = deviceRepository.find(deviceId).map(Device::fromEntity).orElse(null);
         if (device == null) {
-            System.out.println("This device doesn't exist");
+            logger.info("This device doesn't exist");
             return CommandResponse.error("This device doesn't exist");
         }
 
         // Reject if device is unresponsive
         if (!device.isResponsive()) {
-            System.out.println("Rejecting command call because device is unresponsive");
+            logger.info("Rejecting command call because device is unresponsive");
             return CommandResponse.error("This device is unresponsive");
         }
 
         // Find the command in the device
         final DeviceEndpoint endpoint = device.getEndpoints().stream().filter(e -> e.getPath().equals(commandName)).findFirst().orElse(null);
         if (endpoint == null) {
-            System.out.println("Endpoint " + commandName + " doesn't exist");
+            logger.info("Endpoint " + commandName + " doesn't exist");
             return CommandResponse.error("Endpoint " + commandName + " doesn't exist");
         }
 
@@ -116,7 +120,7 @@ class EdgarImpl implements Edgar {
                 .map(t -> new Tuple2<>(t._1.get(), t._2.get()))
                 .filter(t -> Instant.now().toEpochMilli() - (t._1.getUnresponsiveTimeout() * 1000) > t._2.getLastSuccessResponseTimestamp())
                 .forEach(t -> {
-                    System.out.println("Removing unresponsive device: " + t._1.getId());
+                    logger.info("Removing unresponsive device: " + t._1.getId());
                     deviceRepository.delete(t._1.getId());
                 });
 
@@ -133,7 +137,7 @@ class EdgarImpl implements Edgar {
     @Override
     public void loadDashboard(String id, String filename) {
         loadFile(filename, new TypeReference<DashboardEntity>() {}).ifPresent(f -> dashboardRepository.save(id, f));
-        System.out.println("Loaded Dashboard: " + id);
+        logger.info("Loaded Dashboard: " + id);
     }
 
     @Override
@@ -144,7 +148,7 @@ class EdgarImpl implements Edgar {
     @Override
     public void loadDeviceConfig(String filename) {
         loadFile(filename, new TypeReference<List<DeviceConfig>>() {}).ifPresent(deviceConfigStorage::save);
-        System.out.println("Loaded Device Config");
+        logger.info("Loaded Device Config");
     }
 
     private <T> Optional<T> loadFile(String filename, TypeReference<T> ref) {
