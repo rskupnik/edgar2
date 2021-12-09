@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.rskupnik.edgar.config.device.DeviceConfig;
 import com.github.rskupnik.edgar.config.device.DeviceConfigStorage;
-import com.github.rskupnik.edgar.config.device.EndpointConfig;
 import com.github.rskupnik.edgar.db.entity.DashboardEntity;
 import com.github.rskupnik.edgar.db.entity.DeviceEntity;
 import com.github.rskupnik.edgar.db.repository.DashboardRepository;
@@ -33,19 +32,21 @@ class EdgarImpl implements Edgar {
 
     private final DeviceRepository deviceRepository;
     private final DashboardRepository dashboardRepository;
+    private final DeviceClient deviceClient;
+    private final DeviceConfigStorage deviceConfigStorage;
 
-    private final DeviceConfigStorage deviceConfigStorage = new DeviceConfigStorage();
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    private final DeviceClient deviceClient = new CachedDeviceClient(
-            new ApacheHttpDeviceClient(),
-            (key) -> getEndpointCacheTime(key) * 1000
-    );
-
-
-    public EdgarImpl(DeviceRepository deviceRepository, DashboardRepository dashboardRepository) {
+    public EdgarImpl(
+            DeviceRepository deviceRepository,
+            DashboardRepository dashboardRepository,
+            DeviceConfigStorage deviceConfigStorage,
+            DeviceClient deviceClient
+    ) {
         this.deviceRepository = deviceRepository;
         this.dashboardRepository = dashboardRepository;
+        this.deviceConfigStorage = deviceConfigStorage;
+        this.deviceClient = deviceClient;
     }
 
     @Override
@@ -96,6 +97,7 @@ class EdgarImpl implements Edgar {
 
         var response = deviceClient.sendCommand(device, endpoint, filteredParams);
 
+        // TODO: Could this be simplified? We already filter out unresponsive devices above, so can skip the responsive checks here?
         if (device.isResponsive() == response.isError()) {  // Only change when they differ
             handleDeviceResponsivenessChange(device.getId(), !response.isError());
         }
@@ -163,18 +165,6 @@ class EdgarImpl implements Edgar {
         }
 
         return Optional.empty();
-    }
-
-    private int getEndpointCacheTime(String cacheKey) {
-        String[] split = cacheKey.split(":");
-        var deviceId = split[0];
-        var endpointPath = split[1];
-        return deviceConfigStorage.get(deviceId).orElse(DeviceConfig.empty()).getEndpoints()
-                .stream()
-                .filter(c -> c.getPath().equals(endpointPath))
-                .findFirst()
-                .orElse(EndpointConfig.empty())
-                .getCachePeriod();
     }
 
     private void handleDeviceResponsivenessChange(String id, boolean responsive) {
