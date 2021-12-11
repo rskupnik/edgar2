@@ -21,6 +21,7 @@ public interface Edgar {
     void loadDashboard(String name, String filename);
     Optional<Dashboard> getDashboard(String id);
     void loadDeviceConfig(String filename);
+    void cleanupUnresponsiveDevices();
     void rediscoverUnresponsiveDevices();
 
     static Edgar defaultImplementation( DeviceRepository deviceRepository, DashboardRepository dashboardRepository) {

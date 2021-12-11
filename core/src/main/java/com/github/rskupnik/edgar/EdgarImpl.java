@@ -97,35 +97,35 @@ class EdgarImpl implements Edgar {
 
         var response = deviceClient.sendCommand(device, endpoint, filteredParams);
 
-        // TODO: Could this be simplified? We already filter out unresponsive devices above, so can skip the responsive checks here?
-        if (device.isResponsive() == response.isError()) {  // Only change when they differ
-            handleDeviceResponsivenessChange(device.getId(), !response.isError());
-        }
-
-        if (device.isResponsive()) {
-            deviceRepository.find(device.getId()).ifPresent(e -> {
+        deviceRepository.find(device.getId()).ifPresent(e -> {
+            if (response.isError()) {
+                e.setResponsive(false);
+            } else {
                 e.setLastSuccessResponseTimestamp(Instant.now().toEpochMilli());
-                deviceRepository.save(e.getId(), e);
-            });
-        }
+            }
+            deviceRepository.save(e.getId(), e);
+        });
 
         return response;
     }
 
     @Override
-    public void rediscoverUnresponsiveDevices() {
+    public void cleanupUnresponsiveDevices() {
         deviceRepository.findAll()
                 .stream()
                 .filter(d -> !d.isResponsive())
-                .map(d -> new Tuple2<>(deviceConfigStorage.get(d.getId()), deviceRepository.find(d.getId())))
-                .filter(t -> t._1.isPresent() && t._2.isPresent())
-                .map(t -> new Tuple2<>(t._1.get(), t._2.get()))
+                .map(d -> new Tuple2<>(deviceConfigStorage.get(d.getId()), d))
+                .filter(t -> t._1.isPresent())
+                .map(t -> new Tuple2<>(t._1.get(), t._2))
                 .filter(t -> Instant.now().toEpochMilli() - (t._1.getUnresponsiveTimeout() * 1000) > t._2.getLastSuccessResponseTimestamp())
                 .forEach(t -> {
-                    logger.info("Removing unresponsive device: " + t._1.getId());
-                    deviceRepository.delete(t._1.getId());
+                    logger.info("Removing unresponsive device: " + t._2.getId());
+                    deviceRepository.delete(t._2.getId());
                 });
+    }
 
+    @Override
+    public void rediscoverUnresponsiveDevices() {
         deviceRepository.findAll()
                 .stream()
                 .filter(d -> !d.isResponsive())

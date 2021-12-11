@@ -21,7 +21,8 @@ public class ScheduledJobs {
 
     @Scheduled(fixedDelayString = "${devices.rediscoverUnresponsiveDevices.delay}", initialDelayString = "${devices.rediscoverUnresponsiveDevices.initialDelay}")
     public void rediscoverUnresponsiveDevices() {
-        logger.info("Rediscovering unresponsive devices");
+        logger.info("Cleaning up and rediscovering unresponsive devices");
+        edgar.cleanupUnresponsiveDevices();
         edgar.rediscoverUnresponsiveDevices();
     }
 }
