@@ -8,6 +8,8 @@ import com.github.rskupnik.edgar.db.repository.DeviceRepository;
 import com.github.rskupnik.edgar.domain.*;
 import io.vavr.Tuple2;
 import io.vavr.control.Either;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.impl.client.HttpClientBuilder;
 
 import java.util.List;
 import java.util.Map;
@@ -24,25 +26,53 @@ public interface Edgar {
     void cleanupUnresponsiveDevices();
     void rediscoverUnresponsiveDevices();
 
-    static Edgar defaultImplementation( DeviceRepository deviceRepository, DashboardRepository dashboardRepository) {
-        final DeviceConfigStorage deviceConfigStorage = new DeviceConfigStorage();
+    static Edgar defaultImplementation(
+            DeviceRepository deviceRepository,
+            DashboardRepository dashboardRepository
+    ) {
+        var deviceConfigStorage = deviceConfigStorage();
         return new EdgarImpl(
                 deviceRepository, dashboardRepository,
                 deviceConfigStorage,
-                new CachedDeviceClient(
-                    new ApacheHttpDeviceClient(),
-                    (key) -> {
-                        String[] split = key.split(":");
-                        var deviceId = split[0];
-                        var endpointPath = split[1];
-                        return deviceConfigStorage.get(deviceId).orElse(DeviceConfig.empty()).getEndpoints()
-                                .stream()
-                                .filter(c -> c.getPath().equals(endpointPath))
-                                .findFirst()
-                                .orElse(EndpointConfig.empty())
-                                .getCachePeriod() * 1000;
-                    }
-                )
+                cachedDeviceClient(defaultDeviceClient(), deviceConfigStorage)
+        );
+    }
+
+    static DeviceConfigStorage deviceConfigStorage() {
+        return new DeviceConfigStorage();
+    }
+
+    static DeviceClient cachedDeviceClient(DeviceClient delegate, DeviceConfigStorage deviceConfigStorage) {
+        return new CachedDeviceClient(
+                delegate,
+                (key) -> {
+                    String[] split = key.split(":");
+                    var deviceId = split[0];
+                    var endpointPath = split[1];
+                    return deviceConfigStorage.get(deviceId).orElse(DeviceConfig.empty()).getEndpoints()
+                            .stream()
+                            .filter(c -> c.getPath().equals(endpointPath))
+                            .findFirst()
+                            .orElse(EndpointConfig.empty())
+                            .getCachePeriod() * 1000;
+                }
+        );
+    }
+
+    static DeviceClient defaultDeviceClient() {
+        return new ApacheHttpDeviceClient(
+                HttpClientBuilder.create().setDefaultRequestConfig(
+                        RequestConfig.custom()
+                                .setConnectTimeout(2000)
+                                .setConnectionRequestTimeout(2000)
+                                .setSocketTimeout(2000).build()
+                ).build(),
+                HttpClientBuilder.create().setDefaultRequestConfig(
+                        RequestConfig.custom()
+                                .setConnectTimeout(4000)
+                                .setConnectionRequestTimeout(4000)
+                                .setSocketTimeout(4000).build()
+                ).build()
         );
     }
 }

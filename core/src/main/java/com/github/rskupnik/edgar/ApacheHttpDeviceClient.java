@@ -3,11 +3,11 @@ package com.github.rskupnik.edgar;
 import com.github.rskupnik.edgar.domain.CommandResponse;
 import com.github.rskupnik.edgar.domain.Device;
 import com.github.rskupnik.edgar.domain.DeviceEndpoint;
-import org.apache.http.client.config.RequestConfig;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.*;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,23 +22,19 @@ class ApacheHttpDeviceClient implements DeviceClient {
 
     private static final Logger logger = LoggerFactory.getLogger(ApacheHttpDeviceClient.class);
 
-    private final CloseableHttpClient statusHttpClient = HttpClientBuilder.create().setDefaultRequestConfig(
-            RequestConfig.custom()
-                    .setConnectTimeout(2000)
-                    .setConnectionRequestTimeout(2000)
-                    .setSocketTimeout(2000).build()
-    ).build();
-    private final CloseableHttpClient commandHttpClient = HttpClientBuilder.create().setDefaultRequestConfig(
-            RequestConfig.custom()
-                    .setConnectTimeout(4000)
-                    .setConnectionRequestTimeout(4000)
-                    .setSocketTimeout(4000).build()
-    ).build();
+    private final HttpClient statusHttpClient;
+    private final HttpClient commandHttpClient;
+
+    ApacheHttpDeviceClient(HttpClient statusClient, HttpClient commandClient) {
+        this.statusHttpClient = statusClient;
+        this.commandHttpClient = commandClient;
+    }
 
     @Override
     public boolean isAlive(Device device) {
         logger.debug("Checking if " + device.getId() + " is alive");
-        try (CloseableHttpResponse response = statusHttpClient.execute(new HttpGet("http://" + device.getIp() + "/isAlive"))) {
+        try {
+            HttpResponse response = statusHttpClient.execute(new HttpGet("http://" + device.getIp() + "/isAlive"));
             return response != null && response.getStatusLine().getStatusCode() == 200;
         } catch (IOException e) {
             e.printStackTrace();
@@ -67,7 +63,8 @@ class ApacheHttpDeviceClient implements DeviceClient {
             case DELETE -> new HttpDelete(uri);
         };
 
-        try (CloseableHttpResponse response = commandHttpClient.execute(request)) {
+        try {
+            HttpResponse response = commandHttpClient.execute(request);
             logger.debug("Sent request to: " + uri.toString());
             return CommandResponse.fromApacheResponse(response);
         } catch (IOException e) {

@@ -2,7 +2,7 @@ package com.github.rskupnik.edgar.domain;
 
 import com.github.rskupnik.edgar.DeviceResponse;
 import org.apache.http.Header;
-import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
@@ -31,7 +31,7 @@ public class CommandResponse implements DeviceResponse {
         );
     }
 
-    public static CommandResponse fromApacheResponse(CloseableHttpResponse response) throws IOException {
+    public static CommandResponse fromApacheResponse(HttpResponse response) throws IOException {
         return new CommandResponse(
                 response.getStatusLine().getStatusCode(),
                 EntityUtils.toByteArray(response.getEntity()),
