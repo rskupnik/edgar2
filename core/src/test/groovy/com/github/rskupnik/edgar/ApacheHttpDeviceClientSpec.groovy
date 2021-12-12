@@ -51,6 +51,18 @@ class ApacheHttpDeviceClientSpec extends Specification {
         !isAlive
     }
 
+    def "should deem device dead when exception thrown by http client"() {
+        given:
+        Device device = Dummies.DEVICE
+
+        when:
+        boolean isAlive = deviceClient.isAlive(device)
+
+        then:
+        1 * statusClient.execute(_) >> {throw new IOException()}
+        !isAlive
+    }
+
     def "should send command"() {
         given:
         Device device = Dummies.DEVICE
@@ -66,6 +78,19 @@ class ApacheHttpDeviceClientSpec extends Specification {
         }) >> mockResponse(200, "dummy body")
         response.statusCode == 200
         response.body.length == "dummy body".getBytes().length
+    }
+
+    def "should return error response on exception when sending"() {
+        given:
+        Device device = Dummies.DEVICE
+        DeviceEndpoint endpoint = device.endpoints.get(0)
+
+        when:
+        CommandResponse response = deviceClient.sendCommand(device, endpoint, Collections.emptyMap())
+
+        then:
+        1 * commandClient.execute(_) >> {throw new IOException()}
+        response.error
     }
 
     private CloseableHttpResponse mockResponse(int statusCode, String body = "body") {
