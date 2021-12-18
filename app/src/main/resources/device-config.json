@@ -1,11 +1,11 @@
 [
   {
     "id": "basementCamGas",
-    "unresponsiveTimeout": 20,
+    "unresponsiveTimeout": 600,
     "endpoints": [
       {
         "path": "/pic",
-        "cachePeriod": 60
+        "cachePeriod": 600
       }
     ]
   }
