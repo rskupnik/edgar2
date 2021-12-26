@@ -114,9 +114,7 @@ class EdgarImpl implements Edgar {
         deviceRepository.findAll()
                 .stream()
                 .filter(d -> !d.isResponsive())
-                .map(d -> new Tuple2<>(deviceConfigStorage.get(d.getId()), d))
-                .filter(t -> t._1.isPresent())
-                .map(t -> new Tuple2<>(t._1.get(), t._2))
+                .map(d -> new Tuple2<>(deviceConfigStorage.get(d.getId()).orElse(DeviceConfig.empty()), d))
                 .filter(t -> Instant.now().toEpochMilli() - (t._1.getUnresponsiveTimeout() * 1000) > t._2.getLastSuccessResponseTimestamp())
                 .forEach(t -> {
                     logger.info("Removing unresponsive device: " + t._2.getId());

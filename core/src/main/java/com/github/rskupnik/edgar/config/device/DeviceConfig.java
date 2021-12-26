@@ -6,7 +6,7 @@ import java.util.List;
 public class DeviceConfig {
 
     private String id;
-    private int unresponsiveTimeout;
+    private int unresponsiveTimeout = 1;
     private List<EndpointConfig> endpoints = Collections.emptyList();
 
     public static DeviceConfig empty() {
