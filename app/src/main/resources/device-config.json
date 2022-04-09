@@ -8,5 +8,15 @@
         "cachePeriod": 600
       }
     ]
+  },
+  {
+    "id": "sideYardCam",
+    "unresponsiveTimeout": 600,
+    "endpoints": [
+      {
+        "path": "/pic",
+        "cachePeriod": 10
+      }
+    ]
   }
 ]

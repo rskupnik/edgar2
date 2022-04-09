@@ -22,7 +22,7 @@
       ]
     },
     {
-      "name": "Gas counter",
+      "name": "Basement cam",
       "deviceId": "basementCamGas",
       "deviceType": "cam-single-image",
       "x": 3,
@@ -35,6 +35,24 @@
           "responseType": "arraybuffer",
           "properties": {
             "interval": 20
+          }
+        }
+      ]
+    },
+    {
+      "name": "Side yard cam",
+      "deviceId": "sideYardCam",
+      "deviceType": "cam-single-image",
+      "x": 5,
+      "y": 1,
+      "type": "quad",
+      "endpoints": [
+        {
+          "id": "/pic",
+          "activationType": "INTERVAL",
+          "responseType": "arraybuffer",
+          "properties": {
+            "interval": 10
           }
         }
       ]
