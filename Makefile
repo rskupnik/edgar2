@@ -2,30 +2,30 @@
 
 deploy:
 	cp ./app/target/edgar2-0.0.1-SNAPSHOT.jar ./app/target/edgar2.jar
-	ssh pi@192.168.0.154 bash /home/pi/edgarStop.sh
-	scp ./app/target/edgar2.jar pi@192.168.0.154:/home/pi
-	scp ./app/src/main/resources/demo.json pi@192.168.0.154:/home/pi
-	scp ./app/src/main/resources/device-config.json pi@192.168.0.154:/home/pi
-	ssh pi@192.168.0.154 'nohup java -jar edgar2.jar --dashboard="/home/pi/demo.json" --deviceConfig="/home/pi/device-config.json" > edgar.log &'
+	ssh pi@edgarmaster bash /home/pi/edgarStop.sh
+	scp ./app/target/edgar2.jar pi@edgarmaster:/home/pi
+	scp ./app/src/main/resources/demo.json pi@edgarmaster:/home/pi
+	scp ./app/src/main/resources/device-config.json pi@edgarmaster:/home/pi
+	ssh pi@edgarmaster 'PATH="/opt/jdk-17.0.4.1+1/bin:$$PATH" nohup java -jar edgar2.jar --dashboard="/home/pi/demo.json" --deviceConfig="/home/pi/device-config.json" > edgar.log 2>&1 &'
 
 start:
-	ssh pi@192.168.0.154 'nohup java -jar edgar2.jar --dashboard="/home/pi/demo.json" --deviceConfig="/home/pi/device-config.json" > edgar.log &'
+	ssh pi@edgarmaster 'PATH="/opt/jdk-17.0.4.1+1/bin:$$PATH" nohup java -jar edgar2.jar --dashboard="/home/pi/demo.json" --deviceConfig="/home/pi/device-config.json" > edgar.log 2>&1 &'
 
 start-debug:
-	ssh pi@192.168.0.154 'nohup java -jar edgar2.jar -Dagentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8000 --dashboard="/home/pi/demo.json" --deviceConfig="/home/pi/device-config.json" > edgar.log &'
+	ssh pi@edgarmaster 'PATH="/opt/jdk-17.0.4.1+1/bin:$$PATH" nohup java -jar edgar2.jar -Dagentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8000 --dashboard="/home/pi/demo.json" --deviceConfig="/home/pi/device-config.json" > edgar.log 2>&1 &'
 
 stop:
-	ssh pi@192.168.0.154 bash /home/pi/edgarStop.sh
+	ssh pi@edgarmaster bash /home/pi/edgarStop.sh
 
 restart: stop start
 
 restart-debug: stop start-debug
 
 ssh:
-	ssh pi@192.168.0.154
+	ssh pi@edgarmaster 
 
 log:
-	ssh pi@192.168.0.154 tail -f /home/pi/edgar.log
+	ssh pi@edgarmaster tail -f /home/pi/edgar.log
 
 build-db:
 	mvn clean install -pl :edgar2-db;
