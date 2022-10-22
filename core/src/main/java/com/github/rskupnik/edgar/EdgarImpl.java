@@ -12,6 +12,7 @@ import com.github.rskupnik.edgar.domain.CommandResponse;
 import com.github.rskupnik.edgar.domain.Dashboard;
 import com.github.rskupnik.edgar.domain.Device;
 import com.github.rskupnik.edgar.domain.DeviceEndpoint;
+import com.github.rskupnik.edgar.tts.TextToSpeechAdapter;
 import io.vavr.Tuple2;
 import io.vavr.control.Either;
 import org.slf4j.Logger;
@@ -34,6 +35,7 @@ class EdgarImpl implements Edgar {
     private final DashboardRepository dashboardRepository;
     private final DeviceClient deviceClient;
     private final DeviceConfigStorage deviceConfigStorage;
+    private final TextToSpeechAdapter textToSpeech;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -41,12 +43,14 @@ class EdgarImpl implements Edgar {
             DeviceRepository deviceRepository,
             DashboardRepository dashboardRepository,
             DeviceConfigStorage deviceConfigStorage,
-            DeviceClient deviceClient
+            DeviceClient deviceClient,
+            TextToSpeechAdapter ttsAdapter
     ) {
         this.deviceRepository = deviceRepository;
         this.dashboardRepository = dashboardRepository;
         this.deviceConfigStorage = deviceConfigStorage;
         this.deviceClient = deviceClient;
+        this.textToSpeech = ttsAdapter;
     }
 
     @Override
@@ -149,6 +153,11 @@ class EdgarImpl implements Edgar {
     public void loadDeviceConfig(String filename) {
         loadFile(filename, new TypeReference<List<DeviceConfig>>() {}).ifPresent(deviceConfigStorage::save);
         logger.info("Loaded Device Config");
+    }
+
+    @Override
+    public void ttsSpeak(String text) {
+        textToSpeech.speak(text);
     }
 
     private <T> Optional<T> loadFile(String filename, TypeReference<T> ref) {

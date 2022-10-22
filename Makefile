@@ -2,7 +2,7 @@
 
 deploy:
 	cp ./app/target/edgar2-0.0.1-SNAPSHOT.jar ./app/target/edgar2.jar
-	ssh pi@edgarmaster bash /home/pi/edgarStop.sh
+	#ssh pi@edgarmaster bash /home/pi/edgarStop.sh
 	scp ./app/target/edgar2.jar pi@edgarmaster:/home/pi
 	scp ./app/src/main/resources/demo.json pi@edgarmaster:/home/pi
 	scp ./app/src/main/resources/device-config.json pi@edgarmaster:/home/pi

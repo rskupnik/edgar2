@@ -6,6 +6,7 @@ import com.github.rskupnik.edgar.config.device.EndpointConfig;
 import com.github.rskupnik.edgar.db.repository.DashboardRepository;
 import com.github.rskupnik.edgar.db.repository.DeviceRepository;
 import com.github.rskupnik.edgar.domain.*;
+import com.github.rskupnik.edgar.tts.TextToSpeechAdapter;
 import io.vavr.Tuple2;
 import io.vavr.control.Either;
 import org.apache.http.client.config.RequestConfig;
@@ -19,22 +20,30 @@ public interface Edgar {
 
     Either<String, Device> registerDevice(Device device);
     List<Device> getDevices();
+
     CommandResponse sendCommand(String deviceId, String commandName, Map<String, String> params);
+
     void loadDashboard(String name, String filename);
     Optional<Dashboard> getDashboard(String id);
+
     void loadDeviceConfig(String filename);
+
     void cleanupUnresponsiveDevices();
     void rediscoverUnresponsiveDevices();
 
+    void ttsSpeak(String text);
+
     static Edgar defaultImplementation(
             DeviceRepository deviceRepository,
-            DashboardRepository dashboardRepository
+            DashboardRepository dashboardRepository,
+            TextToSpeechAdapter ttsAdapter
     ) {
         var deviceConfigStorage = deviceConfigStorage();
         return new EdgarImpl(
                 deviceRepository, dashboardRepository,
                 deviceConfigStorage,
-                cachedDeviceClient(defaultDeviceClient(), deviceConfigStorage)
+                cachedDeviceClient(defaultDeviceClient(), deviceConfigStorage),
+                ttsAdapter
         );
     }
 
