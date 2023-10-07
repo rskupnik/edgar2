@@ -15,7 +15,7 @@
 	<description>Demo project for Spring Boot</description>
 
 	<properties>
-		<java.version>15</java.version>
+		<java.version>21</java.version>
 	</properties>
 
 	<dependencies>
@@ -43,13 +43,13 @@
 		</dependency>
 
 		<!-- Should this be in app module? -->
-		<dependency>
-			<groupId>com.voicerss</groupId>
-			<artifactId>tts</artifactId>
-			<version>1.0</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/src/main/resources/lib/voicerss_tts.jar</systemPath>
-		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>com.voicerss</groupId>-->
+<!--			<artifactId>tts</artifactId>-->
+<!--			<version>1.0</version>-->
+<!--			<scope>system</scope>-->
+<!--			<systemPath>${project.basedir}/src/main/resources/lib/voicerss_tts.jar</systemPath>-->
+<!--		</dependency>-->
 
 
 	</dependencies>
