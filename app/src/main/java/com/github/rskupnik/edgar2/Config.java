@@ -33,7 +33,7 @@ public class Config {
 
     @Bean
     public TextToSpeechAdapter textToSpeechAdapter() {
-        return new TTSVoiceRSS("70b0e0d06b7f4b06b0371a11490a4ec1");
+        return new TTSVoiceRSS("blep");
         // TODO: Hide the API Key!
     }
 }

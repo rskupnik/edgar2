@@ -1,12 +1,11 @@
 package com.github.rskupnik.edgar2;
 
 import com.github.rskupnik.edgar.Edgar;
+import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.stereotype.Component;
-
-import javax.annotation.PostConstruct;
 
 @Component
 public class DeviceConfigLoader {
