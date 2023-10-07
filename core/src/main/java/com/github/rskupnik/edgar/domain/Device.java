@@ -12,14 +12,19 @@ public class Device {
     private final String name;
     private final String ip;
     private final boolean responsive;
+    private final boolean passive;
     private final List<DeviceEndpoint> endpoints;
+    private final List<DataEntry> data;
 
-    public Device(String id, String name, String ip, boolean responsive, List<DeviceEndpoint> endpoints) {
+    public Device(String id, String name, String ip, boolean responsive, boolean passive, List<DeviceEndpoint> endpoints,
+                  List<DataEntry> data) {
         this.id = id;
         this.name = name;
         this.ip = ip;
         this.responsive = responsive;
+        this.passive = passive;
         this.endpoints = endpoints;
+        this.data = data;
     }
 
     public static Device fromEntity(DeviceEntity entity) {
@@ -28,7 +33,9 @@ public class Device {
                 entity.getName(),
                 entity.getIp(),
                 entity.isResponsive(),
-                entity.getEndpoints().stream().map(DeviceEndpoint::fromEntity).collect(Collectors.toList())
+                entity.isPassive(),
+                entity.getEndpoints().stream().map(DeviceEndpoint::fromEntity).collect(Collectors.toList()),
+                entity.getData().stream().map(DataEntry::fromEntity).collect(Collectors.toList())
         );
     }
 
@@ -48,8 +55,16 @@ public class Device {
         return responsive;
     }
 
+    public Boolean isPassive() {
+        return passive;
+    }
+
     public List<DeviceEndpoint> getEndpoints() {
         return endpoints;
+    }
+
+    public List<DataEntry> getData() {
+        return data;
     }
 
     @Override

@@ -12,17 +12,22 @@ public class DeviceEntity implements DbEntity {
     private String name;
     private String ip;
     private boolean responsive = true;
+    private boolean passive = false;
     private long lastSuccessResponseTimestamp = Instant.now().toEpochMilli();
     private List<DeviceEndpointEntity> endpoints;
+    private List<DataEntryEntity> data;
 
     public DeviceEntity() {}
 
-    public DeviceEntity(String id, String name, String ip, boolean responsive, List<DeviceEndpointEntity> endpoints) {
+    public DeviceEntity(String id, String name, String ip, boolean responsive, boolean passive, List<DeviceEndpointEntity> endpoints,
+                        List<DataEntryEntity> data) {
         this.id = id;
         this.name = name;
         this.ip = ip;
         this.responsive = responsive;
+        this.passive = passive;
         this.endpoints = endpoints;
+        this.data = data;
     }
 
     public static DeviceEntity fromDomainObject(Device device) {
@@ -31,7 +36,9 @@ public class DeviceEntity implements DbEntity {
                 device.getName(),
                 device.getIp(),
                 device.isResponsive(),
-                device.getEndpoints().stream().map(DeviceEndpointEntity::fromDomainObject).collect(Collectors.toList())
+                device.isPassive(),
+                device.getEndpoints().stream().map(DeviceEndpointEntity::fromDomainObject).collect(Collectors.toList()),
+                device.getData().stream().map(DataEntryEntity::fromDomainObject).collect(Collectors.toList())
         );
     }
 
@@ -67,6 +74,14 @@ public class DeviceEntity implements DbEntity {
         this.responsive = responsive;
     }
 
+    public boolean isPassive() {
+        return passive;
+    }
+
+    public void setPassive(boolean passive) {
+        this.passive = passive;
+    }
+
     public long getLastSuccessResponseTimestamp() {
         return lastSuccessResponseTimestamp;
     }
@@ -81,5 +96,13 @@ public class DeviceEntity implements DbEntity {
 
     public void setEndpoints(List<DeviceEndpointEntity> endpoints) {
         this.endpoints = endpoints;
+    }
+
+    public List<DataEntryEntity> getData() {
+        return data;
+    }
+
+    public void setData(List<DataEntryEntity> data) {
+        this.data = data;
     }
 }

@@ -12,6 +12,7 @@ public class DeviceDto {
     private String name;
     private String ip;
     private Boolean responsive = true;
+    private Boolean passive = false;
     private List<DeviceEndpointDto> endpoints;
 
     public DeviceDto() {
@@ -24,7 +25,9 @@ public class DeviceDto {
             name,
             ip,
             responsive,
-            endpoints == null ? Collections.emptyList() : endpoints.stream().map(DeviceEndpointDto::toDomainClass).collect(Collectors.toList())
+            passive,
+            endpoints == null ? Collections.emptyList() : endpoints.stream().map(DeviceEndpointDto::toDomainClass).collect(Collectors.toList()),
+            Collections.emptyList()
         );
     }
 
@@ -68,6 +71,14 @@ public class DeviceDto {
 
     public void setResponsive(Boolean responsive) {
         this.responsive = responsive;
+    }
+
+    public Boolean getPassive() {
+        return passive;
+    }
+
+    public void setPassive(Boolean passive) {
+        this.passive = passive;
     }
 
     public List<DeviceEndpointDto> getEndpoints() {

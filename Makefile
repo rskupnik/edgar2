@@ -4,7 +4,7 @@ deploy:
 	cp ./app/target/edgar2-0.0.1-SNAPSHOT.jar ./app/target/edgar2.jar
 	#ssh pi@edgarmaster bash /home/pi/edgarStop.sh
 	scp ./app/target/edgar2.jar pi@edgarmaster:/home/pi
-	scp ./app/src/main/resources/demo.json pi@edgarmaster:/home/pi
+	scp ./app/src/main/resources/demo.json pi@edgarmaster:/home/picd /mn
 	scp ./app/src/main/resources/device-config.json pi@edgarmaster:/home/pi
 	ssh pi@edgarmaster 'PATH="/opt/jdk-17.0.4.1+1/bin:$$PATH" nohup java -jar edgar2.jar --dashboard="/home/pi/demo.json" --deviceConfig="/home/pi/device-config.json" > edgar.log 2>&1 &'
 

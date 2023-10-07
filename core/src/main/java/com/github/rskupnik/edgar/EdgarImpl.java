@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.rskupnik.edgar.config.device.DeviceConfig;
 import com.github.rskupnik.edgar.config.device.DeviceConfigStorage;
 import com.github.rskupnik.edgar.db.entity.DashboardEntity;
+import com.github.rskupnik.edgar.db.entity.DataEntryEntity;
 import com.github.rskupnik.edgar.db.entity.DeviceEntity;
 import com.github.rskupnik.edgar.db.repository.DashboardRepository;
 import com.github.rskupnik.edgar.db.repository.DeviceRepository;
@@ -114,9 +115,23 @@ class EdgarImpl implements Edgar {
     }
 
     @Override
+    public boolean addData(String deviceId, String dataId, byte[] data) {
+        var device = deviceRepository.find(deviceId).orElse(null);
+        if (device == null) {
+            logger.info("Cannot add data " + dataId + " to device " + deviceId + " because it doesn't exist");
+            return false;
+        }
+
+        device.getData().add(new DataEntryEntity(dataId, data));
+        deviceRepository.save(deviceId, device);
+        return true;
+    }
+
+    @Override
     public void cleanupUnresponsiveDevices() {
         deviceRepository.findAll()
                 .stream()
+                .filter(d -> !d.isPassive())
                 .filter(d -> !d.isResponsive())
                 .map(d -> new Tuple2<>(deviceConfigStorage.get(d.getId()).orElse(DeviceConfig.empty()), d))
                 .filter(t -> Instant.now().toEpochMilli() - (t._1.getUnresponsiveTimeout() * 1000) > t._2.getLastSuccessResponseTimestamp())
@@ -130,6 +145,7 @@ class EdgarImpl implements Edgar {
     public void rediscoverUnresponsiveDevices() {
         deviceRepository.findAll()
                 .stream()
+                .filter(d -> !d.isPassive())
                 .filter(d -> !d.isResponsive())
                 .map(d -> new Tuple2<>(d, deviceClient.isAlive(Device.fromEntity(d))))
                 .forEach(d -> {
@@ -181,3 +197,10 @@ class EdgarImpl implements Edgar {
         });
     }
 }
+
+// 1. A Passive Device registers with server
+// 2. Removed if it didn't hit the endpoint for a long time
+// 3. Device sleeps for most of the time, but every so often comes up and sends something to the server
+// 4. What the device sends is saved in db and returned to client if requested
+
+// How do we register a passive device? Auto-register on webapp startup? Register when device waking up?

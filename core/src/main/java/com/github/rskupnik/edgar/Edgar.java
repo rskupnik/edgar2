@@ -23,6 +23,8 @@ public interface Edgar {
 
     CommandResponse sendCommand(String deviceId, String commandName, Map<String, String> params);
 
+    boolean addData(String deviceId, String dataId, byte[] data);
+
     void loadDashboard(String name, String filename);
     Optional<Dashboard> getDashboard(String id);
 
