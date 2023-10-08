@@ -3,14 +3,13 @@ package com.github.rskupnik.edgar2.web;
 import com.github.rskupnik.edgar.Edgar;
 import com.github.rskupnik.edgar.domain.CommandResponse;
 import com.github.rskupnik.edgar2.web.dto.DeviceDto;
-import org.apache.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -55,7 +54,7 @@ public class DeviceController {
         requestParams.forEach((k, v) -> logger.debug(k + ": " + v));
 
         CommandResponse response = edgar.sendCommand(deviceId, command, requestParams);
-        logger.debug("Result: " + (response.getStatusCode() == HttpStatus.SC_OK));
+        logger.debug("Result: " + (response.getStatusCode() == 200));
 
         var springResponse = ResponseEntity.status(response.getStatusCode());
         for (Map.Entry<String, String> entry : response.getHeaders().entrySet()) {
