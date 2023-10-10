@@ -3,7 +3,10 @@
  */
 
 rootProject.name = 'edgar2'
+
 include(':core')
 include(':db')
 include(':http')
 include(':app')
+
+include(':assistant:core')
