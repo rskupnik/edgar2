@@ -15,7 +15,7 @@ public class PayGasTask extends Task {
             }).then(() -> {
                 // TODO: UserIO.askForInput("What is the title of transaction?", (o) -> { <parse input o> });
                 // TODO: UserIO.output("Previous title was: <previous title, need db?>");
-                Systems.UserIO.output("Previous title was: " + randomVar);
+                Systems.UserIO.output("Previous title was: " + randomVar);  // TODO: Use Java 21 features here
                 System.out.println("2");
                 triggerNext();
             }).then(() -> {
