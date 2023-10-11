@@ -10,6 +10,7 @@ public class AssistantAppTest {
     @PostConstruct
     public void test() {
         System.out.println("TESTING");
-        Assistant.defaultImplementation().processCommand("pay gas");
+        Assistant.defaultImplementation();
+        //Assistant.defaultImplementation().processCommand("pay gas");
     }
 }
