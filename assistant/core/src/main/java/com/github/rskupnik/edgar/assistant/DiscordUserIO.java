@@ -14,6 +14,8 @@ public class DiscordUserIO extends ListenerAdapter implements UserIO {
 
     private final JDA jda;
 
+    private Consumer<Object> awaitingInputConsumer = null;
+
     public DiscordUserIO() {
         JDA jda0 = null;
         try {
@@ -32,16 +34,17 @@ public class DiscordUserIO extends ListenerAdapter implements UserIO {
 
     @Override
     public void askForInput(String message, Consumer<Object> inputConsumer) {
+        output(message);
+        awaitingInputConsumer = inputConsumer;
+        // TODO: This approach won't work with multitasking?
         // TODO: Implement this
-        System.out.println(message);
-        inputConsumer.accept("returned input");
+//        System.out.println(message);
+//        inputConsumer.accept("returned input");
     }
 
     @Override
     public void output(String message) {
-        System.out.println(message);
         jda.retrieveUserById(188321556009713674L).queue(u -> {
-            System.out.println("Found user: " + u.getName());
             u.openPrivateChannel().queue(ch -> {
                 ch.sendMessage(message).queue();
             });
@@ -61,7 +64,12 @@ public class DiscordUserIO extends ListenerAdapter implements UserIO {
             return;
 
         System.out.println("Received private message: " + event.getMessage().getContentDisplay());
-        Systems.Assistant.processCommand(event.getMessage().getContentRaw());
-//        event.getChannel().sendMessage("Thanks for messaging me!");
+
+        if (awaitingInputConsumer != null) {
+            awaitingInputConsumer.accept(event.getMessage().getContentRaw());
+            awaitingInputConsumer = null;
+        } else {
+            Systems.Assistant.processCommand(event.getMessage().getContentRaw());
+        }
     }
 }

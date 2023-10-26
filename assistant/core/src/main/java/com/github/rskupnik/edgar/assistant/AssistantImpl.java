@@ -5,6 +5,7 @@ import java.util.Map;
 
 // TODO: Load in config from external file (sensitive stuff mainly)
 // TODO: Pull specific tasks to separate packages, outside :core
+// TODO: Do we need event to communicate between systems internally? Assistant <-> Task <-> WebCrawler <-> Discord etc
 public class AssistantImpl implements Assistant {
 
     private Map<String, Class<? extends Task>> availableCommands = new HashMap<>();
@@ -39,6 +40,8 @@ public class AssistantImpl implements Assistant {
         }
 
         try {
+            // TODO: This only supports one task at a time
+            // Which could be an issue with scheduled tasks in the future
             currentTask = task.getDeclaredConstructor().newInstance();
         } catch (Exception e) {
             e.printStackTrace();

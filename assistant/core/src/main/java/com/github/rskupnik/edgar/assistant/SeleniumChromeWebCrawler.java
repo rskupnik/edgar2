@@ -2,6 +2,7 @@ package com.github.rskupnik.edgar.assistant;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -35,22 +36,31 @@ public class SeleniumChromeWebCrawler implements WebCrawler {
 
     @Override
     public void enterTextToElementById(String id, String text) {
-        driver.findElement(By.id(id)).sendKeys(text);
+        var element = driver.findElement(By.id(id));
+        element.sendKeys(Keys.COMMAND + "a");
+        element.sendKeys(Keys.DELETE);
+        element.sendKeys(text);
+        // TODO: COMMAND on Mac, but CONTROL everywhere else?
     }
 
     @Override
     public void enterTextToElementByClass(String className, String text) {
-        driver.findElement(By.className(className)).sendKeys(text);
+        var element = driver.findElement(By.className(className));
+        element.sendKeys(Keys.COMMAND + "a");
+        element.sendKeys(Keys.DELETE);
+        element.sendKeys(text);
     }
 
     @Override
     public void clickElementByIdAndWait(String id, long timeMillis) {
         var element = driver.findElement(By.id(id));
         element.click();
-        try {
-            element.wait(timeMillis);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        synchronized (element) {
+            try {
+                element.wait(timeMillis);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -61,6 +71,25 @@ public class SeleniumChromeWebCrawler implements WebCrawler {
         synchronized (element) {
             try {
                 element.wait(timeMillis);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public void clickElementByClassNestedAndWait(long timeMillis, String... classNames) {
+
+        WebElement previousElement = null;
+        for (String className : classNames) {
+            var element = previousElement == null ? driver.findElement(By.className(className)) : previousElement.findElement(By.className(className));
+            previousElement = element;
+        }
+
+        previousElement.click();
+        synchronized (previousElement) {
+            try {
+                previousElement.wait(timeMillis);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

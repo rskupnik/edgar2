@@ -49,6 +49,11 @@ public class Steps {
             return this;
         }
 
+        public Builder waitForMillis(long timeMillis) {
+            steps.add(new WaitStep(timeMillis));
+            return this;
+        }
+
         public Steps build() {
             return new Steps(steps);
         }

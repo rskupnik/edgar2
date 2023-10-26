@@ -32,5 +32,9 @@ public abstract class Task {
         }
 
         stepList.get(currentStep++).execute();
+
+        if (currentStep == stepList.size() - 1) {
+            steps = null;
+        }
     }
 }

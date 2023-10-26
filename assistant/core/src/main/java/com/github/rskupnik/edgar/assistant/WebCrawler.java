@@ -6,6 +6,7 @@ public interface WebCrawler {
     void enterTextToElementByClass(String className, String text);
     void clickElementByIdAndWait(String id, long timeMillis);
     void clickElementByClassAndWait(String className, long timeMillis);
+    void clickElementByClassNestedAndWait(long timeMillis, String... classNames);
     String getText(String... classes);
     void destroy();
 }
