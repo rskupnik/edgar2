@@ -17,7 +17,7 @@ public class DiscordUserIO extends ListenerAdapter implements UserIO {
     public DiscordUserIO() {
         JDA jda0 = null;
         try {
-            jda0 = JDABuilder.createDefault("MTE2MTc1Mjg1NTY4Mjc2MDc5NA.GWf9r4.D6YBEGrn8TzR3DMTKr797O8yWGfDu7CLq__EvY")
+            jda0 = JDABuilder.createDefault(Systems.Credentials.get("discordToken"))
                     .enableIntents(GatewayIntent.DIRECT_MESSAGES,
                             GatewayIntent.DIRECT_MESSAGE_REACTIONS,
                             GatewayIntent.DIRECT_MESSAGE_TYPING
@@ -32,15 +32,20 @@ public class DiscordUserIO extends ListenerAdapter implements UserIO {
 
     @Override
     public void askForInput(String message, Consumer<Object> inputConsumer) {
+        // TODO: Implement this
         System.out.println(message);
-        // TODO: Need UserID?
-        //jda.getUserById().openPrivateChannel().flatMap(channel -> channel.sendMessage(message));
         inputConsumer.accept("returned input");
     }
 
     @Override
     public void output(String message) {
         System.out.println(message);
+        jda.retrieveUserById(188321556009713674L).queue(u -> {
+            System.out.println("Found user: " + u.getName());
+            u.openPrivateChannel().queue(ch -> {
+                ch.sendMessage(message).queue();
+            });
+        });
     }
 
     @Override
@@ -50,6 +55,11 @@ public class DiscordUserIO extends ListenerAdapter implements UserIO {
 
     @Override
     public void onPrivateMessageReceived(@NotNull PrivateMessageReceivedEvent event) {
+        System.out.println("Message from user: " + event.getAuthor().getName());
+        // TODO: Only accepts commands from specific user (configurable)
+        if (event.getAuthor().isBot())
+            return;
+
         System.out.println("Received private message: " + event.getMessage().getContentDisplay());
         Systems.Assistant.processCommand(event.getMessage().getContentRaw());
 //        event.getChannel().sendMessage("Thanks for messaging me!");

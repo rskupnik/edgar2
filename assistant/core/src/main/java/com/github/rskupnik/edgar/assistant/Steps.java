@@ -27,6 +27,10 @@ public class Steps {
         return new Builder(action);
     }
 
+    public static Steps single(Runnable action) {
+        return new Builder(action).build();
+    }
+
     static class Builder {
 
         private final List<Step> steps = new ArrayList<>();

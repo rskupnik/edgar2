@@ -2,7 +2,7 @@ package com.github.rskupnik.edgar.assistant;
 
 public class PayGasTask extends Task {
 
-    private final UserIO userIO = null;
+//    private final UserIO userIO = new DiscordUserIO();
 
     private String randomVar = "bla";
 
@@ -28,6 +28,7 @@ public class PayGasTask extends Task {
                 // TODO: Payments.execute(<details of payment>);
                 // TODO: UserIO.output("Transaction requested. Please accept on your phone");
                 System.out.println("4");
+
             }).ifElse((o) -> {      // TODO: .waitUntil()? To wait until transaction is accepted or timeout
                 // is success?
                 return false;
