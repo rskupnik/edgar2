@@ -11,5 +11,6 @@ public class ActionStep implements Step {
     @Override
     public void execute() {
         action.run();
+        EventManager.notify(new TriggerNextStepEvent());
     }
 }

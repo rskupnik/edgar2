@@ -3,6 +3,7 @@ package com.github.rskupnik.edgar.assistant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 public class Steps {
@@ -51,6 +52,11 @@ public class Steps {
 
         public Builder waitForMillis(long timeMillis) {
             steps.add(new WaitStep(timeMillis));
+            return this;
+        }
+
+        public Builder thenRequestInput(String message, Consumer<Object> inputConsumer) {
+            steps.add(new RequestInputStep(message, inputConsumer));
             return this;
         }
 

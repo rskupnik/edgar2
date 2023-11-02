@@ -21,11 +21,16 @@ public class PayPowerBillTask extends Task {
                 webCrawler.clickElementByClassAndWait("popup-close", 500);
                 Systems.UserIO.output("Amount to pay: " + webCrawler.getText("amount", "pp-sum"));  // TODO: This will break if not after deadline
 
-                Systems.UserIO.askForInput("Provide BLIK code", o -> {
-                    blikCode = (String) o;
-                    triggerNext();  // TODO: Do this better, trigger implicitly somehow?
-                });
-            }).then(() -> {
+//                Systems.UserIO.askForInput("Provide BLIK code", o -> {
+//                    blikCode = (String) o;
+//                    triggerNext();  // TODO: Do this better, trigger implicitly somehow?
+//                });
+            })
+            .thenRequestInput("Provide BLIK code", o -> {
+                blikCode = (String) o;
+                triggerNext();  // TODO: Do this better, trigger implicitly somehow?
+            })
+            .then(() -> {
                 webCrawler.clickElementByClassAndWait("ebok-button-pay-agreement", 3000);
                 webCrawler.clickElementByIdAndWait("payway-radio-BLIK", 500);
                 webCrawler.enterTextToElementById("customerEmail", "r.skupnik@gmail.com");

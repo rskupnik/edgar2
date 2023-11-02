@@ -1,11 +1,15 @@
 package com.github.rskupnik.edgar.assistant;
 
-public abstract class Task {
+public abstract class Task implements Subscriber {
 
     private Steps steps;
     private int currentStep = 0;
 
     String randomVar2;
+
+    Task() {
+        EventManager.subscribe(TriggerNextStepEvent.class, this);
+    }
 
     protected void setSteps(Steps steps) {
         this.steps = steps;
@@ -32,9 +36,12 @@ public abstract class Task {
         }
 
         stepList.get(currentStep++).execute();
+    }
 
-        if (currentStep == stepList.size() - 1) {
-            steps = null;
+    @Override
+    public void update(Event event) {
+        if (event.getClass() == TriggerNextStepEvent.class) {
+            triggerNext();
         }
     }
 }

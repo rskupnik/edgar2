@@ -22,8 +22,7 @@ public class AssistantImpl implements Assistant {
         // TODO: All this logic should probably be pulled out somehwere else at some point
         registerCommand("pay gas", PayGasTask.class);
         registerCommand("check power bill", CheckPowerBillDueTask.class);
-
-
+        registerCommand("test", TestTask.class);
     }
 
     @Override

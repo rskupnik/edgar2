@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
 
-public class DiscordUserIO extends ListenerAdapter implements UserIO {
+public class DiscordUserIO extends ListenerAdapter implements UserIO, Subscriber {
 
     private final JDA jda;
 
@@ -30,6 +30,8 @@ public class DiscordUserIO extends ListenerAdapter implements UserIO {
         }
 
         this.jda = jda0;
+
+        EventManager.subscribe(RequestInputEvent.class, this);
     }
 
     @Override
@@ -68,8 +70,17 @@ public class DiscordUserIO extends ListenerAdapter implements UserIO {
         if (awaitingInputConsumer != null) {
             awaitingInputConsumer.accept(event.getMessage().getContentRaw());
             awaitingInputConsumer = null;
+            EventManager.notify(new TriggerNextStepEvent());
         } else {
             Systems.Assistant.processCommand(event.getMessage().getContentRaw());
+        }
+    }
+
+    @Override
+    public void update(Event event) {
+        // TODO: modernize
+        if (event.getClass() == RequestInputEvent.class) {
+            askForInput(((RequestInputEvent) event).message(), ((RequestInputEvent) event).inputConsumer());
         }
     }
 }
