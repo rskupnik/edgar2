@@ -3,21 +3,24 @@ package com.github.rskupnik.edgar.assistant;
 import java.util.HashMap;
 import java.util.Map;
 
-// TODO: Load in config from external file (sensitive stuff mainly)
 // TODO: Pull specific tasks to separate packages, outside :core
-// TODO: Do we need event to communicate between systems internally? Assistant <-> Task <-> WebCrawler <-> Discord etc
-public class AssistantImpl implements Assistant {
+public class AssistantImpl implements Assistant, Subscriber {
 
-    private Map<String, Class<? extends Task>> availableCommands = new HashMap<>();
+    private final UserIO userIO;
+    private final Credentials credentials;
+
+    private final Map<String, Class<? extends Task>> availableCommands = new HashMap<>();
 
     private Task currentTask = null;
 
     AssistantImpl(Map<String, String> credentials) {
-        Systems.Credentials = new CredentialsFromDisk();
-        credentials.forEach((key, value) -> Systems.Credentials.put(key, value));
+        this.credentials = new CredentialsFromDisk();
+        credentials.forEach(this.credentials::put);
 
-        Systems.Assistant = this;
-        Systems.UserIO = new DiscordUserIO();
+        this.userIO = new DiscordUserIO(this.credentials);
+
+        EventManager.subscribe(CommandIssuedEvent.class, this);
+        EventManager.subscribe(TriggerNextStepEvent.class, this);
 
         // TODO: All this logic should probably be pulled out somehwere else at some point
         registerCommand("pay gas", PayGasTask.class);
@@ -34,7 +37,7 @@ public class AssistantImpl implements Assistant {
     public void processCommand(String cmd) {
         var task = availableCommands.get(cmd);
         if (task == null) {
-            Systems.UserIO.output("Available commands: " + collateAvailableCommands());
+            userIO.output("Available commands: " + collateAvailableCommands());
             return;
         }
 
@@ -42,10 +45,13 @@ public class AssistantImpl implements Assistant {
             // TODO: This only supports one task at a time
             // Which could be an issue with scheduled tasks in the future
             currentTask = task.getDeclaredConstructor().newInstance();
+            currentTask.credentials = credentials;
+            currentTask.userIO = userIO;
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+        // TODO: Queue tasks?
         currentTask.triggerNext();
     }
 
@@ -53,5 +59,16 @@ public class AssistantImpl implements Assistant {
         return availableCommands.keySet()
                 .stream()
                 .reduce("", (acc, key) -> acc.concat("\""+key+"\" "));
+    }
+
+    @Override
+    public void update(Event event) {
+        if (event instanceof CommandIssuedEvent) {
+            processCommand(((CommandIssuedEvent) event).command());
+        } else if (event instanceof TriggerNextStepEvent) {
+            if (currentTask != null) {
+                currentTask.triggerNext();
+            }
+        }
     }
 }

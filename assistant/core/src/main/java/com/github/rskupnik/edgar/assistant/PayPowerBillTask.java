@@ -7,19 +7,18 @@ public class PayPowerBillTask extends Task {
     private String blikCode = null;
 
     protected PayPowerBillTask() {
-        super();
         setSteps(
             Steps.beginWith(() -> {
                 // TODO: Cover case where no amount is due
 
-                Systems.UserIO.output("Checking the power bill amount due...");
+                userIO.output("Checking the power bill amount due...");
                 webCrawler = new SeleniumChromeWebCrawler();
                 webCrawler.goToWebsite("https://logowanie.tauron.pl/login");
-                webCrawler.enterTextToElementById("username1", Systems.Credentials.get("tauronUsername"));
-                webCrawler.enterTextToElementById("password1", Systems.Credentials.get("tauronPassword"));
+                webCrawler.enterTextToElementById("username1", credentials.get("tauronUsername"));
+                webCrawler.enterTextToElementById("password1", credentials.get("tauronPassword"));
                 webCrawler.clickElementByClassAndWait("button-pink", 2000L);
                 webCrawler.clickElementByClassAndWait("popup-close", 500);
-                Systems.UserIO.output("Amount to pay: " + webCrawler.getText("amount", "pp-sum"));  // TODO: This will break if not after deadline
+                userIO.output("Amount to pay: " + webCrawler.getText("amount", "pp-sum"));  // TODO: This will break if not after deadline
 
 //                Systems.UserIO.askForInput("Provide BLIK code", o -> {
 //                    blikCode = (String) o;
@@ -38,11 +37,11 @@ public class PayPowerBillTask extends Task {
                 webCrawler.enterTextToElementByClass("blik_input_field_input", blikCode);
                 webCrawler.clickElementByClassAndWait("button_do_blik_code", 1500);
 
-                Systems.UserIO.output("Payment triggered! Please accept on your phone");    // TODO: Check if no payment anymore?
+                userIO.output("Payment triggered! Please accept on your phone");    // TODO: Check if no payment anymore?
             })
             .waitForMillis(8000)
             .then(() -> {
-                Systems.UserIO.output("Power bill paid, have a nice day!");
+                userIO.output("Power bill paid, have a nice day!");
                 webCrawler.destroy();
                 webCrawler = null;
                 blikCode = null;

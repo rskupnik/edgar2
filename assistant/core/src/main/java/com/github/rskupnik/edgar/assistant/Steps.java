@@ -28,6 +28,10 @@ public class Steps {
         return new Builder(action);
     }
 
+    public static Builder begin() {
+        return new Builder();
+    }
+
     public static Steps single(Runnable action) {
         return new Builder(action).build();
     }
@@ -36,8 +40,12 @@ public class Steps {
 
         private final List<Step> steps = new ArrayList<>();
 
-        Builder(Runnable firstAction) {
+        private Builder(Runnable firstAction) {
             steps.add(new ActionStep(firstAction));
+        }
+
+        private Builder() {
+
         }
 
         public Builder then(Runnable action) {

@@ -13,13 +13,16 @@ import java.util.function.Consumer;
 public class DiscordUserIO extends ListenerAdapter implements UserIO, Subscriber {
 
     private final JDA jda;
+    private final Credentials credentials;
 
     private Consumer<Object> awaitingInputConsumer = null;
 
-    public DiscordUserIO() {
+    public DiscordUserIO(Credentials credentials) {
+        this.credentials = credentials;
+
         JDA jda0 = null;
         try {
-            jda0 = JDABuilder.createDefault(Systems.Credentials.get("discordToken"))
+            jda0 = JDABuilder.createDefault(credentials.get("discordToken"))
                     .enableIntents(GatewayIntent.DIRECT_MESSAGES,
                             GatewayIntent.DIRECT_MESSAGE_REACTIONS,
                             GatewayIntent.DIRECT_MESSAGE_TYPING
@@ -39,9 +42,6 @@ public class DiscordUserIO extends ListenerAdapter implements UserIO, Subscriber
         output(message);
         awaitingInputConsumer = inputConsumer;
         // TODO: This approach won't work with multitasking?
-        // TODO: Implement this
-//        System.out.println(message);
-//        inputConsumer.accept("returned input");
     }
 
     @Override
@@ -62,7 +62,7 @@ public class DiscordUserIO extends ListenerAdapter implements UserIO, Subscriber
     public void onPrivateMessageReceived(@NotNull PrivateMessageReceivedEvent event) {
         System.out.println("Message from user: " + event.getAuthor().getName());
         // TODO: Only accepts commands from specific user (configurable)
-        if (event.getAuthor().isBot())
+        if (event.getAuthor().isBot() || !event.getAuthor().getName().equalsIgnoreCase(credentials.get("discordAuthorizedUser")))
             return;
 
         System.out.println("Received private message: " + event.getMessage().getContentDisplay());
@@ -72,7 +72,7 @@ public class DiscordUserIO extends ListenerAdapter implements UserIO, Subscriber
             awaitingInputConsumer = null;
             EventManager.notify(new TriggerNextStepEvent());
         } else {
-            Systems.Assistant.processCommand(event.getMessage().getContentRaw());
+            EventManager.notify(new CommandIssuedEvent(event.getMessage().getContentRaw()));
         }
     }
 
