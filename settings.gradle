@@ -10,3 +10,4 @@ include(':http')
 include(':app')
 
 include(':assistant:core')
+include(':assistant:discord-user-io')

@@ -1,11 +1,14 @@
 package com.github.rskupnik.edgar.assistant;
 
-import java.util.HashMap;
 import java.util.Map;
 
-public class CredentialsFromDisk implements Credentials {
+public class ExplicitCredentials implements Credentials {
 
-    private final Map<String, String> credentials = new HashMap<>();
+    private final Map<String, String> credentials;
+
+    public ExplicitCredentials(Map<String, String> credentials) {
+        this.credentials = credentials;
+    }
 
     @Override
     public String get(String key) {

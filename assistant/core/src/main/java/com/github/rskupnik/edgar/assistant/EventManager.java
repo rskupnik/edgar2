@@ -13,7 +13,7 @@ public class EventManager {
         getBucket(event).add(subscriber);
     }
 
-    static void notify(Event event) {
+    public static void notify(Event event) {
         getBucket(event.getClass()).forEach(s -> s.update(event));
     }
 

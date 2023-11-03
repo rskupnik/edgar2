@@ -1,5 +1,6 @@
-package com.github.rskupnik.edgar.assistant;
+package com.github.rskupnik.edgar.assistant.discord;
 
+import com.github.rskupnik.edgar.assistant.*;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.events.ReadyEvent;
@@ -13,16 +14,16 @@ import java.util.function.Consumer;
 public class DiscordUserIO extends ListenerAdapter implements UserIO, Subscriber {
 
     private final JDA jda;
-    private final Credentials credentials;
+    private final String authorizedUser;
 
     private Consumer<Object> awaitingInputConsumer = null;
 
-    public DiscordUserIO(Credentials credentials) {
-        this.credentials = credentials;
+    public DiscordUserIO(String token, String authorizedUser) {
+        this.authorizedUser = authorizedUser;
 
         JDA jda0 = null;
         try {
-            jda0 = JDABuilder.createDefault(credentials.get("discordToken"))
+            jda0 = JDABuilder.createDefault(token)
                     .enableIntents(GatewayIntent.DIRECT_MESSAGES,
                             GatewayIntent.DIRECT_MESSAGE_REACTIONS,
                             GatewayIntent.DIRECT_MESSAGE_TYPING
@@ -33,8 +34,6 @@ public class DiscordUserIO extends ListenerAdapter implements UserIO, Subscriber
         }
 
         this.jda = jda0;
-
-        EventManager.subscribe(RequestInputEvent.class, this);
     }
 
     @Override
@@ -62,7 +61,7 @@ public class DiscordUserIO extends ListenerAdapter implements UserIO, Subscriber
     public void onPrivateMessageReceived(@NotNull PrivateMessageReceivedEvent event) {
         System.out.println("Message from user: " + event.getAuthor().getName());
         // TODO: Only accepts commands from specific user (configurable)
-        if (event.getAuthor().isBot() || !event.getAuthor().getName().equalsIgnoreCase(credentials.get("discordAuthorizedUser")))
+        if (event.getAuthor().isBot() || !event.getAuthor().getName().equalsIgnoreCase(authorizedUser))
             return;
 
         System.out.println("Received private message: " + event.getMessage().getContentDisplay());

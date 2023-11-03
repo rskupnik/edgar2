@@ -1,6 +1,8 @@
 package com.github.rskupnik.edgar2;
 
 import com.github.rskupnik.edgar.assistant.Assistant;
+import com.github.rskupnik.edgar.assistant.ExplicitCredentials;
+import com.github.rskupnik.edgar.assistant.discord.DiscordUserIO;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -18,8 +20,12 @@ public class AssistantAppTest {
 
     @PostConstruct
     public void test() {
-        System.out.println("TESTING");
-        Assistant.defaultImplementation(credentials);
-        //Assistant.defaultImplementation().processCommand("pay gas");
+        Assistant.defaultImplementation(
+                new DiscordUserIO(
+                        credentials.get("discordToken"),
+                        credentials.get("discordAuthorizedUser")
+                ),
+                new ExplicitCredentials(credentials)
+        );
     }
 }

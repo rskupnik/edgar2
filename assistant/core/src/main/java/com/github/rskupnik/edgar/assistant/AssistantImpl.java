@@ -6,6 +6,7 @@ import java.util.Map;
 // TODO: Pull specific tasks to separate packages, outside :core
 public class AssistantImpl implements Assistant, Subscriber {
 
+    private final Class<? extends WebCrawler> webCrawlerImplementation;
     private final UserIO userIO;
     private final Credentials credentials;
 
@@ -13,14 +14,15 @@ public class AssistantImpl implements Assistant, Subscriber {
 
     private Task currentTask = null;
 
-    AssistantImpl(Map<String, String> credentials) {
-        this.credentials = new CredentialsFromDisk();
-        credentials.forEach(this.credentials::put);
-
-        this.userIO = new DiscordUserIO(this.credentials);
+    AssistantImpl(UserIO userIO, Credentials credentials, Class<? extends WebCrawler> webCrawlerImplementation) {
+        this.webCrawlerImplementation = webCrawlerImplementation;
+        this.credentials = credentials;
+        this.userIO = userIO;
 
         EventManager.subscribe(CommandIssuedEvent.class, this);
         EventManager.subscribe(TriggerNextStepEvent.class, this);
+
+        EventManager.subscribe(RequestInputEvent.class, userIO);
 
         // TODO: All this logic should probably be pulled out somehwere else at some point
         registerCommand("pay gas", PayGasTask.class);
@@ -45,8 +47,10 @@ public class AssistantImpl implements Assistant, Subscriber {
             // TODO: This only supports one task at a time
             // Which could be an issue with scheduled tasks in the future
             currentTask = task.getDeclaredConstructor().newInstance();
+            // TODO: Pass in constructor somehow?
             currentTask.credentials = credentials;
             currentTask.userIO = userIO;
+            currentTask.webCrawlerImplementation = webCrawlerImplementation;
         } catch (Exception e) {
             e.printStackTrace();
         }

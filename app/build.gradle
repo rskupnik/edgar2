@@ -20,5 +20,6 @@ dependencies {
     implementation project(':http')
     implementation project(':db')
     implementation project(':assistant:core')
+    implementation project(':assistant:discord-user-io')
 
 }

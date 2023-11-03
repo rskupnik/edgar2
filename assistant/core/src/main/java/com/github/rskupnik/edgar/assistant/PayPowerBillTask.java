@@ -12,7 +12,7 @@ public class PayPowerBillTask extends Task {
                 // TODO: Cover case where no amount is due
 
                 userIO.output("Checking the power bill amount due...");
-                webCrawler = new SeleniumChromeWebCrawler();
+                webCrawler = instantiateWebCrawler();
                 webCrawler.goToWebsite("https://logowanie.tauron.pl/login");
                 webCrawler.enterTextToElementById("username1", credentials.get("tauronUsername"));
                 webCrawler.enterTextToElementById("password1", credentials.get("tauronPassword"));

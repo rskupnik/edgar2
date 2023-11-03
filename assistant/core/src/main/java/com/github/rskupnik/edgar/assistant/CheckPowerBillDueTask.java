@@ -10,7 +10,7 @@ public class CheckPowerBillDueTask extends Task {
         setSteps(
             Steps.single(() -> {
                 userIO.output("Checking the power bill amount due...");
-                WebCrawler webCrawler = new SeleniumChromeWebCrawler();
+                WebCrawler webCrawler = instantiateWebCrawler();
                 webCrawler.goToWebsite("https://logowanie.tauron.pl/login");
                 webCrawler.enterTextToElementById("username1", credentials.get("tauronUsername"));
                 webCrawler.enterTextToElementById("password1", credentials.get("tauronPassword"));
