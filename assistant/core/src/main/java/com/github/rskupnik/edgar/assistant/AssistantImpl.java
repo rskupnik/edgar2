@@ -74,8 +74,8 @@ public class AssistantImpl implements Assistant, Subscriber {
 
     @Override
     public void update(Event event) {
-        if (event instanceof CommandIssuedEvent) {
-            processCommand(((CommandIssuedEvent) event).command());
+        if (event instanceof CommandIssuedEvent commandIssuedEvent) {
+            processCommand(commandIssuedEvent.command());
         } else if (event instanceof TriggerNextStepEvent) {
             if (currentTask != null) {
                 currentTask.triggerNext();

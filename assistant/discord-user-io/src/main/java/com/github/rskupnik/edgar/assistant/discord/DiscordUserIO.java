@@ -60,7 +60,6 @@ public class DiscordUserIO extends ListenerAdapter implements UserIO, Subscriber
     @Override
     public void onPrivateMessageReceived(PrivateMessageReceivedEvent event) {
         System.out.println("Message from user: " + event.getAuthor().getName());
-        // TODO: Only accepts commands from specific user (configurable)
         if (event.getAuthor().isBot() || !event.getAuthor().getName().equalsIgnoreCase(authorizedUser))
             return;
 
@@ -78,8 +77,8 @@ public class DiscordUserIO extends ListenerAdapter implements UserIO, Subscriber
     @Override
     public void update(Event event) {
         // TODO: modernize
-        if (event.getClass() == RequestInputEvent.class) {
-            askForInput(((RequestInputEvent) event).message(), ((RequestInputEvent) event).inputConsumer());
+        if (event instanceof RequestInputEvent requestInputEvent) {
+            askForInput(requestInputEvent.message(), requestInputEvent.inputConsumer());
         }
     }
 }
