@@ -1,4 +1,4 @@
-package com.github.rskupnik.edgar.assistant;
+package com.github.rskupnik.edgar.assistant.steps;
 
 import java.util.function.Predicate;
 

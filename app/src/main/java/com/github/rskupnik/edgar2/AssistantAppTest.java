@@ -3,6 +3,7 @@ package com.github.rskupnik.edgar2;
 import com.github.rskupnik.edgar.assistant.Assistant;
 import com.github.rskupnik.edgar.assistant.ExplicitCredentials;
 import com.github.rskupnik.edgar.assistant.discord.DiscordUserIO;
+import com.github.rskupnik.edgar.assistant.webcrawler.SeleniumChromeWebCrawler;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -25,7 +26,8 @@ public class AssistantAppTest {
                         credentials.get("discordToken"),
                         credentials.get("discordAuthorizedUser")
                 ),
-                new ExplicitCredentials(credentials)
+                new ExplicitCredentials(credentials),
+                SeleniumChromeWebCrawler::new
         );
     }
 }

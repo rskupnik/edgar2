@@ -1,4 +1,6 @@
-package com.github.rskupnik.edgar.assistant;
+package com.github.rskupnik.edgar.assistant.tasks;
+
+import com.github.rskupnik.edgar.assistant.steps.Steps;
 
 public class PayGasTask extends Task {
 
@@ -6,7 +8,7 @@ public class PayGasTask extends Task {
 
     private String randomVar = "bla";
 
-    protected PayGasTask() {
+    public PayGasTask() {
         setSteps(
             Steps
             .begin()

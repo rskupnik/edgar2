@@ -1,4 +1,7 @@
-package com.github.rskupnik.edgar.assistant;
+package com.github.rskupnik.edgar.assistant.tasks;
+
+import com.github.rskupnik.edgar.assistant.WebCrawler;
+import com.github.rskupnik.edgar.assistant.steps.Steps;
 
 public class PayPowerBillTask extends Task {
 
@@ -6,7 +9,7 @@ public class PayPowerBillTask extends Task {
 
     private String blikCode = null;
 
-    protected PayPowerBillTask() {
+    public PayPowerBillTask() {
         setSteps(
             Steps.beginWith(() -> {
                 // TODO: Cover case where no amount is due

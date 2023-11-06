@@ -12,5 +12,5 @@ repositories {
 
 dependencies {
     implementation project(':core')
-    implementation 'io.vavr:vavr:0.10.3'
+    //implementation 'io.vavr:vavr:0.10.3'
 }

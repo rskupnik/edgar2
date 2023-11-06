@@ -1,12 +1,19 @@
 package com.github.rskupnik.edgar.assistant;
 
+import com.github.rskupnik.edgar.assistant.events.*;
+import com.github.rskupnik.edgar.assistant.tasks.CheckPowerBillDueTask;
+import com.github.rskupnik.edgar.assistant.tasks.PayGasTask;
+import com.github.rskupnik.edgar.assistant.tasks.Task;
+import com.github.rskupnik.edgar.assistant.tasks.TestTask;
+
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 // TODO: Pull specific tasks to separate packages, outside :core
 public class AssistantImpl implements Assistant, Subscriber {
 
-    private final Class<? extends WebCrawler> webCrawlerImplementation;
+    private final Supplier<WebCrawler> webCrawlerSupplier;
     private final UserIO userIO;
     private final Credentials credentials;
 
@@ -14,8 +21,8 @@ public class AssistantImpl implements Assistant, Subscriber {
 
     private Task currentTask = null;
 
-    AssistantImpl(UserIO userIO, Credentials credentials, Class<? extends WebCrawler> webCrawlerImplementation) {
-        this.webCrawlerImplementation = webCrawlerImplementation;
+    AssistantImpl(UserIO userIO, Credentials credentials, Supplier<WebCrawler> webCrawlerSupplier) {
+        this.webCrawlerSupplier = webCrawlerSupplier;
         this.credentials = credentials;
         this.userIO = userIO;
 
@@ -50,7 +57,7 @@ public class AssistantImpl implements Assistant, Subscriber {
             // TODO: Pass in constructor somehow?
             currentTask.credentials = credentials;
             currentTask.userIO = userIO;
-            currentTask.webCrawlerImplementation = webCrawlerImplementation;
+            currentTask.webCrawlerSupplier = webCrawlerSupplier;
         } catch (Exception e) {
             e.printStackTrace();
         }

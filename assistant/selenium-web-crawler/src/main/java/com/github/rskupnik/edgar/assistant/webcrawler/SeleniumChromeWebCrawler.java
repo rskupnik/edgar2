@@ -1,6 +1,6 @@
-package com.github.rskupnik.edgar.assistant;
+package com.github.rskupnik.edgar.assistant.webcrawler;
 
-import io.github.bonigarcia.wdm.WebDriverManager;
+import com.github.rskupnik.edgar.assistant.WebCrawler;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
@@ -10,21 +10,18 @@ import org.openqa.selenium.chrome.ChromeOptions;
 
 // TODO: Add a helper class that encapsulates the id/className of Element and the type (ID / CLASS_NAME)
 // then remove duplicated methods and simplify the API
+
+// TODO: Need to test on RPI, see this: https://qabrio.pl/selenium-w-embedded-instalacja-na-raspberry-pi/
 public class SeleniumChromeWebCrawler implements WebCrawler {
 
     private final WebDriver driver;
 
-    SeleniumChromeWebCrawler() {
+    public SeleniumChromeWebCrawler() {
         var options = new ChromeOptions();
         options.addArguments("--headless");
         options.addArguments("--no-sandbox");
 
-        // TODO: Probably not needed
-//        System.setProperty("webdriver.chrome.logfile", "/Users/rskupnik/chromedriver.log");
-//        System.setProperty("webdriver.chrome.verboseLogging", "true");
-
-        // TODO: Do we need to setup this every time?
-        WebDriverManager.chromedriver().setup();
+        System.setProperty("webdriver.chrome.driver", "/usr/local/bin/chromedriver");
 
         this.driver = new ChromeDriver(options);
     }

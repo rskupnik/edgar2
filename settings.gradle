@@ -11,3 +11,4 @@ include(':app')
 
 include(':assistant:core')
 include(':assistant:discord-user-io')
+include(':assistant:selenium-web-crawler')

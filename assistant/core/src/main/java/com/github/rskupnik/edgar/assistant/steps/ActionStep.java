@@ -1,4 +1,7 @@
-package com.github.rskupnik.edgar.assistant;
+package com.github.rskupnik.edgar.assistant.steps;
+
+import com.github.rskupnik.edgar.assistant.events.EventManager;
+import com.github.rskupnik.edgar.assistant.events.TriggerNextStepEvent;
 
 public class ActionStep implements Step {
 

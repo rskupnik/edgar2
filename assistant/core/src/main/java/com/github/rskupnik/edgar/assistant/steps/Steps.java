@@ -1,4 +1,4 @@
-package com.github.rskupnik.edgar.assistant;
+package com.github.rskupnik.edgar.assistant.steps;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +36,7 @@ public class Steps {
         return new Builder(action).build();
     }
 
-    static class Builder {
+    public static class Builder {
 
         private final List<Step> steps = new ArrayList<>();
 

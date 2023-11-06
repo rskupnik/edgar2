@@ -1,13 +1,13 @@
 package com.github.rskupnik.edgar.assistant.discord;
 
 import com.github.rskupnik.edgar.assistant.*;
+import com.github.rskupnik.edgar.assistant.events.*;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.GatewayIntent;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
 
@@ -53,12 +53,12 @@ public class DiscordUserIO extends ListenerAdapter implements UserIO, Subscriber
     }
 
     @Override
-    public void onReady(@NotNull ReadyEvent event) {
+    public void onReady(ReadyEvent event) {
 
     }
 
     @Override
-    public void onPrivateMessageReceived(@NotNull PrivateMessageReceivedEvent event) {
+    public void onPrivateMessageReceived(PrivateMessageReceivedEvent event) {
         System.out.println("Message from user: " + event.getAuthor().getName());
         // TODO: Only accepts commands from specific user (configurable)
         if (event.getAuthor().isBot() || !event.getAuthor().getName().equalsIgnoreCase(authorizedUser))

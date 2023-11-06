@@ -1,4 +1,6 @@
-package com.github.rskupnik.edgar.assistant;
+package com.github.rskupnik.edgar.assistant.events;
+
+import com.github.rskupnik.edgar.assistant.Subscriber;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,7 +11,7 @@ public class EventManager {
 
     private static final Map<Class<? extends Event>, List<Subscriber>> subscribers = new HashMap<>();
 
-    static void subscribe(Class<? extends Event> event, Subscriber subscriber) {
+    public static void subscribe(Class<? extends Event> event, Subscriber subscriber) {
         getBucket(event).add(subscriber);
     }
 
