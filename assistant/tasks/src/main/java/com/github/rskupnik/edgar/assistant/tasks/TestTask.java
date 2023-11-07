@@ -25,3 +25,13 @@ public class TestTask extends Task {
         );
     }
 }
+
+// TODO: TASK: pay taxes
+// TODO: TASK: pay gas
+//      - Both require bank website scraping, might be dangerous - consider alternatives?
+// TODO: TASK: Send docs to księgowa?
+//      - Requires GMAIL API
+//      - Requires Conditionals
+// TODO: TASK: Read gas counter (need cam + wifi extension)
+//      - Requires significant hand work
+// TODO: TASK: Pay VWFS

@@ -8,6 +8,7 @@ import com.github.rskupnik.edgar.assistant.task.Task;
 
 import java.util.function.Supplier;
 
+// TODO: Failproof, cover case where no amount is due, if not after deadline, etc.
 public class PayPowerBillTask extends Task {
 
     private WebCrawler webCrawler = null;
@@ -18,8 +19,6 @@ public class PayPowerBillTask extends Task {
         super(credentials, userIO, webCrawlerSupplier);
         setSteps(
             Steps.beginWith(() -> {
-                // TODO: Cover case where no amount is due
-
                 userIO.output("Checking the power bill amount due...");
                 webCrawler = instantiateWebCrawler();
                 webCrawler.goToWebsite("https://logowanie.tauron.pl/login");
