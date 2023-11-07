@@ -1,4 +1,4 @@
-package com.github.rskupnik.edgar.assistant.tasks;
+package com.github.rskupnik.edgar.assistant.task;
 
 import com.github.rskupnik.edgar.assistant.Credentials;
 import com.github.rskupnik.edgar.assistant.UserIO;
@@ -9,13 +9,18 @@ import java.util.function.Supplier;
 
 public abstract class Task {
 
-    // TODO: Assign these with a constructor?
-    public Credentials credentials;
-    public UserIO userIO;
-    public Supplier<WebCrawler> webCrawlerSupplier;
+    protected final Credentials credentials;
+    protected final UserIO userIO;
+    protected final Supplier<WebCrawler> webCrawlerSupplier;
 
     private Steps steps;
     private int currentStep = 0;
+
+    protected Task(Credentials credentials, UserIO userIO, Supplier<WebCrawler> webCrawlerSupplier) {
+        this.credentials = credentials;
+        this.userIO = userIO;
+        this.webCrawlerSupplier = webCrawlerSupplier;
+    }
 
     protected void setSteps(Steps steps) {
         this.steps = steps;
@@ -30,7 +35,7 @@ public abstract class Task {
         stepList.get(currentStep++).execute();
     }
 
-    WebCrawler instantiateWebCrawler() {
+    protected WebCrawler instantiateWebCrawler() {
         return webCrawlerSupplier.get();
     }
 }

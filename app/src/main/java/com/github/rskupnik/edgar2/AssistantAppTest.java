@@ -2,7 +2,11 @@ package com.github.rskupnik.edgar2;
 
 import com.github.rskupnik.edgar.assistant.Assistant;
 import com.github.rskupnik.edgar.assistant.ExplicitCredentials;
+import com.github.rskupnik.edgar.assistant.task.TaskRegistration;
 import com.github.rskupnik.edgar.assistant.discord.DiscordUserIO;
+import com.github.rskupnik.edgar.assistant.tasks.CheckPowerBillDueTask;
+import com.github.rskupnik.edgar.assistant.tasks.PayGasTask;
+import com.github.rskupnik.edgar.assistant.tasks.TestTask;
 import com.github.rskupnik.edgar.assistant.webcrawler.SeleniumChromeWebCrawler;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,7 +31,10 @@ public class AssistantAppTest {
                         credentials.get("discordAuthorizedUser")
                 ),
                 new ExplicitCredentials(credentials),
-                SeleniumChromeWebCrawler::new
+                SeleniumChromeWebCrawler::new,
+                new TaskRegistration("pay gas", PayGasTask.class),
+                new TaskRegistration("check power bill", CheckPowerBillDueTask.class),
+                new TaskRegistration("test", TestTask.class)
         );
     }
 }

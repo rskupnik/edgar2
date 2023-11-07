@@ -10,5 +10,8 @@ dependencies {
 
 }
 
-
-// TODO: Force Java 21
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}

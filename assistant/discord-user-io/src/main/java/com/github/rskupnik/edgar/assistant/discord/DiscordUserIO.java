@@ -76,9 +76,9 @@ public class DiscordUserIO extends ListenerAdapter implements UserIO, Subscriber
 
     @Override
     public void update(Event event) {
-        // TODO: modernize
-        if (event instanceof RequestInputEvent requestInputEvent) {
-            askForInput(requestInputEvent.message(), requestInputEvent.inputConsumer());
+        switch (event) {
+            case RequestInputEvent requestInputEvent -> askForInput(requestInputEvent.message(), requestInputEvent.inputConsumer());
+            default -> {}
         }
     }
 }

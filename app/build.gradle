@@ -22,5 +22,6 @@ dependencies {
     implementation project(':assistant:core')
     implementation project(':assistant:discord-user-io')
     implementation project(':assistant:selenium-web-crawler')
+    implementation project(':assistant:tasks')
 
 }

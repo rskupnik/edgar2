@@ -1,7 +1,12 @@
 package com.github.rskupnik.edgar.assistant.tasks;
 
+import com.github.rskupnik.edgar.assistant.Credentials;
+import com.github.rskupnik.edgar.assistant.UserIO;
 import com.github.rskupnik.edgar.assistant.WebCrawler;
 import com.github.rskupnik.edgar.assistant.steps.Steps;
+import com.github.rskupnik.edgar.assistant.task.Task;
+
+import java.util.function.Supplier;
 
 // TODO: Trigger this in a scheduled way
 // TODO: Handle a case where there is nothing to pay
@@ -9,7 +14,8 @@ import com.github.rskupnik.edgar.assistant.steps.Steps;
 // TODO: Test this on RaspberryPi
 public class CheckPowerBillDueTask extends Task {
 
-    public CheckPowerBillDueTask() {
+    public CheckPowerBillDueTask(Credentials credentials, UserIO userIO, Supplier<WebCrawler> webCrawlerSupplier) {
+        super(credentials, userIO, webCrawlerSupplier);
         setSteps(
             Steps.single(() -> {
                 userIO.output("Checking the power bill amount due...");

@@ -1,11 +1,10 @@
 package com.github.rskupnik.edgar.assistant;
 
 import com.github.rskupnik.edgar.assistant.events.*;
-import com.github.rskupnik.edgar.assistant.tasks.CheckPowerBillDueTask;
-import com.github.rskupnik.edgar.assistant.tasks.PayGasTask;
-import com.github.rskupnik.edgar.assistant.tasks.Task;
-import com.github.rskupnik.edgar.assistant.tasks.TestTask;
+import com.github.rskupnik.edgar.assistant.task.Task;
+import com.github.rskupnik.edgar.assistant.task.TaskRegistration;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -21,7 +20,12 @@ public class AssistantImpl implements Assistant, Subscriber {
 
     private Task currentTask = null;
 
-    AssistantImpl(UserIO userIO, Credentials credentials, Supplier<WebCrawler> webCrawlerSupplier) {
+    AssistantImpl(
+            UserIO userIO,
+            Credentials credentials,
+            Supplier<WebCrawler> webCrawlerSupplier,
+            TaskRegistration... taskRegistrations
+    ) {
         this.webCrawlerSupplier = webCrawlerSupplier;
         this.credentials = credentials;
         this.userIO = userIO;
@@ -31,10 +35,7 @@ public class AssistantImpl implements Assistant, Subscriber {
 
         EventManager.subscribe(RequestInputEvent.class, userIO);
 
-        // TODO: All this logic should probably be pulled out somehwere else at some point
-        registerCommand("pay gas", PayGasTask.class);
-        registerCommand("check power bill", CheckPowerBillDueTask.class);
-        registerCommand("test", TestTask.class);
+        Arrays.stream(taskRegistrations).forEach(reg -> registerCommand(reg.command(), reg.task()));
     }
 
     @Override
@@ -51,13 +52,10 @@ public class AssistantImpl implements Assistant, Subscriber {
         }
 
         try {
-            // TODO: This only supports one task at a time
-            // Which could be an issue with scheduled tasks in the future
-            currentTask = task.getDeclaredConstructor().newInstance();
-            // TODO: Pass in constructor somehow?
-            currentTask.credentials = credentials;
-            currentTask.userIO = userIO;
-            currentTask.webCrawlerSupplier = webCrawlerSupplier;
+            // TODO: This only supports one task at a time - might be fine if we implement queuing, not fine if multitasking
+            currentTask = task
+                    .getDeclaredConstructor(Credentials.class, UserIO.class, Supplier.class)
+                    .newInstance(credentials, userIO, webCrawlerSupplier);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -74,12 +72,14 @@ public class AssistantImpl implements Assistant, Subscriber {
 
     @Override
     public void update(Event event) {
-        if (event instanceof CommandIssuedEvent commandIssuedEvent) {
-            processCommand(commandIssuedEvent.command());
-        } else if (event instanceof TriggerNextStepEvent) {
-            if (currentTask != null) {
-                currentTask.triggerNext();
+        switch (event) {
+            case CommandIssuedEvent commandIssuedEvent -> processCommand(commandIssuedEvent.command());
+            case TriggerNextStepEvent triggerNextStepEvent -> {
+                if (currentTask != null) {
+                    currentTask.triggerNext();
+                }
             }
+            default -> {}
         }
     }
 }

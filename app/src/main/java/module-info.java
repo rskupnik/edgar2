@@ -2,6 +2,7 @@ module edgar.app {
     requires edgar.assistant.core;
     requires edgar.assistant.userio.discord;
     requires edgar.assistant.webcrawler.selenium;
+    requires edgar.assistant.tasks;
 
     requires edgar.core;
     requires edgar.db;

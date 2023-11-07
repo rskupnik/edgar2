@@ -1,7 +1,12 @@
 package com.github.rskupnik.edgar.assistant.tasks;
 
+import com.github.rskupnik.edgar.assistant.Credentials;
+import com.github.rskupnik.edgar.assistant.UserIO;
 import com.github.rskupnik.edgar.assistant.WebCrawler;
 import com.github.rskupnik.edgar.assistant.steps.Steps;
+import com.github.rskupnik.edgar.assistant.task.Task;
+
+import java.util.function.Supplier;
 
 public class PayPowerBillTask extends Task {
 
@@ -9,7 +14,8 @@ public class PayPowerBillTask extends Task {
 
     private String blikCode = null;
 
-    public PayPowerBillTask() {
+    public PayPowerBillTask(Credentials credentials, UserIO userIO, Supplier<WebCrawler> webCrawlerSupplier) {
+        super(credentials, userIO, webCrawlerSupplier);
         setSteps(
             Steps.beginWith(() -> {
                 // TODO: Cover case where no amount is due
