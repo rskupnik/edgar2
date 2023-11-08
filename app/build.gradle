@@ -17,6 +17,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     implementation 'jakarta.annotation:jakarta.annotation-api:2.1.1'
+    implementation project(':core')
     implementation project(':http')
     implementation project(':db')
     implementation project(':assistant:core')
