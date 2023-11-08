@@ -7,7 +7,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.chromium.ChromiumDriver;
 
 // TODO: Add a helper class that encapsulates the id/className of Element and the type (ID / CLASS_NAME)
 // then remove duplicated methods and simplify the API

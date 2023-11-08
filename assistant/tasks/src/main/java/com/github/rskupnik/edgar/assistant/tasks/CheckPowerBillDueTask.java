@@ -25,8 +25,8 @@ public class CheckPowerBillDueTask extends Task {
                 webCrawler.enterTextToElementById("password1", credentials.get("tauronPassword"));
                 webCrawler.clickElementByClassAndWait("button-pink", 2000L);
                 webCrawler.clickElementByClassAndWait("popup-close", 500);
-                var amount = webCrawler.getText("amount-column", "toggle-box", "amount");
-                var date = webCrawler.getText("amount-column", "toggle-box", "date");
+                var amount = webCrawler.getText("amount-column", "amount");
+                var date = webCrawler.getText("amount-column", "date");
                 userIO.output("Amount to pay: " + amount);
                 userIO.output("Deadline: " + date.split(":")[1].trim());    // TODO: Foolproof
 
