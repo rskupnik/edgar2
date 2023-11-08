@@ -12,4 +12,6 @@ module edgar.app {
     requires spring.beans;
     requires spring.context;
     requires org.slf4j;
+    requires spring.boot;
+    requires spring.boot.autoconfigure;
 }

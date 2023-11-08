@@ -25,3 +25,7 @@ dependencies {
     implementation project(':assistant:tasks')
 
 }
+
+bootJar {
+    duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
+}
