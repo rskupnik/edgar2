@@ -4,9 +4,7 @@ import com.github.rskupnik.edgar.assistant.Assistant;
 import com.github.rskupnik.edgar.assistant.ExplicitCredentials;
 import com.github.rskupnik.edgar.assistant.task.TaskRegistration;
 import com.github.rskupnik.edgar.assistant.discord.DiscordUserIO;
-import com.github.rskupnik.edgar.assistant.tasks.CheckPowerBillDueTask;
-import com.github.rskupnik.edgar.assistant.tasks.PayGasTask;
-import com.github.rskupnik.edgar.assistant.tasks.TestTask;
+import com.github.rskupnik.edgar.assistant.tasks.*;
 import com.github.rskupnik.edgar.assistant.webcrawler.SeleniumChromeWebCrawler;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,7 +32,9 @@ public class AssistantAppTest {
                 SeleniumChromeWebCrawler::new,
                 new TaskRegistration("pay gas", PayGasTask.class),
                 new TaskRegistration("check power bill", CheckPowerBillDueTask.class),
-                new TaskRegistration("test", TestTask.class)
+                new TaskRegistration("pay power bill", PayPowerBillTask.class),
+                new TaskRegistration("test", TestTask.class),
+                new TaskRegistration("test rpi", RPiTest.class)
         );
     }
 }

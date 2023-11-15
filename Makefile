@@ -6,7 +6,7 @@ deploy:
 	scp ./app/target/edgar2.jar pi@edgarmaster:/home/pi
 	scp ./app/src/main/resources/demo.json pi@edgarmaster:/home/pi
 	scp ./app/src/main/resources/device-config.json pi@edgarmaster:/home/pi
-	ssh pi@edgarmaster '. ~/.bashrc; nohup ~/.sdkman/candidates/java/current/bin/java -jar edgar2.jar --dashboard="/home/pi/demo.json" --deviceConfig="/home/pi/device-config.json" > edgar.log 2>&1 &'
+	ssh pi@edgarmaster 'nohup ~/.sdkman/candidates/java/current/bin/java -jar edgar2.jar --dashboard="/home/pi/demo.json" --deviceConfig="/home/pi/device-config.json" > edgar.log 2>&1 &'
 
 start:
 	ssh pi@edgarmaster 'nohup ~/.sdkman/candidates/java/current/bin/java -jar edgar2.jar --dashboard="/home/pi/demo.json" --deviceConfig="/home/pi/device-config.json" > edgar.log 2>&1 &'
@@ -15,7 +15,7 @@ start-debug:
 	ssh pi@edgarmaster 'PATH="/opt/jdk-17.0.4.1+1/bin:$$PATH" nohup java -jar edgar2.jar -Dagentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8000 --dashboard="/home/pi/demo.json" --deviceConfig="/home/pi/device-config.json" > edgar.log 2>&1 &'
 
 stop:
-	ssh pi@edgarmaster bash /home/pi/edgarStop.sh
+	ssh pi@edgarmaster 'kill -s SIGTERM $$(pgrep -f edgar2)'
 
 restart: stop start
 
@@ -37,7 +37,7 @@ build-http:
 	./gradlew :http:build
 
 build-app:
-	./gradlew :app:build
+	./gradlew :app:bootJar
 
 build: build-core build-db build-http build-app
 

@@ -1,5 +1,8 @@
 package com.github.rskupnik.edgar.assistant.steps;
 
+import com.github.rskupnik.edgar.assistant.events.EventManager;
+import com.github.rskupnik.edgar.assistant.events.TriggerNextStepEvent;
+
 public class WaitStep implements Step {
 
     private final long timeMillis;
@@ -16,5 +19,7 @@ public class WaitStep implements Step {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        EventManager.notify(new TriggerNextStepEvent());
     }
 }

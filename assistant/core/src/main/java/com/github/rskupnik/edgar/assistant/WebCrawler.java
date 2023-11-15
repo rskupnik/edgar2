@@ -4,9 +4,10 @@ public interface WebCrawler {
     void goToWebsite(String url);
     void enterTextToElementById(String id, String text);
     void enterTextToElementByClass(String className, String text);
-    void clickElementByIdAndWait(String id, long timeMillis);
-    void clickElementByClassAndWait(String className, long timeMillis);
-    void clickElementByClassNestedAndWait(long timeMillis, String... classNames);
+    void clickElementById(String id);
+    void clickElementByClass(String className);
+    void clickElementByClassNested(String... classNames);
     String getText(String... classes);
+    void screenshot(String destination);
     void destroy();
 }
