@@ -12,6 +12,8 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 // TODO: Add a helper class that encapsulates the id/className of Element and the type (ID / CLASS_NAME)
@@ -21,14 +23,15 @@ import java.util.concurrent.TimeUnit;
 public class SeleniumChromeWebCrawler implements WebCrawler {
 
     private final WebDriver driver;
+    private final Map<String, WebElement> rememberedElements = new HashMap<>();
 
     public SeleniumChromeWebCrawler() {
         var options = new ChromeOptions();
-        options.addArguments("--headless");
+//        options.addArguments("--headless");
         options.addArguments("--no-sandbox");
 
-//        System.setProperty("webdriver.chrome.driver", "/usr/local/bin/chromedriver");
-        System.setProperty("webdriver.chrome.driver", "/usr/bin/chromedriver");
+        System.setProperty("webdriver.chrome.driver", "/usr/local/bin/chromedriver");
+//        System.setProperty("webdriver.chrome.driver", "/usr/bin/chromedriver");
 
         this.driver = new ChromeDriver(options);
         // TODO: Configurable timeout
@@ -43,7 +46,7 @@ public class SeleniumChromeWebCrawler implements WebCrawler {
     @Override
     public void enterTextToElementById(String id, String text) {
         var element = driver.findElement(By.id(id));
-        element.sendKeys(Keys.LEFT_CONTROL + "a");
+        element.sendKeys(Keys.COMMAND + "a");
         element.sendKeys(Keys.DELETE);
         element.sendKeys(text);
         // TODO: COMMAND on Mac, but CONTROL everywhere else?
@@ -52,7 +55,15 @@ public class SeleniumChromeWebCrawler implements WebCrawler {
     @Override
     public void enterTextToElementByClass(String className, String text) {
         var element = driver.findElement(By.className(className));
-        element.sendKeys(Keys.LEFT_CONTROL + "a");
+        element.sendKeys(Keys.COMMAND + "a");
+        element.sendKeys(Keys.DELETE);
+        element.sendKeys(text);
+    }
+
+    @Override
+    public void enterTextToElementByName(String name, String text) {
+        var element = driver.findElement(By.name(name));
+        element.sendKeys(Keys.COMMAND + "a");
         element.sendKeys(Keys.DELETE);
         element.sendKeys(text);
     }
@@ -68,6 +79,11 @@ public class SeleniumChromeWebCrawler implements WebCrawler {
     }
 
     @Override
+    public void clickElementByXpath(String xpath) {
+        driver.findElement(By.xpath(xpath)).click();
+    }
+
+    @Override
     public void clickElementByClassNested(String... classNames) {
 
         WebElement previousElement = null;
@@ -77,6 +93,22 @@ public class SeleniumChromeWebCrawler implements WebCrawler {
         }
 
         previousElement.click();
+    }
+
+    @Override
+    public void rememberElementByName(String name, String referenceId) {
+        rememberedElements.put(referenceId, driver.findElement(new By.ByName(name)));
+    }
+
+    @Override
+    public boolean checkRememberedElementContainsPropertyEqualTo(String referenceId, String propertyName, String propertyValue) {
+        var element = rememberedElements.getOrDefault(referenceId, null);
+        if (element == null) {
+            return false;
+        }
+
+        var value = element.getDomProperty(propertyName);
+        return value != null && value.equalsIgnoreCase(propertyValue);
     }
 
     @Override

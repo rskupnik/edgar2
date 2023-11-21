@@ -38,4 +38,12 @@ public abstract class Task {
     protected WebCrawler instantiateWebCrawler() {
         return webCrawlerSupplier.get();
     }
+
+    protected void wait(int millis) {
+        try {
+            Thread.sleep(millis);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
