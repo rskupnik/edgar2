@@ -8,7 +8,6 @@ repositories {
 
 dependencies {
     implementation project(':assistant:core')
-    implementation project(':assistant:alior-web-crawler')
 }
 
 java {
