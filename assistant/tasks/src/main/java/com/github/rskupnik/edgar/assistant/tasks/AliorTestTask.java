@@ -38,21 +38,28 @@ public class AliorTestTask extends Task  {
                 }
 
                 webCrawler.clickElementById("password-submit");
-                webCrawler.clickElementByXpath("//button[@ctatheme='primary']");
+                webCrawler.clickElementByXpath("//button[contains(@class, 'inline-cta')]");
             }).thenRequestInput("Please allow one-time access and type 'continue'", m -> {
                 var message = (String) m;
                 // TODO: Support aborting?
+                // TODO: Auto-detect and continue without the need to type continue
             }).then(() -> {
                 userIO.output("Login successful!");
                 userIO.output("Attempting to switch profile...");
 
                 webCrawler.clickElementById("context");
-                wait(500);
-                // TODO: This is random, cannot use it
-                //       Try xpath li by role?
-                webCrawler.clickElementById("o1140");
-                wait(15000);
+                wait(2000);
 
+                webCrawler.clickElementByXpath("//li[@role='option'][@aria-selected='false']//div[contains(@class, 'color-text-default')]");
+                wait(3000);
+
+                webCrawler.clickElementByXpath("//app-main-header//li[@data-onboarding-element='TEMPLATES']//a//span");
+                wait(3000);
+
+                webCrawler.enterTextToElementByXpath("//input[@id='template-search']", "Zakład Ubezpieczeń Społecznych");
+                webCrawler.clickElementByXpath("//li//recipient-item//button-cta[@text='Send a transfer']");
+
+                wait(3000);
                 webCrawler.screenshot("/Users/rskupnik/Pictures/alior.png");
 
                 webCrawler.destroy();

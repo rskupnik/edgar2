@@ -69,6 +69,14 @@ public class SeleniumChromeWebCrawler implements WebCrawler {
     }
 
     @Override
+    public void enterTextToElementByXpath(String xpath, String text) {
+        var element = driver.findElement(By.xpath(xpath));
+        element.sendKeys(Keys.COMMAND + "a");
+        element.sendKeys(Keys.DELETE);
+        element.sendKeys(text);
+    }
+
+    @Override
     public void clickElementById(String id) {
         driver.findElement(By.id(id)).click();
     }
@@ -81,6 +89,11 @@ public class SeleniumChromeWebCrawler implements WebCrawler {
     @Override
     public void clickElementByXpath(String xpath) {
         driver.findElement(By.xpath(xpath)).click();
+    }
+
+    @Override
+    public void clickLink(String link) {
+        driver.findElement(By.linkText(link)).click();
     }
 
     @Override
