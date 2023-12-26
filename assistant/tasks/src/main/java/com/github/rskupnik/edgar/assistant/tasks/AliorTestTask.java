@@ -65,6 +65,7 @@ public class AliorTestTask extends Task  {
                 aliorWebCrawler.enterAmount(amount);
                 aliorWebCrawler.submitPayment();
                 aliorWebCrawler.fail();
+                aliorWebCrawler.finish();
 
 //                webCrawler.clickElementById("context");
 //                wait(2000);
@@ -81,7 +82,7 @@ public class AliorTestTask extends Task  {
 //                wait(3000);
 //                webCrawler.screenshot("/Users/rskupnik/Pictures/alior.png");
 
-                webCrawler.destroy();
+//                webCrawler.destroy();
                 userIO.output("Done!");
             }).build()
         );

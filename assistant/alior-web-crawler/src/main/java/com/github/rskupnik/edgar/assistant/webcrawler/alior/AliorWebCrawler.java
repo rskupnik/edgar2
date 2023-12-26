@@ -66,4 +66,8 @@ public class AliorWebCrawler {
     public void fail() {
         webCrawler.clickElementByXpath("//div//li//random");
     }
+
+    public void finish() {
+        webCrawler.destroy();
+    }
 }

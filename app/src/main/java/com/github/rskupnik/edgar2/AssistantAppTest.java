@@ -35,7 +35,8 @@ public class AssistantAppTest {
                 new TaskRegistration("pay power bill", PayPowerBillTask.class),
                 new TaskRegistration("test", TestTask.class),
                 new TaskRegistration("test rpi", RPiTest.class),
-                new TaskRegistration("alior test", AliorTestTask.class)
+                new TaskRegistration("alior test", AliorTestTask.class),
+                new TaskRegistration("pay taxes", PayTaxesTask.class)
         );
     }
 }
