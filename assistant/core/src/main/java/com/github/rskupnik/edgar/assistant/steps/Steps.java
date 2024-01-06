@@ -9,15 +9,21 @@ import java.util.function.Predicate;
 public class Steps {
 
     private final List<Step> steps;
+    private final Step finalizerStep;
 
     private int currentStep = 0;
 
-    private Steps(List<Step> steps) {
+    private Steps(List<Step> steps, Step finalizerStep) {
         this.steps = steps;
+        this.finalizerStep = finalizerStep;
     }
 
     public List<Step> getSteps() {
         return steps;
+    }
+
+    public Step getFinalizerStep() {
+        return finalizerStep;
     }
 
     public Optional<Step> next() {
@@ -39,6 +45,7 @@ public class Steps {
     public static class Builder {
 
         private final List<Step> steps = new ArrayList<>();
+        private Step finalizerStep = null;
 
         private Builder(Runnable firstAction) {
             steps.add(new ActionStep(firstAction));
@@ -68,8 +75,13 @@ public class Steps {
             return this;
         }
 
+        public Builder finishWith(Runnable action) {
+            finalizerStep = new FinalActionStep(action);
+            return this;
+        }
+
         public Steps build() {
-            return new Steps(steps);
+            return new Steps(steps, finalizerStep);
         }
     }
 }

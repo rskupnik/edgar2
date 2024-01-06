@@ -78,6 +78,9 @@ public class DiscordUserIO extends ListenerAdapter implements UserIO, Subscriber
     public void update(Event event) {
         switch (event) {
             case RequestInputEvent requestInputEvent -> askForInput(requestInputEvent.message(), requestInputEvent.inputConsumer());
+            case TaskTerminatedEvent taskTerminatedEvent -> {
+                awaitingInputConsumer = null;
+            }
             default -> {}
         }
     }

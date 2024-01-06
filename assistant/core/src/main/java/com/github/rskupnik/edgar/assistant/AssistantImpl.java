@@ -7,6 +7,9 @@ import com.github.rskupnik.edgar.assistant.task.TaskRegistration;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
 // TODO: Pull specific tasks to separate packages, outside :core
@@ -32,10 +35,14 @@ public class AssistantImpl implements Assistant, Subscriber {
 
         EventManager.subscribe(CommandIssuedEvent.class, this);
         EventManager.subscribe(TriggerNextStepEvent.class, this);
+        EventManager.subscribe(TerminationCheckEvent.class, this);
 
         EventManager.subscribe(RequestInputEvent.class, userIO);
+        EventManager.subscribe(TaskTerminatedEvent.class, userIO);
 
         Arrays.stream(taskRegistrations).forEach(reg -> registerCommand(reg.command(), reg.task()));
+
+        startJanitorThread();
     }
 
     @Override
@@ -79,7 +86,23 @@ public class AssistantImpl implements Assistant, Subscriber {
                     currentTask.triggerNext();
                 }
             }
+            case TerminationCheckEvent terminationCheckEvent -> {
+                if (currentTask == null)
+                    return;
+
+                if (currentTask.shouldBeTerminated()) {
+                    currentTask.terminate();
+                    currentTask = null;
+                }
+            }
             default -> {}
         }
+    }
+
+    private void startJanitorThread() {
+        Executors.newSingleThreadScheduledExecutor()
+                .scheduleWithFixedDelay(() -> {
+                    EventManager.notify(new TerminationCheckEvent());
+                },10, 10, TimeUnit.SECONDS);
     }
 }
