@@ -3,7 +3,14 @@
  */
 
 rootProject.name = 'edgar2'
+
 include(':core')
 include(':db')
 include(':http')
 include(':app')
+
+include(':assistant:core')
+include(':assistant:discord-user-io')
+include(':assistant:selenium-web-crawler')
+include(':assistant:tasks')
+include(':assistant:alior-web-crawler')

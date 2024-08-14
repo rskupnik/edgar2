@@ -7,13 +7,26 @@ apply plugin: 'io.spring.dependency-management'
 
 repositories {
     mavenCentral()
+    maven {
+        name 'm2-dv8tion'
+        url 'https://m2.dv8tion.net/releases'
+    }
 }
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     implementation 'jakarta.annotation:jakarta.annotation-api:2.1.1'
+    implementation project(':core')
     implementation project(':http')
     implementation project(':db')
+    implementation project(':assistant:core')
+    implementation project(':assistant:discord-user-io')
+    implementation project(':assistant:selenium-web-crawler')
+    implementation project(':assistant:tasks')
 
+}
+
+bootJar {
+    duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
 }
