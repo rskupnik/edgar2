@@ -21,8 +21,16 @@ public class AssistantAppTest {
     @Value("#{${assistant.credentials}}")
     private Map<String,String> credentials;
 
+    @Value("#{${assistant.enabled}}")
+    private Boolean enabled;
+
     @PostConstruct
     public void test() {
+        if (!enabled) {
+            System.out.println("Assistant DISABLED");
+            return;
+        }
+
         Assistant.defaultImplementation(
                 new DiscordUserIO(
                         credentials.get("discordToken"),
