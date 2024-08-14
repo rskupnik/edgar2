@@ -1,9 +1,9 @@
 .PHONY: deploy, build-db, build-core, build-http, build-app, build, ship, start, stop, restart, ssh
 
 deploy:
-	cp ./app/build/libs/app.jar ./app/target/edgar2.jar
+	cp ./app/build/libs/app.jar ./app/build/libs/edgar2.jar
 	#ssh pi@edgarmaster bash /home/pi/edgarStop.sh
-	scp ./app/target/edgar2.jar pi@edgarmaster:/home/pi
+	scp ./app/build/libs/edgar2.jar pi@edgarmaster:/home/pi
 	scp ./app/src/main/resources/demo.json pi@edgarmaster:/home/pi
 	scp ./app/src/main/resources/device-config.json pi@edgarmaster:/home/pi
 	ssh pi@edgarmaster 'nohup java -jar edgar2.jar --dashboard="/home/pi/demo.json" --deviceConfig="/home/pi/device-config.json" > edgar.log 2>&1 &'
