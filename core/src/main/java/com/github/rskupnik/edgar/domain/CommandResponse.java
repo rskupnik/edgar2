@@ -23,6 +23,22 @@ public class CommandResponse implements DeviceResponse {
         this.headers = headers;
     }
 
+    public static CommandResponse ok() {
+        return new CommandResponse(
+                200,
+                new byte[0],
+                Collections.emptyMap()
+        );
+    }
+
+    public static CommandResponse ok(String msg) {
+        return new CommandResponse(
+                200,
+                msg.getBytes(),
+                Collections.emptyMap()
+        );
+    }
+
     public static CommandResponse error(String msg) {
         return new CommandResponse(
                 500,

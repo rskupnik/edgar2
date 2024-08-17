@@ -2,8 +2,10 @@ package com.github.rskupnik.edgar2;
 
 import com.github.rskupnik.edgar.Edgar;
 import com.github.rskupnik.edgar.db.inmemory.InMemoryDashboardRepository;
+import com.github.rskupnik.edgar.db.inmemory.InMemoryDeviceDataRepository;
 import com.github.rskupnik.edgar.db.inmemory.InMemoryDeviceRepository;
 import com.github.rskupnik.edgar.db.repository.DashboardRepository;
+import com.github.rskupnik.edgar.db.repository.DeviceDataRepository;
 import com.github.rskupnik.edgar.db.repository.DeviceRepository;
 import com.github.rskupnik.edgar.tts.TextToSpeechAdapter;
 import org.springframework.context.annotation.Bean;
@@ -16,9 +18,10 @@ public class Config {
     public Edgar edgar(
             DeviceRepository deviceRepository,
             DashboardRepository dashboardRepository,
+            DeviceDataRepository deviceDataRepository,
             TextToSpeechAdapter textToSpeech
     ) {
-        return Edgar.defaultImplementation(deviceRepository, dashboardRepository, textToSpeech);
+        return Edgar.defaultImplementation(deviceRepository, dashboardRepository, deviceDataRepository, textToSpeech);
     }
 
     @Bean
@@ -29,6 +32,11 @@ public class Config {
     @Bean
     public DashboardRepository dashboardRepository() {
         return new InMemoryDashboardRepository();
+    }
+
+    @Bean
+    public DeviceDataRepository deviceDataRepository() {
+        return new InMemoryDeviceDataRepository();
     }
 
     @Bean
