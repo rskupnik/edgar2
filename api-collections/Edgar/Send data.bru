@@ -1,0 +1,29 @@
+meta {
+  name: Send data
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://{{url}}:8080/devices/data/:deviceId
+  body: text
+  auth: none
+}
+
+params:path {
+  deviceId: testId
+}
+
+headers {
+  Content-Type: 
+}
+
+body:text {
+  This is some test data
+  
+  that can be
+  
+  just any bytes
+  
+  lol
+}
