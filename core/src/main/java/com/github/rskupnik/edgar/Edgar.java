@@ -4,6 +4,7 @@ import com.github.rskupnik.edgar.config.device.DeviceConfig;
 import com.github.rskupnik.edgar.config.device.DeviceConfigStorage;
 import com.github.rskupnik.edgar.config.device.EndpointConfig;
 import com.github.rskupnik.edgar.db.repository.DashboardRepository;
+import com.github.rskupnik.edgar.db.repository.DeviceDataRepository;
 import com.github.rskupnik.edgar.db.repository.DeviceRepository;
 import com.github.rskupnik.edgar.domain.*;
 import com.github.rskupnik.edgar.tts.TextToSpeechAdapter;
@@ -23,6 +24,10 @@ public interface Edgar {
 
     CommandResponse sendCommand(String deviceId, String commandName, Map<String, String> params);
 
+    // TODO: This stores only last data, maybe add some date or integer
+    CommandResponse storeData(String deviceId, byte[] data);
+    byte[] getData(String deviceId);
+
     void loadDashboard(String name, String filename);
     Optional<Dashboard> getDashboard(String id);
 
@@ -36,11 +41,12 @@ public interface Edgar {
     static Edgar defaultImplementation(
             DeviceRepository deviceRepository,
             DashboardRepository dashboardRepository,
+            DeviceDataRepository deviceDataRepository,
             TextToSpeechAdapter ttsAdapter
     ) {
         var deviceConfigStorage = deviceConfigStorage();
         return new EdgarImpl(
-                deviceRepository, dashboardRepository,
+                deviceRepository, dashboardRepository, deviceDataRepository,
                 deviceConfigStorage,
                 cachedDeviceClient(defaultDeviceClient(), deviceConfigStorage),
                 ttsAdapter

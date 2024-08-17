@@ -5,8 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.rskupnik.edgar.config.device.DeviceConfig;
 import com.github.rskupnik.edgar.config.device.DeviceConfigStorage;
 import com.github.rskupnik.edgar.db.entity.DashboardEntity;
+import com.github.rskupnik.edgar.db.entity.DeviceDataEntity;
 import com.github.rskupnik.edgar.db.entity.DeviceEntity;
 import com.github.rskupnik.edgar.db.repository.DashboardRepository;
+import com.github.rskupnik.edgar.db.repository.DeviceDataRepository;
 import com.github.rskupnik.edgar.db.repository.DeviceRepository;
 import com.github.rskupnik.edgar.domain.CommandResponse;
 import com.github.rskupnik.edgar.domain.Dashboard;
@@ -33,6 +35,8 @@ class EdgarImpl implements Edgar {
 
     private final DeviceRepository deviceRepository;
     private final DashboardRepository dashboardRepository;
+    private final DeviceDataRepository deviceDataRepository;
+
     private final DeviceClient deviceClient;
     private final DeviceConfigStorage deviceConfigStorage;
     private final TextToSpeechAdapter textToSpeech;
@@ -42,12 +46,14 @@ class EdgarImpl implements Edgar {
     public EdgarImpl(
             DeviceRepository deviceRepository,
             DashboardRepository dashboardRepository,
+            DeviceDataRepository deviceDataRepository,
             DeviceConfigStorage deviceConfigStorage,
             DeviceClient deviceClient,
             TextToSpeechAdapter ttsAdapter
     ) {
         this.deviceRepository = deviceRepository;
         this.dashboardRepository = dashboardRepository;
+        this.deviceDataRepository = deviceDataRepository;
         this.deviceConfigStorage = deviceConfigStorage;
         this.deviceClient = deviceClient;
         this.textToSpeech = ttsAdapter;
@@ -111,6 +117,26 @@ class EdgarImpl implements Edgar {
         });
 
         return response;
+    }
+
+    @Override
+    public CommandResponse storeData(String deviceId, byte[] data) {
+        // Check if this device is known to us (config, not actual device)
+//        final var deviceConfig = deviceConfigStorage.get(deviceId).orElse(null);
+//        if (deviceConfig == null) {
+//            logger.info("Unrecognized device tried to send data: {}", deviceId);
+//            return CommandResponse.error("Unrecognized device - rejecting");
+//        }
+
+        deviceDataRepository.save(deviceId, new DeviceDataEntity(deviceId, data));
+        logger.info("Data stored, length: {}", data.length);
+
+        return CommandResponse.ok();
+    }
+
+    @Override
+    public byte[] getData(String deviceId) {
+        return deviceDataRepository.find(deviceId).orElse(new DeviceDataEntity(deviceId, new byte[0])).getData();
     }
 
     @Override
