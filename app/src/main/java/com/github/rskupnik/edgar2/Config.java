@@ -61,6 +61,6 @@ public class Config {
 
     @Bean
     public UserMessageSender userMessageSender() {
-        return new DiscordUserMessageSender(discordCredentials.get("token"), discordCredentials.get("authorizedUser"));
+        return new DiscordUserMessageSender(discordCredentials.get("token"));
     }
 }

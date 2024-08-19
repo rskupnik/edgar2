@@ -65,7 +65,15 @@ public class DeviceController {
     public ResponseEntity<?> postDeviceData(@PathVariable("deviceId") String deviceId, HttpServletRequest request) throws IOException {
         logger.info("Received request for device: {}", deviceId);
         logger.info("Bytes available: {}", request.getInputStream().available());
-        CommandResponse response = edgar.storeData(deviceId, request.getInputStream().readAllBytes());
+        byte[] data = request.getInputStream().readAllBytes();
+        CommandResponse response = edgar.storeData(deviceId, data);
+
+        // TODO: This is temporary wiring!
+        // The action of sending to user should be configurable in config for a particular device
+        if (!response.isError()) {
+            edgar.sendToUser(data);
+        }
+
         return convertToSpringResponse(response);
     }
 
