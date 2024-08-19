@@ -27,7 +27,7 @@ hs_err_pid*
 .idea/
 *.iml
 
-real-credentials.properties
+credentials.properties
 
 .gradle
 **/build/*

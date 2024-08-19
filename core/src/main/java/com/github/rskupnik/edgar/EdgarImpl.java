@@ -149,7 +149,7 @@ class EdgarImpl implements Edgar {
 
     @Override
     public void sendToUser(byte[] data) {
-        userMessageSender.send(data);
+        userMessageSender.sendAsImage(data);
     }
 
     @Override
