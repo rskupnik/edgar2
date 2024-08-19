@@ -28,6 +28,9 @@ public interface Edgar {
     CommandResponse storeData(String deviceId, byte[] data);
     byte[] getData(String deviceId);
 
+    void sendToUser(String message);
+    void sendToUser(byte[] data);
+
     void loadDashboard(String name, String filename);
     Optional<Dashboard> getDashboard(String id);
 
@@ -42,14 +45,16 @@ public interface Edgar {
             DeviceRepository deviceRepository,
             DashboardRepository dashboardRepository,
             DeviceDataRepository deviceDataRepository,
-            TextToSpeechAdapter ttsAdapter
+            TextToSpeechAdapter ttsAdapter,
+            UserMessageSender userMessageSender
     ) {
         var deviceConfigStorage = deviceConfigStorage();
         return new EdgarImpl(
                 deviceRepository, dashboardRepository, deviceDataRepository,
                 deviceConfigStorage,
                 cachedDeviceClient(defaultDeviceClient(), deviceConfigStorage),
-                ttsAdapter
+                ttsAdapter,
+                userMessageSender
         );
     }
 
