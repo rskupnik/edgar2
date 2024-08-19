@@ -47,4 +47,13 @@ public class DiscordUserMessageSender implements UserMessageSender {
             });
         });
     }
+
+    @Override
+    public void sendAsImage(byte[] data) {
+        jda.retrieveUserById(188321556009713674L).queue(u -> {
+            u.openPrivateChannel().queue(ch -> {
+                ch.sendFile(data, UUID.randomUUID() + ".jpg").queue();
+            });
+        });
+    }
 }
