@@ -124,7 +124,7 @@ class EdgarImpl implements Edgar {
 
     @Override
     public CommandResponse storeData(String deviceId, byte[] data) {
-        // Check if this device is known to us (config, not actual device)
+        // TODO: Check if this device is known to us (config, not actual device)
 //        final var deviceConfig = deviceConfigStorage.get(deviceId).orElse(null);
 //        if (deviceConfig == null) {
 //            logger.info("Unrecognized device tried to send data: {}", deviceId);
@@ -149,7 +149,7 @@ class EdgarImpl implements Edgar {
 
     @Override
     public void sendToUser(byte[] data) {
-
+        userMessageSender.send(data);
     }
 
     @Override

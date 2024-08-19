@@ -5,13 +5,15 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 
+import java.util.UUID;
+
 public class DiscordUserMessageSender implements UserMessageSender {
 
     private final JDA jda;
-    private final String authorizedUser;
+//    private final String authorizedUser;
 
-    public DiscordUserMessageSender(String token, String authorizedUser) {
-        this.authorizedUser = authorizedUser;
+    public DiscordUserMessageSender(String token) {
+//        this.authorizedUser = authorizedUser;
 
         JDA jda0 = null;
         try {
@@ -20,7 +22,7 @@ public class DiscordUserMessageSender implements UserMessageSender {
                             GatewayIntent.DIRECT_MESSAGE_REACTIONS,
                             GatewayIntent.DIRECT_MESSAGE_TYPING
                     ).build();
-            jda0.addEventListener(this);
+//            jda0.addEventListener(this);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -33,6 +35,15 @@ public class DiscordUserMessageSender implements UserMessageSender {
         jda.retrieveUserById(188321556009713674L).queue(u -> {
             u.openPrivateChannel().queue(ch -> {
                 ch.sendMessage(message).queue();
+            });
+        });
+    }
+
+    @Override
+    public void send(byte[] data) {
+        jda.retrieveUserById(188321556009713674L).queue(u -> {
+            u.openPrivateChannel().queue(ch -> {
+                ch.sendFile(data, UUID.randomUUID().toString()).queue();
             });
         });
     }
