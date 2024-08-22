@@ -1,4 +1,4 @@
-.PHONY: deploy, build-db, build-core, build-http, build-app, build, ship, start, stop, restart, ssh
+.PHONY: deploy, build-db, build-core, build-http, build-app, build, ship, start, stop, restart, ssh, zrok-stop, zrok-start, zrok-log
 
 deploy:
 	cp ./app/build/libs/app.jar ./app/build/libs/edgar2.jar
@@ -42,3 +42,12 @@ build-app:
 build: build-core build-db build-http build-app
 
 ship: build deploy
+
+zrok-start:
+	ssh pi@edgarmaster 'nohup zrok share public localhost:8080 --headless &> zrok.log &'
+
+zrok-stop:
+	ssh pi@edgarmaster 'kill -s SIGKILL $$(pgrep -f zrok)'
+
+zrok-log:
+	ssh pi@edgarmaster 'cat zrok.log'

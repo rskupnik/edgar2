@@ -5,11 +5,11 @@ meta {
 }
 
 get {
-  url: http://{{url}}:8080/devices/data/:deviceId
+  url: {{url}}/devices/data/:deviceId
   body: none
   auth: none
 }
 
 params:path {
-  deviceId: lpsic
+  deviceId: testId
 }
