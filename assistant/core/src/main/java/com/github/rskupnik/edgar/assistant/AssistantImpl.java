@@ -33,6 +33,8 @@ public class AssistantImpl implements Assistant, Subscriber {
         this.credentials = credentials;
         this.userIO = userIO;
 
+        System.out.println("STARTING ASSISTANT");
+
         EventManager.subscribe(CommandIssuedEvent.class, this);
         EventManager.subscribe(TriggerNextStepEvent.class, this);
         EventManager.subscribe(TerminationCheckEvent.class, this);

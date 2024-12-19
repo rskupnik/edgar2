@@ -44,7 +44,8 @@ public class AssistantAppTest {
                 new TaskRegistration("test", TestTask.class),
                 new TaskRegistration("test rpi", RPiTest.class),
                 new TaskRegistration("alior test", AliorTestTask.class),
-                new TaskRegistration("pay taxes", PayTaxesTask.class)
+                new TaskRegistration("pay taxes", PayTaxesTask.class),
+                new TaskRegistration("playwright test", PlaywrightTestTask.class)
         );
     }
 }
