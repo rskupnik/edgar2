@@ -30,3 +30,6 @@ hs_err_pid*
 .gradle
 **/build/*
 
+# CUSTOM
+**/credentials.properties
+**/.DS_Store
