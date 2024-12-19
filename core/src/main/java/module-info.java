@@ -15,4 +15,5 @@ module edgar.core {
     exports com.github.rskupnik.edgar.domain;
     exports com.github.rskupnik.edgar.tts;
     exports com.github.rskupnik.edgar.discord;
+    exports com.github.rskupnik.edgar.config.device.active;
 }

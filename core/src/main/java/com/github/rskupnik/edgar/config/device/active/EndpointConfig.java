@@ -1,4 +1,4 @@
-package com.github.rskupnik.edgar.config.device;
+package com.github.rskupnik.edgar.config.device.active;
 
 public class EndpointConfig {
 

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.rskupnik.edgar.config.device.DeviceConfig;
 import com.github.rskupnik.edgar.config.device.DeviceConfigStorage;
+import com.github.rskupnik.edgar.config.device.active.ActiveDeviceConfig;
+import com.github.rskupnik.edgar.config.device.passive.PassiveDeviceConfig;
 import com.github.rskupnik.edgar.db.entity.DashboardEntity;
 import com.github.rskupnik.edgar.db.entity.DeviceDataEntity;
 import com.github.rskupnik.edgar.db.entity.DeviceEntity;
@@ -158,6 +160,7 @@ class EdgarImpl implements Edgar {
                 .stream()
                 .filter(d -> !d.isResponsive())
                 .map(d -> new Tuple2<>(deviceConfigStorage.get(d.getId()).orElse(DeviceConfig.empty()), d))
+                .map(t -> new Tuple2<>((ActiveDeviceConfig) t._1, t._2))
                 .filter(t -> Instant.now().toEpochMilli() - (t._1.getUnresponsiveTimeout() * 1000) > t._2.getLastSuccessResponseTimestamp())
                 .forEach(t -> {
                     logger.info("Removing unresponsive device: " + t._2.getId());
@@ -191,6 +194,11 @@ class EdgarImpl implements Edgar {
     @Override
     public void loadDeviceConfig(String filename) {
         loadFile(filename, new TypeReference<List<DeviceConfig>>() {}).ifPresent(deviceConfigStorage::save);
+        var test = (PassiveDeviceConfig) deviceConfigStorage.get("lpsic").orElse(null);
+        System.out.println("ID: " + test.getId());
+        System.out.println("Processors amount: " + test.getProcessors().size());
+        System.out.println("Processor[0] id: " + test.getProcessors().get(0).get("id"));
+        System.out.println("Processor[0] user: " + test.getProcessors().get(0).get("user"));
         logger.info("Loaded Device Config");
     }
 

@@ -1,13 +1,21 @@
 package com.github.rskupnik.edgar.config.device;
 
-import java.util.Collections;
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.github.rskupnik.edgar.config.device.active.ActiveDeviceConfig;
+import com.github.rskupnik.edgar.config.device.passive.PassiveDeviceConfig;
 
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        property = "type")
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = ActiveDeviceConfig.class, name = "Active"),
+        @JsonSubTypes.Type(value = PassiveDeviceConfig.class, name = "Passive"),
+})
 public class DeviceConfig {
 
     private String id;
-    private int unresponsiveTimeout = 1;
-    private List<EndpointConfig> endpoints = Collections.emptyList();
+    private DeviceType type;
 
     public static DeviceConfig empty() {
         return new DeviceConfig();
@@ -21,19 +29,11 @@ public class DeviceConfig {
         this.id = id;
     }
 
-    public int getUnresponsiveTimeout() {
-        return unresponsiveTimeout;
+    public DeviceType getType() {
+        return type;
     }
 
-    public void setUnresponsiveTimeout(int unresponsiveTimeout) {
-        this.unresponsiveTimeout = unresponsiveTimeout;
-    }
-
-    public List<EndpointConfig> getEndpoints() {
-        return endpoints;
-    }
-
-    public void setEndpoints(List<EndpointConfig> endpoints) {
-        this.endpoints = endpoints;
+    public void setType(DeviceType type) {
+        this.type = type;
     }
 }
