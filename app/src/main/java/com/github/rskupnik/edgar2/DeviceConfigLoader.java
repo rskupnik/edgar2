@@ -22,11 +22,12 @@ public class DeviceConfigLoader {
 
     @PostConstruct
     private void loadDeviceConfig() {
-        var optionValues = args.getOptionValues("deviceConfig");
-        if (optionValues == null || optionValues.size() == 0)
-            return;
-
-        var filename = optionValues.get(0);
+//        var optionValues = args.getOptionValues("deviceConfig");
+//        if (optionValues == null || optionValues.size() == 0)
+//            return;
+//
+//        var filename = optionValues.get(0);
+        var filename = "device-config.json";
         logger.info("Loading device config from file: " + filename);
         edgar.loadDeviceConfig(filename);
     }

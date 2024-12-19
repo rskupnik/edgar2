@@ -18,7 +18,7 @@ import org.springframework.context.annotation.PropertySource;
 import java.util.Map;
 
 @Configuration
-@PropertySource("classpath:example-credentials.properties")
+@PropertySource("classpath:credentials.properties")
 public class Config {
 
     @Value("#{${discord.credentials}}")

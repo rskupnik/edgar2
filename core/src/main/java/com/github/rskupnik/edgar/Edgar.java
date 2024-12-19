@@ -2,13 +2,13 @@ package com.github.rskupnik.edgar;
 
 import com.github.rskupnik.edgar.config.device.DeviceConfig;
 import com.github.rskupnik.edgar.config.device.DeviceConfigStorage;
-import com.github.rskupnik.edgar.config.device.EndpointConfig;
+import com.github.rskupnik.edgar.config.device.active.ActiveDeviceConfig;
+import com.github.rskupnik.edgar.config.device.active.EndpointConfig;
 import com.github.rskupnik.edgar.db.repository.DashboardRepository;
 import com.github.rskupnik.edgar.db.repository.DeviceDataRepository;
 import com.github.rskupnik.edgar.db.repository.DeviceRepository;
 import com.github.rskupnik.edgar.domain.*;
 import com.github.rskupnik.edgar.tts.TextToSpeechAdapter;
-import io.vavr.Tuple2;
 import io.vavr.control.Either;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -69,7 +69,10 @@ public interface Edgar {
                     String[] split = key.split(":");
                     var deviceId = split[0];
                     var endpointPath = split[1];
-                    return deviceConfigStorage.get(deviceId).orElse(DeviceConfig.empty()).getEndpoints()
+                    // TODO: Dirty; Maybe introduce a repository method to grab an active device
+                    ActiveDeviceConfig device = (ActiveDeviceConfig) deviceConfigStorage.get(deviceId).orElse(DeviceConfig.empty());
+
+                    return device.getEndpoints()
                             .stream()
                             .filter(c -> c.getPath().equals(endpointPath))
                             .findFirst()

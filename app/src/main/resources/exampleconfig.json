@@ -24,10 +24,21 @@
   {
     "id": "lpsic",
     "type": "Passive",
+    "dataType": "bytearray",
+    "dataVariable": "data",
     "processors": [
       {
         "id": "outputDiscordImage",
         "user": "bla"
+      },
+      {
+        "id": "toString",
+        "processors": [
+          {
+            "id": "outputDiscordMessage",
+            "user": "bla"
+          }
+        ]
       }
     ]
   }

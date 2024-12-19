@@ -1,7 +1,7 @@
 package com.github.rskupnik.edgar
 
 import com.github.rskupnik.edgar.config.device.DeviceConfig
-import com.github.rskupnik.edgar.config.device.EndpointConfig
+import com.github.rskupnik.edgar.config.device.active.EndpointConfig
 import com.github.rskupnik.edgar.domain.Device
 import com.github.rskupnik.edgar.domain.DeviceEndpoint
 import com.github.rskupnik.edgar.domain.HttpMethod
