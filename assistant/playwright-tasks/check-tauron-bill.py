@@ -4,7 +4,7 @@ from playwright.sync_api import sync_playwright
 
 def main():
     url = "https://logowanie.tauron.pl/login"
-    pipe_path = "/tmp/my_pipe"
+    pipe_path = "/tmp/playwright-test"
 
     # Ensure the named pipe exists
     if not os.path.exists(pipe_path):
