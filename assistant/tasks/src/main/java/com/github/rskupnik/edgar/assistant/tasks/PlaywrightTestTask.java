@@ -20,8 +20,10 @@ public class PlaywrightTestTask extends ExternalProcessTask {
                 runProcess(
 //                        "/Users/myzek/workspace/priv/edgar2/assistant/playwright-tasks/venv/bin/python",
 //                        "/Users/myzek/workspace/priv/edgar2/assistant/playwright-tasks/check-tauron-bill.py"
-                        "/home/pi/playwright-test/venv/bin/python",
-                        "/home/pi/playwright-test/check-tauron-bill.py"
+//                        "/home/pi/playwright-test/venv/bin/python",
+//                        "/home/pi/playwright-test/check-tauron-bill.py"
+                        "/home/rskupnik/workspace/priv/edgar2/assistant/playwright-tasks/venv/bin/python",
+                        "/home/rskupnik/workspace/priv/edgar2/assistant/playwright-tasks/check-tauron-bill.py"
                 );
 
                 String isReadySignal = pipeRead();

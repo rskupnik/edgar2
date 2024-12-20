@@ -1,0 +1,11 @@
+#devices:
+#  rediscoverUnresponsiveDevices:
+#    delay: 60000
+#    initialDelay: 60000
+#
+#assistant:
+#  enabled: true
+#
+#spring:
+#  config:
+#    import: classpath:assistant-config.yml

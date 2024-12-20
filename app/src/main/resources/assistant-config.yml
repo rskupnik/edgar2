@@ -1,0 +1,6 @@
+# Intention is to move this file along with all assistant code to separate module
+# So that this config only is present if the whole assistant module is present
+
+spring:
+  config:
+    import: classpath:credentials.yml
