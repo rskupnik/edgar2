@@ -1,6 +1,6 @@
 package com.github.rskupnik.edgar.assistant.task;
 
-import com.github.rskupnik.edgar.assistant.Credentials;
+import com.github.rskupnik.edgar.assistant.TaskProperties;
 import com.github.rskupnik.edgar.assistant.UserIO;
 import com.github.rskupnik.edgar.assistant.WebCrawler;
 import com.github.rskupnik.edgar.assistant.events.EventManager;
@@ -12,7 +12,7 @@ import java.util.function.Supplier;
 
 public abstract class Task {
 
-    protected final Credentials credentials;
+    protected final TaskProperties taskProperties;
     protected final UserIO userIO;
     protected final Supplier<WebCrawler> webCrawlerSupplier;
 
@@ -22,8 +22,8 @@ public abstract class Task {
     private LocalDateTime lastExecutionTime = LocalDateTime.now();
     private int timeoutSeconds = 30;
 
-    protected Task(Credentials credentials, UserIO userIO, Supplier<WebCrawler> webCrawlerSupplier) {
-        this.credentials = credentials;
+    protected Task(TaskProperties taskProperties, UserIO userIO, Supplier<WebCrawler> webCrawlerSupplier) {
+        this.taskProperties = taskProperties;
         this.userIO = userIO;
         this.webCrawlerSupplier = webCrawlerSupplier;
     }

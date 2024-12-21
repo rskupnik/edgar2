@@ -8,7 +8,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
@@ -17,7 +16,7 @@ public class AssistantImpl implements Assistant, Subscriber {
 
     private final Supplier<WebCrawler> webCrawlerSupplier;
     private final UserIO userIO;
-    private final Credentials credentials;
+    private final TaskProperties taskProperties;
 
     private final Map<String, Class<? extends Task>> availableCommands = new HashMap<>();
 
@@ -25,12 +24,12 @@ public class AssistantImpl implements Assistant, Subscriber {
 
     AssistantImpl(
             UserIO userIO,
-            Credentials credentials,
+            TaskProperties taskProperties,
             Supplier<WebCrawler> webCrawlerSupplier,
             TaskRegistration... taskRegistrations
     ) {
         this.webCrawlerSupplier = webCrawlerSupplier;
-        this.credentials = credentials;
+        this.taskProperties = taskProperties;
         this.userIO = userIO;
 
         System.out.println("STARTING ASSISTANT");
@@ -63,8 +62,8 @@ public class AssistantImpl implements Assistant, Subscriber {
         try {
             // TODO: This only supports one task at a time - might be fine if we implement queuing, not fine if multitasking
             currentTask = task
-                    .getDeclaredConstructor(Credentials.class, UserIO.class, Supplier.class)
-                    .newInstance(credentials, userIO, webCrawlerSupplier);
+                    .getDeclaredConstructor(TaskProperties.class, UserIO.class, Supplier.class)
+                    .newInstance(taskProperties, userIO, webCrawlerSupplier);
         } catch (Exception e) {
             e.printStackTrace();
         }

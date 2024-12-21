@@ -1,7 +1,7 @@
 package com.github.rskupnik.edgar2;
 
 import com.github.rskupnik.edgar.assistant.Assistant;
-import com.github.rskupnik.edgar.assistant.ExplicitCredentials;
+import com.github.rskupnik.edgar.assistant.ExplicitTaskProperties;
 import com.github.rskupnik.edgar.assistant.task.TaskRegistration;
 import com.github.rskupnik.edgar.assistant.discord.DiscordUserIO;
 import com.github.rskupnik.edgar.assistant.tasks.*;
@@ -31,21 +31,21 @@ public class AssistantAppTest {
 
     @PostConstruct
     public void test() {
-        var flattenedCreds = flattenProperties(credentialsConfig.getCredentials(), new HashMap<>());
-        flattenedCreds = flattenProperties(taskConfig.getTasks(), flattenedCreds);
-        flattenedCreds.forEach((k, v) -> System.out.println(k + ": " + v));
-
         if (!enabled) {
             System.out.println("Assistant DISABLED");
             return;
         }
 
+        var flattenedProps = flattenProperties("credentials", credentialsConfig.getCredentials(), new HashMap<>());
+        flattenedProps = flattenProperties("tasks", taskConfig.getTasks(), flattenedProps);
+        flattenedProps.forEach((k, v) -> System.out.println(k + ": " + v));
+
         Assistant.defaultImplementation(
                 new DiscordUserIO(
-                        flattenedCreds.get("discord.token"),
-                        flattenedCreds.get("discord.authorizedUser")
+                        flattenedProps.get("credentials.discord.token"),
+                        flattenedProps.get("credentials.discord.authorizedUser")
                 ),
-                new ExplicitCredentials(flattenedCreds),
+                new ExplicitTaskProperties(flattenedProps),
                 SeleniumChromeWebCrawler::new,
                 new TaskRegistration("pay gas", PayGasTask.class),
                 new TaskRegistration("check power bill", CheckPowerBillDueTask.class),
@@ -58,8 +58,8 @@ public class AssistantAppTest {
         );
     }
 
-    private Map<String, String> flattenProperties(Map<String, Object> source, Map<String, String> target) {
-        flatten("", source, target);
+    private Map<String, String> flattenProperties(String parentKey, Map<String, Object> source, Map<String, String> target) {
+        flatten(parentKey, source, target);
         return target;
     }
 

@@ -2,11 +2,11 @@ package com.github.rskupnik.edgar.assistant;
 
 import java.util.Map;
 
-public class ExplicitCredentials implements Credentials {
+public class ExplicitTaskProperties implements TaskProperties {
 
     private final Map<String, String> credentials;
 
-    public ExplicitCredentials(Map<String, String> credentials) {
+    public ExplicitTaskProperties(Map<String, String> credentials) {
         this.credentials = credentials;
     }
 

@@ -12,3 +12,10 @@ spring:
 
 server:
   port: 8080
+
+---
+# Local MacOS profile
+spring:
+  config:
+    activate:
+      on-profile: local-macos

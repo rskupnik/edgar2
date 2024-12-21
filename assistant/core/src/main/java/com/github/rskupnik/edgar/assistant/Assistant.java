@@ -11,10 +11,10 @@ public interface Assistant {
 
     static Assistant defaultImplementation(
             UserIO userIO,
-            Credentials credentials,
+            TaskProperties taskProperties,
             Supplier<WebCrawler> webCrawlerSupplier,
             TaskRegistration... taskRegistrations
     ) {
-        return new AssistantImpl(userIO, credentials, webCrawlerSupplier, taskRegistrations);
+        return new AssistantImpl(userIO, taskProperties, webCrawlerSupplier, taskRegistrations);
     }
 }

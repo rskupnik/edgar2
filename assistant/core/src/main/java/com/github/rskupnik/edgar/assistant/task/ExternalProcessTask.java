@@ -1,6 +1,6 @@
 package com.github.rskupnik.edgar.assistant.task;
 
-import com.github.rskupnik.edgar.assistant.Credentials;
+import com.github.rskupnik.edgar.assistant.TaskProperties;
 import com.github.rskupnik.edgar.assistant.UserIO;
 import com.github.rskupnik.edgar.assistant.WebCrawler;
 
@@ -12,8 +12,8 @@ public abstract class ExternalProcessTask extends Task {
     protected String pipe;
     protected Process process;
 
-    protected ExternalProcessTask(Credentials credentials, UserIO userIO, Supplier<WebCrawler> webCrawlerSupplier) {
-        super(credentials, userIO, webCrawlerSupplier);
+    protected ExternalProcessTask(TaskProperties taskProperties, UserIO userIO, Supplier<WebCrawler> webCrawlerSupplier) {
+        super(taskProperties, userIO, webCrawlerSupplier);
     }
 
     protected void createPipe(String pipePath) throws Exception {

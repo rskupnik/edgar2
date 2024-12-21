@@ -1,6 +1,6 @@
 package com.github.rskupnik.edgar.assistant.tasks;
 
-import com.github.rskupnik.edgar.assistant.Credentials;
+import com.github.rskupnik.edgar.assistant.TaskProperties;
 import com.github.rskupnik.edgar.assistant.UserIO;
 import com.github.rskupnik.edgar.assistant.WebCrawler;
 import com.github.rskupnik.edgar.assistant.steps.Steps;
@@ -20,8 +20,8 @@ public class PayTaxesTask extends Task {
     // TODO: Get rid of this
     private boolean toContinue;
 
-    public PayTaxesTask(Credentials credentials, UserIO userIO, Supplier<WebCrawler> webCrawlerSupplier) {
-        super(credentials, userIO, webCrawlerSupplier);
+    public PayTaxesTask(TaskProperties taskProperties, UserIO userIO, Supplier<WebCrawler> webCrawlerSupplier) {
+        super(taskProperties, userIO, webCrawlerSupplier);
         setSteps(
             Steps.beginWith(() -> {
                 userIO.output("PAYING TAXES");
@@ -49,7 +49,7 @@ public class PayTaxesTask extends Task {
                 userIO.output("Starting in 3s, please be ready to allow one-time access");
                 wait(3000);
                 aliorWebCrawler = new AliorWebCrawler(instantiateWebCrawler(), this::wait);
-                aliorWebCrawler.login(credentials.get("aliorUserId"), credentials.get("aliorPassword"));
+                aliorWebCrawler.login(taskProperties.get("aliorUserId"), taskProperties.get("aliorPassword"));
                 aliorWebCrawler.requestOneTimeAccess();
             }).thenRequestInput("Please allow one-time access and type 'continue'", m -> {
                 var message = (String) m;

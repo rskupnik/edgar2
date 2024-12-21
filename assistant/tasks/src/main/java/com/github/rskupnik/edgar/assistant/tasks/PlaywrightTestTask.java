@@ -1,6 +1,6 @@
 package com.github.rskupnik.edgar.assistant.tasks;
 
-import com.github.rskupnik.edgar.assistant.Credentials;
+import com.github.rskupnik.edgar.assistant.TaskProperties;
 import com.github.rskupnik.edgar.assistant.UserIO;
 import com.github.rskupnik.edgar.assistant.WebCrawler;
 import com.github.rskupnik.edgar.assistant.steps.Steps;
@@ -10,20 +10,16 @@ import java.util.function.Supplier;
 
 public class PlaywrightTestTask extends ExternalProcessTask {
 
-    public PlaywrightTestTask(Credentials credentials, UserIO userIO, Supplier<WebCrawler> webCrawlerSupplier) {
-        super(credentials, userIO, webCrawlerSupplier);
+    public PlaywrightTestTask(TaskProperties taskProperties, UserIO userIO, Supplier<WebCrawler> webCrawlerSupplier) {
+        super(taskProperties, userIO, webCrawlerSupplier);
         setSteps(Steps.beginWith(() -> {
             System.out.println("STARTING TEST");
 
             try {
                 createPipe("/tmp/playwright-test");
                 runProcess(
-//                        "/Users/myzek/workspace/priv/edgar2/assistant/playwright-tasks/venv/bin/python",
-//                        "/Users/myzek/workspace/priv/edgar2/assistant/playwright-tasks/check-tauron-bill.py"
-//                        "/home/pi/playwright-test/venv/bin/python",
-//                        "/home/pi/playwright-test/check-tauron-bill.py"
-                        "/home/rskupnik/workspace/priv/edgar2/assistant/playwright-tasks/venv/bin/python",
-                        "/home/rskupnik/workspace/priv/edgar2/assistant/playwright-tasks/check-tauron-bill.py"
+                        taskProperties.get("tasks.python-executable-path"),
+                        taskProperties.get("tasks.check-tauron-power-bill.script-location")
                 );
 
                 String isReadySignal = pipeRead();

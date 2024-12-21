@@ -1,6 +1,6 @@
 package com.github.rskupnik.edgar.assistant.tasks;
 
-import com.github.rskupnik.edgar.assistant.Credentials;
+import com.github.rskupnik.edgar.assistant.TaskProperties;
 import com.github.rskupnik.edgar.assistant.UserIO;
 import com.github.rskupnik.edgar.assistant.WebCrawler;
 import com.github.rskupnik.edgar.assistant.steps.Steps;
@@ -16,8 +16,8 @@ public class AliorTestTask extends Task  {
 
     private String title, amount;
 
-    public AliorTestTask(Credentials credentials, UserIO userIO, Supplier<WebCrawler> webCrawlerSupplier) {
-        super(credentials, userIO, webCrawlerSupplier);
+    public AliorTestTask(TaskProperties taskProperties, UserIO userIO, Supplier<WebCrawler> webCrawlerSupplier) {
+        super(taskProperties, userIO, webCrawlerSupplier);
         setSteps(
             Steps.beginWith(() -> {
                 userIO.output("Testing Alior website scraping...");
@@ -48,7 +48,7 @@ public class AliorTestTask extends Task  {
                 userIO.output("Logging in...");
                 webCrawler = instantiateWebCrawler();
                 aliorWebCrawler = new AliorWebCrawler(webCrawler, this::wait);
-                aliorWebCrawler.login(credentials.get("aliorUserId"), credentials.get("aliorPassword"));
+                aliorWebCrawler.login(taskProperties.get("aliorUserId"), taskProperties.get("aliorPassword"));
                 aliorWebCrawler.requestOneTimeAccess();
             }).thenRequestInput("Please allow one-time access and type 'continue'", m -> {
                 var message = (String) m;

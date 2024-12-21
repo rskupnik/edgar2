@@ -1,6 +1,6 @@
 package com.github.rskupnik.edgar.assistant.tasks;
 
-import com.github.rskupnik.edgar.assistant.Credentials;
+import com.github.rskupnik.edgar.assistant.TaskProperties;
 import com.github.rskupnik.edgar.assistant.UserIO;
 import com.github.rskupnik.edgar.assistant.WebCrawler;
 import com.github.rskupnik.edgar.assistant.steps.Steps;
@@ -15,8 +15,8 @@ public class PayGasTask extends Task {
 
     private String randomVar = "bla";
 
-    public PayGasTask(Credentials credentials, UserIO userIO, Supplier<WebCrawler> webCrawlerSupplier) {
-        super(credentials, userIO, webCrawlerSupplier);
+    public PayGasTask(TaskProperties taskProperties, UserIO userIO, Supplier<WebCrawler> webCrawlerSupplier) {
+        super(taskProperties, userIO, webCrawlerSupplier);
         setSteps(
             Steps
             .begin()

@@ -1,3 +1,29 @@
+# Default profile - Raspberry Pi
 tasks:
-  test:
-    test2: value
+  python-executable-path: /home/pi/playwright-test/venv/bin/python
+  check-tauron-power-bill:
+    script-location: /home/pi/playwright-test/check-tauron-bill.py
+
+---
+# Local MacOS profile
+spring:
+  config:
+    activate:
+      on-profile: local-macos
+
+tasks:
+  python-executable-path: /Users/myzek/workspace/priv/edgar2/assistant/playwright-tasks/venv/bin/python
+  check-tauron-power-bill:
+    script-location: /Users/myzek/workspace/priv/edgar2/assistant/playwright-tasks/check-tauron-bill.py
+
+---
+# Local Dell profile
+spring:
+  config:
+    activate:
+      on-profile: local-dell
+
+tasks:
+  python-executable-path: /home/rskupnik/workspace/priv/edgar2/assistant/playwright-tasks/venv/bin/python
+  check-tauron-power-bill:
+    script-location: /home/rskupnik/workspace/priv/edgar2/assistant/playwright-tasks/check-tauron-bill.py

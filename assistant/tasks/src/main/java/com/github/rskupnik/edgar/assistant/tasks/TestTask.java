@@ -1,6 +1,6 @@
 package com.github.rskupnik.edgar.assistant.tasks;
 
-import com.github.rskupnik.edgar.assistant.Credentials;
+import com.github.rskupnik.edgar.assistant.TaskProperties;
 import com.github.rskupnik.edgar.assistant.UserIO;
 import com.github.rskupnik.edgar.assistant.WebCrawler;
 import com.github.rskupnik.edgar.assistant.steps.Steps;
@@ -12,8 +12,8 @@ public class TestTask extends Task {
 
     private String test = null;
 
-    public TestTask(Credentials credentials, UserIO userIO, Supplier<WebCrawler> webCrawlerSupplier) {
-        super(credentials, userIO, webCrawlerSupplier);
+    public TestTask(TaskProperties taskProperties, UserIO userIO, Supplier<WebCrawler> webCrawlerSupplier) {
+        super(taskProperties, userIO, webCrawlerSupplier);
         setSteps(
             Steps.beginWith(() -> {
                 userIO.output("Test message 1");
