@@ -3,4 +3,4 @@
 
 spring:
   config:
-    import: classpath:credentials.yml
+    import: classpath:credentials.yml, classpath:task-config.yml

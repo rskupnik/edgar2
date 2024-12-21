@@ -17,18 +17,22 @@ import java.util.Map;
 
 @Component
 // TODO: Move this to assistant:app? Let the main app simply discover this Component
-@EnableConfigurationProperties(CredentialsConfig.class)
+@EnableConfigurationProperties({CredentialsConfig.class, TaskConfig.class})
 public class AssistantAppTest {
 
     @Autowired
     private CredentialsConfig credentialsConfig;
+
+    @Autowired
+    private TaskConfig taskConfig;
 
     @Value("${assistant.enabled}")
     private Boolean enabled;
 
     @PostConstruct
     public void test() {
-        var flattenedCreds = flattenCredentials(credentialsConfig);
+        var flattenedCreds = flattenProperties(credentialsConfig.getCredentials(), new HashMap<>());
+        flattenedCreds = flattenProperties(taskConfig.getTasks(), flattenedCreds);
         flattenedCreds.forEach((k, v) -> System.out.println(k + ": " + v));
 
         if (!enabled) {
@@ -54,10 +58,9 @@ public class AssistantAppTest {
         );
     }
 
-    private Map<String, String> flattenCredentials(CredentialsConfig credentialsConfig) {
-        Map<String, String> flatMap = new HashMap<>();
-        flatten("", credentialsConfig.getCredentials(), flatMap);
-        return flatMap;
+    private Map<String, String> flattenProperties(Map<String, Object> source, Map<String, String> target) {
+        flatten("", source, target);
+        return target;
     }
 
     // Helper recursive function to flatten the map
