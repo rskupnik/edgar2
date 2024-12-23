@@ -3,7 +3,7 @@ import sys
 from python_task import PythonTask
 from playwright.sync_api import sync_playwright
 
-class CheckTauronBill(PythonTask):
+class PythonTaskImplementation(PythonTask):
 
     def perform_task(self):
         url = "https://logowanie.tauron.pl/login"
@@ -30,4 +30,4 @@ class CheckTauronBill(PythonTask):
 
 
 if __name__ == "__main__":
-    CheckTauronBill(sys.argv[1]).execute()
+    PythonTaskImplementation(sys.argv[1]).execute()
