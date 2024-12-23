@@ -8,6 +8,7 @@ import com.github.rskupnik.edgar.assistant.events.TaskTerminatedEvent;
 import com.github.rskupnik.edgar.assistant.steps.Steps;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.function.Supplier;
 
 public abstract class Task {
@@ -15,6 +16,7 @@ public abstract class Task {
     protected final TaskProperties taskProperties;
     protected final UserIO userIO;
     protected final Supplier<WebCrawler> webCrawlerSupplier;
+    protected final Map<String, Object> parameters;
 
     private Steps steps;
     private int currentStep = 0;
@@ -22,10 +24,12 @@ public abstract class Task {
     private LocalDateTime lastExecutionTime = LocalDateTime.now();
     private int timeoutSeconds = 30;
 
-    protected Task(TaskProperties taskProperties, UserIO userIO, Supplier<WebCrawler> webCrawlerSupplier) {
+    protected Task(TaskProperties taskProperties, UserIO userIO, Supplier<WebCrawler> webCrawlerSupplier,
+                   Map<String, Object> parameters) {
         this.taskProperties = taskProperties;
         this.userIO = userIO;
         this.webCrawlerSupplier = webCrawlerSupplier;
+        this.parameters = parameters;
     }
 
     protected void setSteps(Steps steps) {

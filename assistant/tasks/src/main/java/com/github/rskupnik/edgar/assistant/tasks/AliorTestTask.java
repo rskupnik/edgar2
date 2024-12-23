@@ -7,6 +7,7 @@ import com.github.rskupnik.edgar.assistant.steps.Steps;
 import com.github.rskupnik.edgar.assistant.task.Task;
 import com.github.rskupnik.edgar.assistant.webcrawler.alior.AliorWebCrawler;
 
+import java.util.Map;
 import java.util.function.Supplier;
 
 public class AliorTestTask extends Task  {
@@ -16,8 +17,9 @@ public class AliorTestTask extends Task  {
 
     private String title, amount;
 
-    public AliorTestTask(TaskProperties taskProperties, UserIO userIO, Supplier<WebCrawler> webCrawlerSupplier) {
-        super(taskProperties, userIO, webCrawlerSupplier);
+    public AliorTestTask(TaskProperties taskProperties, UserIO userIO, Supplier<WebCrawler> webCrawlerSupplier,
+                         Map<String, Object> parameters) {
+        super(taskProperties, userIO, webCrawlerSupplier, parameters);
         setSteps(
             Steps.beginWith(() -> {
                 userIO.output("Testing Alior website scraping...");

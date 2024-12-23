@@ -18,7 +18,7 @@ public class AssistantImpl implements Assistant, Subscriber {
     private final UserIO userIO;
     private final TaskProperties taskProperties;
 
-    private final Map<String, Class<? extends Task>> availableCommands = new HashMap<>();
+    private final Map<String, TaskDescriptor> availableCommands = new HashMap<>();
 
     private Task currentTask = null;
 
@@ -41,29 +41,30 @@ public class AssistantImpl implements Assistant, Subscriber {
         EventManager.subscribe(RequestInputEvent.class, userIO);
         EventManager.subscribe(TaskTerminatedEvent.class, userIO);
 
-        Arrays.stream(taskRegistrations).forEach(reg -> registerCommand(reg.command(), reg.task()));
+        Arrays.stream(taskRegistrations).forEach(reg -> registerCommand(reg.command(), new TaskDescriptor(reg.task(), reg.params())));
 
         startJanitorThread();
     }
 
     @Override
-    public void registerCommand(String cmd, Class<? extends Task> taskClass) {
-        availableCommands.put(cmd, taskClass);
+    public void registerCommand(String cmd, TaskDescriptor taskDescriptor) {
+        availableCommands.put(cmd, taskDescriptor);
     }
 
     @Override
     public void processCommand(String cmd) {
-        var task = availableCommands.get(cmd);
-        if (task == null) {
+        var taskDescriptor = availableCommands.get(cmd);
+        if (taskDescriptor == null) {
             userIO.output("Available commands: " + collateAvailableCommands());
             return;
         }
 
         try {
             // TODO: This only supports one task at a time - might be fine if we implement queuing, not fine if multitasking
-            currentTask = task
-                    .getDeclaredConstructor(TaskProperties.class, UserIO.class, Supplier.class)
-                    .newInstance(taskProperties, userIO, webCrawlerSupplier);
+            currentTask = taskDescriptor
+                    .taskClass()
+                        .getDeclaredConstructor(TaskProperties.class, UserIO.class, Supplier.class, Map.class)
+                        .newInstance(taskProperties, userIO, webCrawlerSupplier, taskDescriptor.params());
         } catch (Exception e) {
             e.printStackTrace();
         }

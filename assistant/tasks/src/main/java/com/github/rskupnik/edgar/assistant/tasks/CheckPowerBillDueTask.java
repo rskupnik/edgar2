@@ -6,6 +6,7 @@ import com.github.rskupnik.edgar.assistant.WebCrawler;
 import com.github.rskupnik.edgar.assistant.steps.Steps;
 import com.github.rskupnik.edgar.assistant.task.Task;
 
+import java.util.Map;
 import java.util.function.Supplier;
 
 // TODO: Trigger this in a scheduled way
@@ -13,8 +14,9 @@ import java.util.function.Supplier;
 // TODO: Optimize the driver init (cache the driver?)
 public class CheckPowerBillDueTask extends Task {
 
-    public CheckPowerBillDueTask(TaskProperties taskProperties, UserIO userIO, Supplier<WebCrawler> webCrawlerSupplier) {
-        super(taskProperties, userIO, webCrawlerSupplier);
+    public CheckPowerBillDueTask(TaskProperties taskProperties, UserIO userIO, Supplier<WebCrawler> webCrawlerSupplier,
+                                 Map<String, Object> parameters) {
+        super(taskProperties, userIO, webCrawlerSupplier, parameters);
         setSteps(
             Steps.single(() -> {
                 userIO.output("Checking the power bill amount due...");

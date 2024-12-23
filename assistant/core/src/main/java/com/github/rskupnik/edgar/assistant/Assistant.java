@@ -3,10 +3,11 @@ package com.github.rskupnik.edgar.assistant;
 import com.github.rskupnik.edgar.assistant.task.Task;
 import com.github.rskupnik.edgar.assistant.task.TaskRegistration;
 
+import java.util.Map;
 import java.util.function.Supplier;
 
 public interface Assistant {
-    void registerCommand(String cmd, Class<? extends Task> taskClass);
+    void registerCommand(String cmd, TaskDescriptor taskDescriptor);
     void processCommand(String cmd);
 
     static Assistant defaultImplementation(
@@ -17,4 +18,6 @@ public interface Assistant {
     ) {
         return new AssistantImpl(userIO, taskProperties, webCrawlerSupplier, taskRegistrations);
     }
+
+    record TaskDescriptor(Class<? extends Task> taskClass, Map<String, Object> params) {}
 }

@@ -5,6 +5,7 @@ import com.github.rskupnik.edgar.assistant.UserIO;
 import com.github.rskupnik.edgar.assistant.WebCrawler;
 
 import java.io.*;
+import java.util.Map;
 import java.util.function.Supplier;
 
 public abstract class ExternalProcessTask extends Task {
@@ -12,8 +13,9 @@ public abstract class ExternalProcessTask extends Task {
     protected String pipe;
     protected Process process;
 
-    protected ExternalProcessTask(TaskProperties taskProperties, UserIO userIO, Supplier<WebCrawler> webCrawlerSupplier) {
-        super(taskProperties, userIO, webCrawlerSupplier);
+    protected ExternalProcessTask(TaskProperties taskProperties, UserIO userIO, Supplier<WebCrawler> webCrawlerSupplier,
+                                  Map<String, Object> parameters) {
+        super(taskProperties, userIO, webCrawlerSupplier, parameters);
     }
 
     protected void createPipe(String pipePath) throws Exception {

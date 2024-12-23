@@ -2,6 +2,7 @@ package com.github.rskupnik.edgar2;
 
 import com.github.rskupnik.edgar.assistant.Assistant;
 import com.github.rskupnik.edgar.assistant.ExplicitTaskProperties;
+import com.github.rskupnik.edgar.assistant.task.PythonTask;
 import com.github.rskupnik.edgar.assistant.task.TaskRegistration;
 import com.github.rskupnik.edgar.assistant.discord.DiscordUserIO;
 import com.github.rskupnik.edgar.assistant.tasks.*;
@@ -54,7 +55,10 @@ public class AssistantAppTest {
                 new TaskRegistration("test rpi", RPiTest.class),
                 new TaskRegistration("alior test", AliorTestTask.class),
                 new TaskRegistration("pay taxes", PayTaxesTask.class),
-                new TaskRegistration("playwright test", PlaywrightTestTask.class)
+                new TaskRegistration("playwright test", PlaywrightTestTask.class, Map.of(
+                        PythonTask.SCRIPT_LOCATION_PROPERTY, "tasks.check-tauron-power-bill.script-location",
+                        PythonTask.PIPE_PATH_PROPERTY, "tasks.check-tauron-power-bill.pipe"
+                ))
         );
     }
 

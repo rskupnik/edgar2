@@ -7,6 +7,7 @@ import com.github.rskupnik.edgar.assistant.steps.Steps;
 import com.github.rskupnik.edgar.assistant.task.Task;
 import com.github.rskupnik.edgar.assistant.webcrawler.alior.AliorWebCrawler;
 
+import java.util.Map;
 import java.util.function.Supplier;
 
 public class PayTaxesTask extends Task {
@@ -20,8 +21,9 @@ public class PayTaxesTask extends Task {
     // TODO: Get rid of this
     private boolean toContinue;
 
-    public PayTaxesTask(TaskProperties taskProperties, UserIO userIO, Supplier<WebCrawler> webCrawlerSupplier) {
-        super(taskProperties, userIO, webCrawlerSupplier);
+    public PayTaxesTask(TaskProperties taskProperties, UserIO userIO, Supplier<WebCrawler> webCrawlerSupplier,
+                        Map<String, Object> parameters) {
+        super(taskProperties, userIO, webCrawlerSupplier, parameters);
         setSteps(
             Steps.beginWith(() -> {
                 userIO.output("PAYING TAXES");

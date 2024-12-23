@@ -6,14 +6,16 @@ import com.github.rskupnik.edgar.assistant.WebCrawler;
 import com.github.rskupnik.edgar.assistant.steps.Steps;
 import com.github.rskupnik.edgar.assistant.task.Task;
 
+import java.util.Map;
 import java.util.function.Supplier;
 
 public class TestTask extends Task {
 
     private String test = null;
 
-    public TestTask(TaskProperties taskProperties, UserIO userIO, Supplier<WebCrawler> webCrawlerSupplier) {
-        super(taskProperties, userIO, webCrawlerSupplier);
+    public TestTask(TaskProperties taskProperties, UserIO userIO, Supplier<WebCrawler> webCrawlerSupplier,
+                    Map<String, Object> parameters) {
+        super(taskProperties, userIO, webCrawlerSupplier, parameters);
         setSteps(
             Steps.beginWith(() -> {
                 userIO.output("Test message 1");

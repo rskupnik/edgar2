@@ -6,6 +6,7 @@ import com.github.rskupnik.edgar.assistant.WebCrawler;
 import com.github.rskupnik.edgar.assistant.steps.Steps;
 import com.github.rskupnik.edgar.assistant.task.Task;
 
+import java.util.Map;
 import java.util.function.Supplier;
 
 // TODO: Failproof, cover case where no amount is due, if not after deadline, etc.
@@ -15,8 +16,9 @@ public class PayPowerBillTask extends Task {
 
     private String blikCode = null;
 
-    public PayPowerBillTask(TaskProperties taskProperties, UserIO userIO, Supplier<WebCrawler> webCrawlerSupplier) {
-        super(taskProperties, userIO, webCrawlerSupplier);
+    public PayPowerBillTask(TaskProperties taskProperties, UserIO userIO, Supplier<WebCrawler> webCrawlerSupplier,
+                            Map<String, Object> parameters) {
+        super(taskProperties, userIO, webCrawlerSupplier, parameters);
         setSteps(
             Steps.beginWith(() -> {
                 userIO.output("Checking the power bill amount due...");
