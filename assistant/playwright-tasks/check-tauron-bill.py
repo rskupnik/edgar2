@@ -1,41 +1,33 @@
-import os
+import sys
 
+from python_task import PythonTask
 from playwright.sync_api import sync_playwright
 
-def main():
-    url = "https://logowanie.tauron.pl/login"
-    pipe_path = "/tmp/check-tauron-power-bill"
+class CheckTauronBill(PythonTask):
 
-    # Ensure the named pipe exists
-    if not os.path.exists(pipe_path):
-        os.mkfifo(pipe_path)
-
-    # Signal to Java that Python is ready
-    print("Python: Signaling ready to Java...")
-    with open(pipe_path, "w") as pipe:
-        pipe.write("READY\n")
-
-    print("Python: Waiting for label input from Java...")
-
-    # Open the named pipe and read the label ID from Java
-    with open(pipe_path, "r") as pipe:
-        label_id = pipe.read().strip()
-        print(f"Python: Received label ID from Java: {label_id}")
-
-    with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True)
-        page = browser.new_page()
-        page.goto(url, wait_until="domcontentloaded")
-        label_text = page.locator(f"label[for='{label_id}']").text_content()
-        print(f"Label text: {label_text}")
-
-        browser.close()
+    def perform_task(self):
+        url = "https://logowanie.tauron.pl/login"
 
         # Signal to Java that Python is ready
-        print("Python: Sending output to Java...")
-        with open(pipe_path, "w") as pipe:
-            pipe.write(f"{label_text}\n")
+        print("Python: Signaling ready to Java...")
+        self.pipe_write("READY")
+
+        print("Python: Waiting for label input from Java...")
+        label_id = self.pipe_read()
+        print(f"Python: Received label ID from Java: {label_id}")
+
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=True)
+            page = browser.new_page()
+            page.goto(url, wait_until="domcontentloaded")
+            label_text = page.locator(f"label[for='{label_id}']").text_content()
+            print(f"Label text: {label_text}")
+
+            browser.close()
+
+            print("Python: Sending output to Java...")
+            self.pipe_write(label_text)
 
 
 if __name__ == "__main__":
-    main()
+    CheckTauronBill(sys.argv[1]).execute()

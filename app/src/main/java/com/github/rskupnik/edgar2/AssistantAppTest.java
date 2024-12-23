@@ -56,8 +56,8 @@ public class AssistantAppTest {
                 new TaskRegistration("alior test", AliorTestTask.class),
                 new TaskRegistration("pay taxes", PayTaxesTask.class),
                 new TaskRegistration("playwright test", PlaywrightTestTask.class, Map.of(
-                        PythonTask.SCRIPT_LOCATION_PROPERTY, "tasks.check-tauron-power-bill.script-location",
-                        PythonTask.PIPE_PATH_PROPERTY, "tasks.check-tauron-power-bill.pipe"
+                        PythonTask.SCRIPT_LOCATION_PARAM, "tasks.check-tauron-power-bill.script-location",
+                        PythonTask.PIPE_PATH_PARAM, "tasks.check-tauron-power-bill.pipe"
                 ))
         );
     }
