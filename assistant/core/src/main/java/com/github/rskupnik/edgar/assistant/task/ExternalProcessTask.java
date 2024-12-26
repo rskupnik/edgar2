@@ -65,13 +65,13 @@ public abstract class ExternalProcessTask extends Task {
             }
         }).start();
 
-        // Start thread for listening on the async pipe
+        // Start a worker thread for handling interactions
         new Thread(() -> {
             try (BufferedReader pipeReader = new BufferedReader(new FileReader(this.asyncPipe))) {
                 while (process.isAlive()) {
                     String line;
                     while ((line = pipeReader.readLine()) != null) {
-                        System.out.println("[" + process.pid() + "]: " + line);
+                        this.onPipeMessageReceived(line);
                     }
                 }
             } catch (Exception e) {
@@ -98,4 +98,6 @@ public abstract class ExternalProcessTask extends Task {
     protected void awaitProcessFinished() throws Exception {
         this.process.waitFor();
     }
+
+    protected abstract void onPipeMessageReceived(String message);
 }

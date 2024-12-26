@@ -41,6 +41,9 @@ public abstract class Task {
     }
 
     public void triggerNext() {
+        if (steps == null)
+            return;
+
         var stepList = steps.getSteps();
         if (currentStep >= stepList.size()) {
             return;

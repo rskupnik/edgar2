@@ -59,7 +59,7 @@ public class DiscordUserIO extends ListenerAdapter implements UserIO, Subscriber
 
     @Override
     public void onPrivateMessageReceived(PrivateMessageReceivedEvent event) {
-        System.out.println("Message from user: " + event.getAuthor().getName());
+        // System.out.println("Message from user: " + event.getAuthor().getName());
         if (event.getAuthor().isBot() || !event.getAuthor().getName().equalsIgnoreCase(authorizedUser))
             return;
 

@@ -6,16 +6,10 @@ from playwright.sync_api import sync_playwright
 class PythonTaskImplementation(PythonTask):
 
     def perform_task(self):
-        self.pipe_write_async("starting")
-
         url = "https://logowanie.tauron.pl/login"
 
-        # Signal to Java that Python is ready
-        print("Python: Signaling ready to Java...")
-        self.pipe_write("READY")
-
         print("Python: Waiting for label input from Java...")
-        label_id = self.pipe_read()
+        label_id = self.request_user_input("Please provide the label_id for test")
         print(f"Python: Received label ID from Java: {label_id}")
 
         with sync_playwright() as p:
@@ -28,9 +22,7 @@ class PythonTaskImplementation(PythonTask):
             browser.close()
 
             print("Python: Sending output to Java...")
-            self.pipe_write(label_text)
-
-            self.pipe_write_async("finished")
+            self.pipe_write_async(f"output: {label_text}")
 
 
 if __name__ == "__main__":

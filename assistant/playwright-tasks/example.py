@@ -8,7 +8,7 @@ class PythonTaskImplementation(PythonTask):
 
     def perform_task(self):
         # YOUR IMPLEMENTATION GOES HERE
-        # self.pipe_write() and self.pipe_read() available
+        # self.request_user_input() available
         pass
 
 

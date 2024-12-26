@@ -55,7 +55,7 @@ public class AssistantAppTest {
                 new TaskRegistration("test rpi", RPiTest.class),
                 new TaskRegistration("alior test", AliorTestTask.class),
                 new TaskRegistration("pay taxes", PayTaxesTask.class),
-                new TaskRegistration("playwright test", PlaywrightTestTask.class, Map.of(
+                new TaskRegistration("playwright test", PythonTask.class, Map.of(
                         PythonTask.SCRIPT_LOCATION_PARAM, "tasks.check-tauron-power-bill.script-location",
                         PythonTask.PIPE_PATH_PARAM, "tasks.check-tauron-power-bill.pipe"
                 ))
