@@ -6,6 +6,8 @@ from playwright.sync_api import sync_playwright
 class PythonTaskImplementation(PythonTask):
 
     def perform_task(self):
+        self.pipe_write_async("starting")
+
         url = "https://logowanie.tauron.pl/login"
 
         # Signal to Java that Python is ready
@@ -27,6 +29,8 @@ class PythonTaskImplementation(PythonTask):
 
             print("Python: Sending output to Java...")
             self.pipe_write(label_text)
+
+            self.pipe_write_async("finished")
 
 
 if __name__ == "__main__":

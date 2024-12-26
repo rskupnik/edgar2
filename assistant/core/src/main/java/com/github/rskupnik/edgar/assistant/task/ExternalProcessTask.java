@@ -10,7 +10,8 @@ import java.util.function.Supplier;
 
 public abstract class ExternalProcessTask extends Task {
 
-    protected String pipe;
+    protected String syncPipe;
+    protected String asyncPipe;
     protected Process process;
 
     protected ExternalProcessTask(TaskProperties taskProperties, UserIO userIO, Supplier<WebCrawler> webCrawlerSupplier,
@@ -18,13 +19,21 @@ public abstract class ExternalProcessTask extends Task {
         super(taskProperties, userIO, webCrawlerSupplier, parameters);
     }
 
-    protected void createPipe(String pipePath) throws Exception {
+    protected void createPipes(String pipePath) throws Exception {
         File pipe = new File(pipePath);
         if (pipe.exists()) {
             pipe.delete();
         }
         Runtime.getRuntime().exec("mkfifo " + pipePath).waitFor();
-        this.pipe = pipePath;
+        this.syncPipe = pipePath;
+
+        var asyncPipePath = pipePath + "_async";
+        File asyncPipe = new File(asyncPipePath);
+        if (asyncPipe.exists()) {
+            asyncPipe.delete();
+        }
+        Runtime.getRuntime().exec("mkfifo " + asyncPipePath).waitFor();
+        this.asyncPipe = asyncPipePath;
     }
 
     protected void runProcess(String... arguments) throws Exception {
@@ -55,10 +64,24 @@ public abstract class ExternalProcessTask extends Task {
                 e.printStackTrace();
             }
         }).start();
+
+        // Start thread for listening on the async pipe
+        new Thread(() -> {
+            try (BufferedReader pipeReader = new BufferedReader(new FileReader(this.asyncPipe))) {
+                while (process.isAlive()) {
+                    String line;
+                    while ((line = pipeReader.readLine()) != null) {
+                        System.out.println("[" + process.pid() + "]: " + line);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
 
     protected void pipeWrite(String contents) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(this.pipe))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(this.syncPipe))) {
             writer.write(contents + "\n");
         } catch (IOException e) {
             e.printStackTrace();
@@ -66,7 +89,7 @@ public abstract class ExternalProcessTask extends Task {
     }
 
     protected String pipeRead() throws Exception {
-        try (BufferedReader pipeReader = new BufferedReader(new FileReader(this.pipe))) {
+        try (BufferedReader pipeReader = new BufferedReader(new FileReader(this.syncPipe))) {
             String output = pipeReader.readLine();
             return output;
         }

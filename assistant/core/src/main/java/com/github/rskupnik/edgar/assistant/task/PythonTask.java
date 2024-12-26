@@ -26,7 +26,7 @@ public class PythonTask extends ExternalProcessTask {
         String pipePath = taskProperties.get(pipePathProperty);
 
         try {
-            createPipe(pipePath);
+            createPipes(pipePath);
             runProcess(pythonExecutable, scriptPath, pipePath);
         } catch (Exception e) {
             e.printStackTrace();
