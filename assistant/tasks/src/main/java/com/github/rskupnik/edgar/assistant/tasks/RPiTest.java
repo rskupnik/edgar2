@@ -4,12 +4,13 @@ import com.github.rskupnik.edgar.assistant.TaskProperties;
 import com.github.rskupnik.edgar.assistant.UserIO;
 import com.github.rskupnik.edgar.assistant.WebCrawler;
 import com.github.rskupnik.edgar.assistant.steps.Steps;
+import com.github.rskupnik.edgar.assistant.task.StepTask;
 import com.github.rskupnik.edgar.assistant.task.Task;
 
 import java.util.Map;
 import java.util.function.Supplier;
 
-public class RPiTest extends Task {
+public class RPiTest extends StepTask {
     public RPiTest(TaskProperties taskProperties, UserIO userIO, Supplier<WebCrawler> webCrawlerSupplier,
                    Map<String, Object> parameters) {
         super(taskProperties, userIO, webCrawlerSupplier, parameters);

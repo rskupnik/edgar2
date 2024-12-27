@@ -4,13 +4,14 @@ import com.github.rskupnik.edgar.assistant.TaskProperties;
 import com.github.rskupnik.edgar.assistant.UserIO;
 import com.github.rskupnik.edgar.assistant.WebCrawler;
 import com.github.rskupnik.edgar.assistant.steps.Steps;
+import com.github.rskupnik.edgar.assistant.task.StepTask;
 import com.github.rskupnik.edgar.assistant.task.Task;
 
 import java.util.Map;
 import java.util.function.Supplier;
 
 // TODO: Implement Pay Gas Task
-public class PayGasTask extends Task {
+public class PayGasTask extends StepTask {
 
 //    private final UserIO userIO = new DiscordUserIO();
 

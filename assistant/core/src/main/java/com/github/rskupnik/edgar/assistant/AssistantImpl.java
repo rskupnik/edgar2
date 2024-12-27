@@ -1,6 +1,7 @@
 package com.github.rskupnik.edgar.assistant;
 
 import com.github.rskupnik.edgar.assistant.events.*;
+import com.github.rskupnik.edgar.assistant.task.StepTask;
 import com.github.rskupnik.edgar.assistant.task.Task;
 import com.github.rskupnik.edgar.assistant.task.TaskRegistration;
 
@@ -69,8 +70,10 @@ public class AssistantImpl implements Assistant, Subscriber {
             e.printStackTrace();
         }
 
-        // TODO: Queue tasks?
-        currentTask.triggerNext();
+        if (currentTask instanceof StepTask st) {
+            // TODO: Queue tasks?
+            st.triggerNext();
+        }
     }
 
     private String collateAvailableCommands() {
@@ -84,16 +87,16 @@ public class AssistantImpl implements Assistant, Subscriber {
         switch (event) {
             case CommandIssuedEvent commandIssuedEvent -> processCommand(commandIssuedEvent.command());
             case TriggerNextStepEvent triggerNextStepEvent -> {
-                if (currentTask != null) {
-                    currentTask.triggerNext();
+                if (currentTask != null && currentTask instanceof StepTask st) {
+                    st.triggerNext();
                 }
             }
             case TerminationCheckEvent terminationCheckEvent -> {
                 if (currentTask == null)
                     return;
 
-                if (currentTask.shouldBeTerminated()) {
-                    currentTask.terminate();
+                if (currentTask instanceof StepTask st && st.shouldBeTerminated()) {
+                    st.terminate();
                     currentTask = null;
                 }
             }

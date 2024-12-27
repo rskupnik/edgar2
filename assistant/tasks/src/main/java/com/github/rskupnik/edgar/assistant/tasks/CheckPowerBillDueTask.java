@@ -4,6 +4,7 @@ import com.github.rskupnik.edgar.assistant.TaskProperties;
 import com.github.rskupnik.edgar.assistant.UserIO;
 import com.github.rskupnik.edgar.assistant.WebCrawler;
 import com.github.rskupnik.edgar.assistant.steps.Steps;
+import com.github.rskupnik.edgar.assistant.task.StepTask;
 import com.github.rskupnik.edgar.assistant.task.Task;
 
 import java.util.Map;
@@ -12,7 +13,7 @@ import java.util.function.Supplier;
 // TODO: Trigger this in a scheduled way
 // TODO: Handle a case where there is nothing to pay
 // TODO: Optimize the driver init (cache the driver?)
-public class CheckPowerBillDueTask extends Task {
+public class CheckPowerBillDueTask extends StepTask {
 
     public CheckPowerBillDueTask(TaskProperties taskProperties, UserIO userIO, Supplier<WebCrawler> webCrawlerSupplier,
                                  Map<String, Object> parameters) {
