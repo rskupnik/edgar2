@@ -47,8 +47,12 @@ public class PythonTask extends ExternalProcessTask {
             case "input": {
                 String msg = messageFragments[1].strip().toLowerCase();
                 EventManager.notify(new RequestInputEvent(msg, input -> onUserAnswerReceived((String) input)));
+                break;
             }
-            case "output": handleOutput(messageFragments[1].strip().toLowerCase());
+            case "output": {
+                handleOutput(messageFragments[1].strip().toLowerCase());
+                break;
+            }
         }
     }
 

@@ -66,7 +66,7 @@ public abstract class ExternalProcessTask extends Task {
         }).start();
 
         // Start a worker thread for handling interactions
-        new Thread(() -> {
+        var t = new Thread(() -> {
             try (BufferedReader pipeReader = new BufferedReader(new FileReader(this.asyncPipe))) {
                 while (process.isAlive()) {
                     String line;
@@ -77,7 +77,9 @@ public abstract class ExternalProcessTask extends Task {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }).start();
+        });
+        t.setName("python-handling-thread-" + syncPipe);
+        t.start();
     }
 
     protected void pipeWrite(String contents) {
