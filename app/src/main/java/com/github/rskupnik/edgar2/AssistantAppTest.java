@@ -39,7 +39,7 @@ public class AssistantAppTest {
 
         var flattenedProps = flattenProperties("credentials", credentialsConfig.getCredentials(), new HashMap<>());
         flattenedProps = flattenProperties("tasks", taskConfig.getTasks(), flattenedProps);
-        flattenedProps.forEach((k, v) -> System.out.println(k + ": " + v));
+//        flattenedProps.forEach((k, v) -> System.out.println(k + ": " + v));
 
         Assistant.defaultImplementation(
                 new DiscordUserIO(
@@ -49,15 +49,16 @@ public class AssistantAppTest {
                 new ExplicitTaskProperties(flattenedProps),
                 SeleniumChromeWebCrawler::new,
                 new TaskRegistration("pay gas", PayGasTask.class),
-                new TaskRegistration("check power bill", CheckPowerBillDueTask.class),
+                //new TaskRegistration("check power bill", CheckPowerBillDueTask.class),
                 new TaskRegistration("pay power bill", PayPowerBillTask.class),
                 new TaskRegistration("test", TestTask.class),
                 new TaskRegistration("test rpi", RPiTest.class),
                 new TaskRegistration("alior test", AliorTestTask.class),
                 new TaskRegistration("pay taxes", PayTaxesTask.class),
-                new TaskRegistration("playwright test", PythonTask.class, Map.of(
-                        PythonTask.SCRIPT_LOCATION_PARAM, "tasks.check-tauron-power-bill.script-location",
-                        PythonTask.PIPE_PATH_PARAM, "tasks.check-tauron-power-bill.pipe"
+                new TaskRegistration("check power bill", PythonTask.class, Map.of(
+                        PythonTask.SCRIPT_LOCATION_PROP, "tasks.check-tauron-power-bill.script-location",
+                        PythonTask.PIPE_PATH_PROP, "tasks.check-tauron-power-bill.pipe",
+                        PythonTask.ADDITIONAL_ARGUMENTS, new String[] {flattenedProps.get("credentials.tauron.username"), flattenedProps.get("credentials.tauron.password")}
                 ))
         );
     }

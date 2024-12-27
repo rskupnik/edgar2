@@ -34,6 +34,12 @@ class PythonTask(ABC):
         self.pipe_write_async(f"input: {msg}")
         return self.pipe_read()
 
+    """
+    Send msg to user
+    """
+    def notify_user(self, msg: str):
+        self.pipe_write_async(f"output: {msg}")
+
     # LOW-LEVEL METHODS, ONLY CALL IF YOU KNOW WHAT YOU ARE DOING
 
     """

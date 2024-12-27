@@ -7,22 +7,30 @@ class PythonTaskImplementation(PythonTask):
 
     def perform_task(self):
         url = "https://logowanie.tauron.pl/login"
+        username = sys.argv[2]
+        password = sys.argv[3]
 
-        print("Python: Waiting for label input from Java...")
-        label_id = self.request_user_input("Please provide the label_id for test")
-        print(f"Python: Received label ID from Java: {label_id}")
+        self.notify_user("Checking the power bill amount due...")
 
         with sync_playwright() as p:
             browser = p.chromium.launch(headless=True)
-            page = browser.new_page()
+            page = browser.new_context().new_page()
+            page.set_default_timeout(5000)
             page.goto(url, wait_until="domcontentloaded")
-            label_text = page.locator(f"label[for='{label_id}']").text_content()
-            print(f"Label text: {label_text}")
+
+            page.fill("#username1", username)
+            page.fill("#password1", password)
+            page.click(".button-pink")
+
+            try:
+                page.wait_for_selector("#ebokItems .amount-column .amount", timeout=5000)
+                amount_text = page.locator("#ebokItems .amount-column .amount").text_content().strip()
+                self.notify_user(f"Nearest payment: {amount_text.strip()}")
+            except Exception as e:
+                print(f"Error: Element not found. Details: {e}")
+                self.notify_user("Something went wrong :(")
 
             browser.close()
-
-            print("Python: Sending output to Java...")
-            self.pipe_write_async(f"output: {label_text}")
 
 
 if __name__ == "__main__":
