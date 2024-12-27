@@ -3,11 +3,7 @@ package com.github.rskupnik.edgar.assistant.task;
 import com.github.rskupnik.edgar.assistant.TaskProperties;
 import com.github.rskupnik.edgar.assistant.UserIO;
 import com.github.rskupnik.edgar.assistant.WebCrawler;
-import com.github.rskupnik.edgar.assistant.events.EventManager;
-import com.github.rskupnik.edgar.assistant.events.TaskTerminatedEvent;
-import com.github.rskupnik.edgar.assistant.steps.Steps;
 
-import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.function.Supplier;
 

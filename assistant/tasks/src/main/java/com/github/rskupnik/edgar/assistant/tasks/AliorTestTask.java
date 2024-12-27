@@ -5,7 +5,6 @@ import com.github.rskupnik.edgar.assistant.UserIO;
 import com.github.rskupnik.edgar.assistant.WebCrawler;
 import com.github.rskupnik.edgar.assistant.steps.Steps;
 import com.github.rskupnik.edgar.assistant.task.StepTask;
-import com.github.rskupnik.edgar.assistant.task.Task;
 import com.github.rskupnik.edgar.assistant.webcrawler.alior.AliorWebCrawler;
 
 import java.util.Map;
