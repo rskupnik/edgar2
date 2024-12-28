@@ -1,0 +1,6 @@
+# Ignore everything
+*
+# Include specific files
+!Dockerfile
+!app/
+!assistant/playwright-tasks/

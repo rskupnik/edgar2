@@ -35,8 +35,15 @@ a single **Device**
 
 ## How to build and deploy
 
-Look into the Makefile - everything is there.
-If you want to build, deploy and observe the log - run `make ship && make log`
+### Prerequisites
+
+You need these installed:
+* `just`
+* `rsync`
+
+### Commands
+
+Look into the `justfile` for available commands: `just --list`
 
 ## How to test
 

@@ -1,8 +1,8 @@
 # Default profile - Raspberry Pi
 tasks:
-  python-executable-path: /home/pi/playwright-test/venv/bin/python
+  python-executable-path: /app/tasks/venv/bin/python
   check-tauron-power-bill:
-    script-location: /home/pi/playwright-test/check-tauron-bill.py
+    script-location: /app/tasks/check-tauron-bill.py
     pipe: /tmp/check-tauron-power-bill
 
 ---
