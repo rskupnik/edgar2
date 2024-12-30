@@ -26,5 +26,7 @@ COPY ${JAR_SOURCE_PATH} /app/app.jar
 
 WORKDIR /app
 
+EXPOSE 8080
+
 ENTRYPOINT ["java", "-jar", "app.jar"]
 CMD []

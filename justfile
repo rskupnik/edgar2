@@ -24,7 +24,7 @@ deploy: build
     ssh {{rpi_user}}@{{rpi_hostname}} 'cd {{rpi_workdir}} && docker build --build-arg JAR_SOURCE_PATH=./app.jar --build-arg TASKS_PATH=./tasks/*.py -t {{image_name}} .'
 
 start deviceConfig="device-config.json" dashboard="demo.json":
-    ssh {{rpi_user}}@{{rpi_hostname}} 'cd {{rpi_workdir}} && docker run -d --name {{container_name}} {{image_name}} --deviceConfig {{rpi_workdir}}/{{deviceConfig}} --dashboard {{rpi_workdir}}/dashboards/{{dashboard}} > /dev/null 2>&1'
+    ssh {{rpi_user}}@{{rpi_hostname}} 'cd {{rpi_workdir}} && docker run -d --name {{container_name}} -p 8080:8080 {{image_name}} --deviceConfig {{rpi_workdir}}/{{deviceConfig}} --dashboard {{rpi_workdir}}/dashboards/{{dashboard}} > /dev/null 2>&1'
 
 stop:
     ssh {{rpi_user}}@{{rpi_hostname}} 'docker stop {{container_name}} && docker rm {{container_name}} > /dev/null 2>&1'
