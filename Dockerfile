@@ -26,4 +26,5 @@ COPY ${JAR_SOURCE_PATH} /app/app.jar
 
 WORKDIR /app
 
-CMD ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
+CMD []
