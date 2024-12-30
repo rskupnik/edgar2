@@ -37,3 +37,6 @@ update-dashboard dashboard="demo":
 
 update-config:
     rsync app/src/main/resources/device-config.json {{rpi_user}}@{{rpi_hostname}}:{{rpi_workdir}}/
+
+provision:
+    ssh {{rpi_user}}@{{rpi_hostname}} 'curl -fsSL https://get.docker.com -o get-docker.sh && sudo sh get-docker.sh && sudo usermod -aG docker pi'
