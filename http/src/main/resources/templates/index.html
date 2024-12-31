@@ -26,6 +26,9 @@
 
     <script type="text/javascript" th:src="@{/js/tiles.js}"></script>
     <script>
+        const basePath = window.location.pathname.split('/')[1]; // Get the first path segment
+        const contextPath = `/${basePath}`; // Ensure it's formatted as /edgar
+
         Vue.component('toggle', {
             props: ['tile', 'device', 'responses'],
             data: function() {
@@ -102,11 +105,11 @@
                 // console.log("ON MOUNTED")
                 let promises = [];
                 promises.push(
-                    axios.get('http://' + window.location.host + '/dashboards/' + window.location.pathname.split('/')[2])
+                    axios.get('http://' + window.location.host + '/' + window.location.pathname.split('/')[1] + '/dashboards/' + window.location.pathname.split('/')[2])
                         .then(response => {
                             this.dashboard = response.data;
                         }),
-                    axios.get('http://' + window.location.host + '/devices')
+                    axios.get('http://' + window.location.host + '/' + window.location.pathname.split('/')[1] + '/devices')
                         .then(response => {
                             this.devices = processDevices(response.data);
                             //this.devices = this.testDevices;
@@ -126,7 +129,7 @@
                     }
 
                     setInterval(() => {
-                        axios.get('http://' + window.location.host + '/devices')
+                        axios.get('http://' + window.location.host + '/' + window.location.pathname.split('/')[1] + '/devices')
                             .then(response => {
                                 this.devices = processDevices(response.data);
                                 //this.devices = this.testDevices;
@@ -144,7 +147,7 @@
                     // console.log("Sending command to " + device.id + endpointId)
                     for (const [key, endpoint] of Object.entries(device.endpoints)) {
                         if (endpoint.path === endpointId) {
-                            axios.post("http://" + window.location.host + "/devices/" + device.id + endpoint.path)
+                            axios.post("http://" + window.location.host + '/' + window.location.pathname.split('/')[1] + "/devices/" + device.id + endpoint.path)
                                 .then((response) => {
                                     callback(response)
                                 })
