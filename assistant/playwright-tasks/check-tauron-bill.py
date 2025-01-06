@@ -15,7 +15,7 @@ class PythonTaskImplementation(PythonTask):
         with sync_playwright() as p:
             browser = p.chromium.launch(headless=True)
             page = browser.new_context().new_page()
-            page.set_default_timeout(5000)
+            page.set_default_timeout(10000)
             page.goto(url, wait_until="domcontentloaded")
 
             page.fill("#username1", username)
@@ -23,7 +23,7 @@ class PythonTaskImplementation(PythonTask):
             page.click(".button-pink")
 
             try:
-                page.wait_for_selector("#ebokItems .amount-column .amount", timeout=5000)
+                page.wait_for_selector("#ebokItems .amount-column .amount", timeout=10000)
                 amount_text = page.locator("#ebokItems .amount-column .amount").text_content().strip()
                 self.notify_user(f"Nearest payment: {amount_text.strip()}")
             except Exception as e:
