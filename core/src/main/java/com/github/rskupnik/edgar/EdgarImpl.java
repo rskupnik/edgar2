@@ -40,6 +40,7 @@ class EdgarImpl implements Edgar {
     private final DeviceClient deviceClient;
     private final DeviceConfigStorage deviceConfigStorage;
     private final TextToSpeechAdapter textToSpeech;
+    private final UserMessageSender userMessageSender;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -49,7 +50,8 @@ class EdgarImpl implements Edgar {
             DeviceDataRepository deviceDataRepository,
             DeviceConfigStorage deviceConfigStorage,
             DeviceClient deviceClient,
-            TextToSpeechAdapter ttsAdapter
+            TextToSpeechAdapter ttsAdapter,
+            UserMessageSender userMessageSender
     ) {
         this.deviceRepository = deviceRepository;
         this.dashboardRepository = dashboardRepository;
@@ -57,6 +59,7 @@ class EdgarImpl implements Edgar {
         this.deviceConfigStorage = deviceConfigStorage;
         this.deviceClient = deviceClient;
         this.textToSpeech = ttsAdapter;
+        this.userMessageSender = userMessageSender;
     }
 
     @Override
@@ -137,6 +140,16 @@ class EdgarImpl implements Edgar {
     @Override
     public byte[] getData(String deviceId) {
         return deviceDataRepository.find(deviceId).orElse(new DeviceDataEntity(deviceId, new byte[0])).getData();
+    }
+
+    @Override
+    public void sendToUser(String message) {
+        userMessageSender.send(message);
+    }
+
+    @Override
+    public void sendToUser(byte[] data) {
+
     }
 
     @Override
