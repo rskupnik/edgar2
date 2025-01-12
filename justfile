@@ -26,7 +26,6 @@ deploy: build
     rsync docker-compose.yml {{rpi_user}}@{{rpi_hostname}}:{{rpi_workdir}}/
     rsync -z --progress {{app_path}} {{rpi_user}}@{{rpi_hostname}}:{{rpi_workdir}}/app.jar
     rsync -z {{tasks_path}}/*.py {{rpi_user}}@{{rpi_hostname}}:{{rpi_workdir}}/tasks/
-    ssh {{rpi_user}}@{{rpi_hostname}} 'cd {{rpi_workdir}} && docker compose build'
 
 # Start the app
 start:
