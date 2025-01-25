@@ -10,7 +10,7 @@ class PythonTaskImplementation(PythonTask):
         username = sys.argv[2]
         password = sys.argv[3]
 
-        self.notify_user("Checking the power bill amount due...")
+        self.notify_user(":dollar: :cloud_lightning: Checking the power bill amount due")
 
         with sync_playwright() as p:
             browser = p.chromium.launch(headless=True)
@@ -25,7 +25,10 @@ class PythonTaskImplementation(PythonTask):
             try:
                 page.wait_for_selector("#ebokItems .amount-column .amount", timeout=10000)
                 amount_text = page.locator("#ebokItems .amount-column .amount").text_content().strip()
-                self.notify_user(f"Nearest payment: {amount_text.strip()}")
+                if page.locator('.amount-status', has_text="Zapłacono").count() > 0:
+                    self.notify_user("Nothing to pay!")
+                else:
+                    self.notify_user(f"Nearest payment: {amount_text.strip()}")
             except Exception as e:
                 print(f"Error: Element not found. Details: {e}")
                 self.notify_user("Something went wrong :(")

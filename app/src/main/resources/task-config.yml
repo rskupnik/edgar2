@@ -4,6 +4,9 @@ tasks:
   check-tauron-power-bill:
     script-location: /app/tasks/check-tauron-bill.py
     pipe: /tmp/check-tauron-power-bill
+  pay-tauron-power-bill:
+    script-location: /app/tasks/pay-tauron-bill.py
+    pipe: /tmp/pay-tauron-power-bill
 
 ---
 # Local MacOS profile
@@ -16,6 +19,8 @@ tasks:
   python-executable-path: /Users/myzek/workspace/priv/edgar2/assistant/playwright-tasks/venv/bin/python
   check-tauron-power-bill:
     script-location: /Users/myzek/workspace/priv/edgar2/assistant/playwright-tasks/check-tauron-bill.py
+  pay-tauron-power-bill:
+    script-location: /Users/myzek/workspace/priv/edgar2/assistant/playwright-tasks/pay-tauron-bill.py
 
 ---
 # Local Dell profile
@@ -28,3 +33,5 @@ tasks:
   python-executable-path: /home/rskupnik/workspace/priv/edgar2/assistant/playwright-tasks/venv/bin/python
   check-tauron-power-bill:
     script-location: /home/rskupnik/workspace/priv/edgar2/assistant/playwright-tasks/check-tauron-bill.py
+  pay-tauron-power-bill:
+    script-location: /home/rskupnik/workspace/priv/edgar2/assistant/playwright-tasks/pay-tauron-bill.py
