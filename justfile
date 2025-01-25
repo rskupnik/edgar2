@@ -29,7 +29,7 @@ deploy: build
 
 # Start the app
 start:
-    ssh {{rpi_user}}@{{rpi_hostname}} 'cd {{rpi_workdir}} && docker compose up -d'
+    ssh {{rpi_user}}@{{rpi_hostname}} 'cd {{rpi_workdir}} && docker compose up -d --build'
 
 # Stop the app
 stop:

@@ -32,6 +32,8 @@ public class AssistantAppTest {
 
     @PostConstruct
     public void test() {
+        System.out.println("Trying to load ASSISTANT");
+
         if (!enabled) {
             System.out.println("Assistant DISABLED");
             return;

@@ -5,6 +5,7 @@ import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -21,14 +22,19 @@ public class DeviceConfigLoader {
     }
 
     @PostConstruct
-    private void loadDeviceConfig() {
-//        var optionValues = args.getOptionValues("deviceConfig");
-//        if (optionValues == null || optionValues.size() == 0)
-//            return;
-//
-//        var filename = optionValues.get(0);
-        var filename = "device-config.json";
+    public void loadDeviceConfig() {
+        System.out.println("Device Config Loader");
+        logger.info("Looking for device config");
+        var optionValues = args.getOptionValues("deviceConfig");
+        if (optionValues == null || optionValues.size() == 0) {
+            logger.info("Device config not found");
+            return;
+        }
+
+        var filename = optionValues.get(0);
+//        var filename = "device-config.json";
         logger.info("Loading device config from file: " + filename);
+        System.out.println("Loading device config from file: " + filename);
         edgar.loadDeviceConfig(filename);
     }
 }

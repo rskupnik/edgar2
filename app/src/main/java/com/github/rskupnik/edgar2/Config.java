@@ -10,19 +10,22 @@ import com.github.rskupnik.edgar.db.repository.DeviceDataRepository;
 import com.github.rskupnik.edgar.db.repository.DeviceRepository;
 import com.github.rskupnik.edgar.discord.DiscordUserMessageSender;
 import com.github.rskupnik.edgar.tts.TextToSpeechAdapter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
-@PropertySource("classpath:credentials.properties")
+@EnableConfigurationProperties({CredentialsConfig.class})
 public class Config {
 
-    @Value("#{${discord.credentials}}")
-    private Map<String,String> discordCredentials;
+    @Autowired
+    private CredentialsConfig credentialsConfig;
 
     @Bean
     public Edgar edgar(
@@ -61,6 +64,26 @@ public class Config {
 
     @Bean
     public UserMessageSender userMessageSender() {
-        return new DiscordUserMessageSender(discordCredentials.get("token"));
+        var flattenedProps = flattenProperties("credentials", credentialsConfig.getCredentials(), new HashMap<>());
+        return new DiscordUserMessageSender(flattenedProps.get("credentials.discord.token"));
+    }
+
+    private Map<String, String> flattenProperties(String parentKey, Map<String, Object> source, Map<String, String> target) {
+        flatten(parentKey, source, target);
+        return target;
+    }
+
+    // Helper recursive function to flatten the map
+    private void flatten(String parentKey, Map<String, Object> source, Map<String, String> target) {
+        source.forEach((key, value) -> {
+            String fullKey = parentKey.isEmpty() ? key : parentKey + "." + key;
+            if (value instanceof Map) {
+                // Recursive call for nested maps
+                flatten(fullKey, (Map<String, Object>) value, target);
+            } else {
+                // Add leaf values to the flat map
+                target.put(fullKey, value.toString());
+            }
+        });
     }
 }

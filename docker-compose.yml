@@ -12,12 +12,12 @@ services:
 #    ports:
 #      - "8080:8080"    # Only enable when accessing directly (without reverse proxy)
     volumes:
-      - /home/pi/edgar/device-config.json:/device-config.json:ro
-      - /home/pi/edgar/dashboards:/dashboards:ro
+      - /home/pi/edgar/device-config.json:/app/device-config.json:ro
+      - /home/pi/edgar/dashboards:/app/dashboards:ro
     restart: always
     networks:
       - raspberry-pi-network
-    command: ["--deviceConfig", "/device-config.json", "--dashboard", "/dashboards/demo.json"]
+    command: ["--deviceConfig", "/app/device-config.json", "--dashboard", "/app/dashboards/demo.json"]
 
 networks:
   raspberry-pi-network:
