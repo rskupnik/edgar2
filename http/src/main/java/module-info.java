@@ -1,5 +1,6 @@
 module edgar.http {
     requires edgar.core;
+    requires edgar.assistant.core;
 
     requires spring.beans;
     requires spring.web;

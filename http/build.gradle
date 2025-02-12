@@ -17,6 +17,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     api project(':core')
+    implementation project(':assistant:core')   // TODO: Temporary!
 }
 
 bootJar {

@@ -13,7 +13,7 @@ public class DiscordUserMessageSender implements UserMessageSender {
 //    private final String authorizedUser;
 
     public DiscordUserMessageSender(String token) {
-        System.out.println("DEBUG: DISCORD STARTING WITH TOKEN: " + token);
+//        System.out.println("DEBUG: DISCORD STARTING WITH TOKEN: " + token);
 //        this.authorizedUser = authorizedUser;
 
         JDA jda0 = null;

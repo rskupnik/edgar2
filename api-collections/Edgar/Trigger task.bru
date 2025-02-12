@@ -1,0 +1,18 @@
+meta {
+  name: Trigger task
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{url}}/tasks/trigger
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "taskId": "dupa",
+    "data": "dupa"
+  }
+}
