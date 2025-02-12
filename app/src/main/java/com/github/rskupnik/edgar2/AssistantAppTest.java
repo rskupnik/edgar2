@@ -66,6 +66,10 @@ public class AssistantAppTest {
                         PythonTask.SCRIPT_LOCATION_PROP, "tasks.pay-tauron-power-bill.script-location",
                         PythonTask.PIPE_PATH_PROP, "tasks.pay-tauron-power-bill.pipe",
                         PythonTask.ADDITIONAL_ARGUMENTS, new String[] {flattenedProps.get("credentials.tauron.username"), flattenedProps.get("credentials.tauron.password")}
+                )),
+                new TaskRegistration("test driver license", PythonTask.class, Map.of(
+                        PythonTask.SCRIPT_LOCATION_PROP, "tasks.test-driver-license.script-location",
+                        PythonTask.PIPE_PATH_PROP, "tasks.test-driver-license.pipe"
                 ))
         );
     }

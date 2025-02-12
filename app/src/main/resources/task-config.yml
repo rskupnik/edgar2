@@ -7,6 +7,9 @@ tasks:
   pay-tauron-power-bill:
     script-location: /app/tasks/pay-tauron-bill.py
     pipe: /tmp/pay-tauron-power-bill
+  test-driver-license:
+    script-location: /app/tasks/driver-license-test.py
+    pipe: /tmp/test-driver-license
 
 ---
 # Local MacOS profile
@@ -21,6 +24,8 @@ tasks:
     script-location: /Users/myzek/workspace/priv/edgar2/assistant/playwright-tasks/check-tauron-bill.py
   pay-tauron-power-bill:
     script-location: /Users/myzek/workspace/priv/edgar2/assistant/playwright-tasks/pay-tauron-bill.py
+  test-driver-license:
+    script-location: /Users/myzek/workspace/priv/edgar2/assistant/playwright-tasks/driver-license-test.py
 
 ---
 # Local Dell profile
