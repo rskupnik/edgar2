@@ -22,8 +22,7 @@ public class AssistantController {
 
     @PostMapping(path = "tasks/trigger", consumes = "application/json")
     public ResponseEntity<?> triggerTask(@RequestBody TaskTriggerRequest taskTriggerRequest) {
-        System.out.println(taskTriggerRequest.getTaskId());
-        System.out.println(taskTriggerRequest.getData());
+        assistant.processCommandHeadless(taskTriggerRequest.getTaskId());
         return ResponseEntity.ok().build();
     }
 }

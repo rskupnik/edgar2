@@ -60,12 +60,25 @@ public class AssistantImpl implements Assistant, Subscriber {
             return;
         }
 
+        launchTask(taskDescriptor);
+    }
+
+    @Override
+    public void processCommandHeadless(String cmd) {
+        var taskDescriptor = availableCommands.get(cmd);
+        if (taskDescriptor == null)
+            return;
+
+        launchTask(taskDescriptor);
+    }
+
+    private void launchTask(TaskDescriptor taskDescriptor) {
         try {
             // TODO: This only supports one task at a time - might be fine if we implement queuing, not fine if multitasking
             currentTask = taskDescriptor
                     .taskClass()
-                        .getDeclaredConstructor(TaskProperties.class, UserIO.class, Supplier.class, Map.class)
-                        .newInstance(taskProperties, userIO, webCrawlerSupplier, taskDescriptor.params());
+                    .getDeclaredConstructor(TaskProperties.class, UserIO.class, Supplier.class, Map.class)
+                    .newInstance(taskProperties, userIO, webCrawlerSupplier, taskDescriptor.params());
         } catch (Exception e) {
             e.printStackTrace();
         }

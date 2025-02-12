@@ -9,6 +9,7 @@ import java.util.function.Supplier;
 public interface Assistant {
     void registerCommand(String cmd, TaskDescriptor taskDescriptor);
     void processCommand(String cmd);
+    void processCommandHeadless(String cmd);
 
     static Assistant defaultImplementation(
             UserIO userIO,
