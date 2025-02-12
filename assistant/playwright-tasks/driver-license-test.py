@@ -22,6 +22,9 @@ class PythonTaskImplementation(PythonTask):
             page.fill("#imiePierwsze", "RADOSŁAW")
             page.fill("#nazwisko", "SKUPNIK")
             page.fill("#seriaNumerBlankietuDruku", "I1203025")
+#             page.fill("#imiePierwsze", "MAREK")
+#             page.fill("#nazwisko", "SZUL")
+#             page.fill("#seriaNumerBlankietuDruku", "Z0216477")
 
             page.click(".btn-primary")
 
@@ -29,12 +32,12 @@ class PythonTaskImplementation(PythonTask):
 #
 #             page.screenshot(path="screenshot.png", full_page=True)
 
-            result_info = page.wait_for_selector("upki-search-result-info", timeout=10000)
-
-            strong_element = result_info.query_selector("strong")
-            strong_text = strong_element.text_content()
-
-            self.notify_user(f"Wynik: {strong_text}")
+            document_found = page.wait_for_selector("upki-search-result-info", timeout=10000).query_selector("strong").text_content()
+            if document_found == "Nie znaleziono dokumentu":
+                self.notify_user("Nie znaleziono dokumentu")
+            else:
+                state = page.wait_for_selector("upki-search-results", timeout=10000).query_selector(".stan").query_selector("strong").text_content()
+                self.notify_user(f"Stan dokumentu: {state}")
 
             browser.close()
 
