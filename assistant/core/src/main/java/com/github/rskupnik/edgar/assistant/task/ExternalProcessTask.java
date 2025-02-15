@@ -37,6 +37,8 @@ public abstract class ExternalProcessTask extends Task {
     }
 
     protected void runProcess(String... arguments) throws Exception {
+        preRunHook();
+
         Process process = new ProcessBuilder(arguments).start();
         this.process = process;
 
@@ -99,6 +101,10 @@ public abstract class ExternalProcessTask extends Task {
 
     protected void awaitProcessFinished() throws Exception {
         this.process.waitFor();
+    }
+
+    protected void preRunHook() {
+
     }
 
     protected abstract void onPipeMessageReceived(String message);

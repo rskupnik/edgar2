@@ -64,12 +64,16 @@ public class AssistantImpl implements Assistant, Subscriber {
     }
 
     @Override
-    public void processCommandHeadless(String cmd) {
+    public void processCommandHeadless(String cmd, String data) {
         var taskDescriptor = availableCommands.get(cmd);
         if (taskDescriptor == null)
             return;
 
-        launchTask(taskDescriptor);
+        // TODO: Very ugly hack but what can you do
+        var bla = new HashMap<>(taskDescriptor.params());
+        bla.put("data", data);
+        var td = new TaskDescriptor(taskDescriptor.taskClass(), bla);
+        launchTask(td);
     }
 
     private void launchTask(TaskDescriptor taskDescriptor) {
