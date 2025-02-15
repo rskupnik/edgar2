@@ -19,8 +19,12 @@ import java.util.function.Supplier;
 
 public class DriverLicenseCheckTask extends PythonTask {
 
+    public static String N8N_URL_PROPERTY = "n8n.url";
+
     private boolean isRecordingOutput = false;
     private StringBuilder outputBuffer;
+
+    private final String url;
 
     public DriverLicenseCheckTask(
             TaskProperties taskProperties,
@@ -29,20 +33,17 @@ public class DriverLicenseCheckTask extends PythonTask {
             Map<String, Object> parameters
     ) {
         super(taskProperties, userIO, webCrawlerSupplier, parameters);
+        this.url = parameters.get(N8N_URL_PROPERTY) + "/webhook-test/driver-license-test-response";
     }
 
     @Override
     protected void preRunHook() {
         // Write data to a file
-        System.out.println("DATA RECEIVED");
-        System.out.println(this.parameters.get("data"));
         String data = this.parameters.get("data").toString();
 
         try {
             // Write to the file, creating if necessary and truncating if it exists
             Files.writeString(Path.of("/tmp/driverCheckInput"), data, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
-
-            System.out.println("File created/overwritten and data written at: /tmp/driverCheckInput");
         } catch (IOException e) {
             System.err.println("Error creating or writing to file: " + e.getMessage());
         }
@@ -68,7 +69,6 @@ public class DriverLicenseCheckTask extends PythonTask {
     }
 
     private void sendToWebhook(String message) {
-        System.out.println("Sending to webhook: " + message);
         try {
             var client = HttpClient.newBuilder()
                     .version(HttpClient.Version.HTTP_1_1)
@@ -76,19 +76,17 @@ public class DriverLicenseCheckTask extends PythonTask {
                     .connectTimeout(Duration.ofSeconds(10))
                     .build();
 
-            var response = client.send(
-                    HttpRequest.newBuilder()
-//                            .uri(URI.create("http://n8n:5678/webhook-test/driver-license-test-response"))
-                            .uri(URI.create("http://n8n.home/webhook-test/driver-license-test-response"))
-                            .header("Content-Type", "application/json")
-                            .timeout(Duration.ofSeconds(10))
-                            .POST(HttpRequest.BodyPublishers.ofString(message))
-                            .build(),
-                    HttpResponse.BodyHandlers.ofString()
-                );
+            client.send(
+                HttpRequest.newBuilder()
+                        .uri(URI.create(url))
+                        .header("Content-Type", "application/json")
+                        .timeout(Duration.ofSeconds(10))
+                        .POST(HttpRequest.BodyPublishers.ofString(message))
+                        .build(),
+                HttpResponse.BodyHandlers.ofString()
+            );
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        System.out.println("Sent");
     }
 }

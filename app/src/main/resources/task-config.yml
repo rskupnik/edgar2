@@ -10,6 +10,7 @@ tasks:
   test-driver-license:
     script-location: /app/tasks/driver-license-test.py
     pipe: /tmp/test-driver-license
+    n8n-url: http://n8n:5678
 
 ---
 # Local MacOS profile
@@ -26,6 +27,7 @@ tasks:
     script-location: /Users/myzek/workspace/priv/edgar2/assistant/playwright-tasks/pay-tauron-bill.py
   test-driver-license:
     script-location: /Users/myzek/workspace/priv/edgar2/assistant/playwright-tasks/driver-license-test.py
+    n8n-url: http://n8n.home
 
 ---
 # Local Dell profile

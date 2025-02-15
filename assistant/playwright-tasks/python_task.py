@@ -40,6 +40,9 @@ class PythonTask(ABC):
     def notify_user(self, msg: str):
         self.pipe_write_async(f"output: {msg}")
 
+    """
+    Send large output to the caller
+    """
     def send_output(self, output: str):
         self.pipe_write_async("OUTPUT_BEGIN")
         self.pipe_write_async(output)
@@ -67,3 +70,16 @@ class PythonTask(ABC):
     def pipe_write_async(self, content: str):
         with open(self.async_pipe_path, "w") as pipe:
             pipe.write(f"{content}\n")
+
+    """
+    Read contents of a file
+    """
+    def read_file(self, file_path: str) -> str:
+        try:
+            with open(file_path, "r") as file:
+                content = file.read()
+                return content
+        except FileNotFoundError:
+            print(f"File {file_path} not found.")
+        except Exception as e:
+            print(f"Error reading file: {e}")
