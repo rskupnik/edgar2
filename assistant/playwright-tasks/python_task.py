@@ -40,6 +40,11 @@ class PythonTask(ABC):
     def notify_user(self, msg: str):
         self.pipe_write_async(f"output: {msg}")
 
+    def send_output(self, output: str):
+        self.pipe_write_async("OUTPUT_BEGIN")
+        self.pipe_write_async(output)
+        self.pipe_write_async("OUTPUT_END")
+
     # LOW-LEVEL METHODS, ONLY CALL IF YOU KNOW WHAT YOU ARE DOING
 
     """

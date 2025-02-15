@@ -35,9 +35,11 @@ class PythonTaskImplementation(PythonTask):
             document_found = page.wait_for_selector("upki-search-result-info", timeout=10000).query_selector("strong").text_content()
             if document_found == "Nie znaleziono dokumentu":
                 self.notify_user("Nie znaleziono dokumentu")
+                self.send_output(f"[{{\"name\": \"RADOSŁAW\", \"surname\": \"SKUPNIK\", \"documentId\": \"I1203025\", \"status\": \"Not found\"}}]")
             else:
                 state = page.wait_for_selector("upki-search-results", timeout=10000).query_selector(".stan").query_selector("strong").text_content()
                 self.notify_user(f"Stan dokumentu: {state}")
+                self.send_output(f"[{{\"name\": \"RADOSŁAW\", \"surname\": \"SKUPNIK\", \"documentId\": \"I1203025\", \"status\": \"{state}\"}}]")
 
             browser.close()
 
