@@ -3,6 +3,7 @@ services:
   edgar:
     image: edgar
     container_name: edgar
+    restart: unless-stopped
     build:
       context: .
       dockerfile: Dockerfile
@@ -14,7 +15,6 @@ services:
     volumes:
       - /home/pi/edgar/device-config.json:/app/device-config.json:ro
       - /home/pi/edgar/dashboards:/app/dashboards:ro
-    restart: always
     networks:
       - raspberry-pi-network
     command: ["--deviceConfig", "/app/device-config.json", "--dashboard", "/app/dashboards/demo.json"]
