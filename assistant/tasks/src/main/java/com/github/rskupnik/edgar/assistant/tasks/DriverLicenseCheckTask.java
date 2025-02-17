@@ -33,7 +33,7 @@ public class DriverLicenseCheckTask extends PythonTask {
             Map<String, Object> parameters
     ) {
         super(taskProperties, userIO, webCrawlerSupplier, parameters);
-        this.url = parameters.get(N8N_URL_PROPERTY) + "/webhook-test/driver-license-test-response";
+        this.url = parameters.get(N8N_URL_PROPERTY) + "/webhook/driver-license-test-response";
     }
 
     @Override
