@@ -21,11 +21,21 @@ class PythonTaskImplementation(PythonTask):
             page.goto(URL, wait_until="domcontentloaded")
 
             for item in input_data:
+                print(f"Processing for: {item.get('imie')} {item.get('nazwisko')} {item.get('numer_dokumentu')}")
+
+                # Fill in the form
                 page.fill("#imiePierwsze", item.get('imie'))
                 page.fill("#nazwisko", item.get('nazwisko'))
                 page.fill("#seriaNumerBlankietuDruku", item.get('numer_dokumentu'))
 
-                page.click(".btn-primary")
+                # Check if submit button is clickable (it won't be if data is invalid)
+                submit_button = page.query_selector(".btn-primary")
+                if not submit_button or submit_button.get_attribute("disabled") is not None:
+                    print(f"Skipping {item.get('imie')} {item.get('nazwisko')} due to invalid data (submit button not available).")
+                    output.append({"imie": item.get('imie'), "nazwisko": item.get('nazwisko'), "dokument": item.get('numer_dokumentu'), "stan": "Niepoprawne dane"})
+                    continue  # Skip to next item
+
+                submit_button.click()
 
                 document_found = page.wait_for_selector("upki-search-result-info", timeout=10000).query_selector("strong").text_content()
                 if document_found == "Nie znaleziono dokumentu":
