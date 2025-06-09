@@ -16,8 +16,10 @@ class PythonTask(ABC):
     def prepare(self):
         if not os.path.exists(self.sync_pipe_path):
             os.mkfifo(self.sync_pipe_path)
+            os.chmod(self.sync_pipe_path, 0o666)
         if not os.path.exists(self.async_pipe_path):
             os.mkfifo(self.async_pipe_path)
+            os.chmod(self.async_pipe_path, 0o666)
 
     # ABSTRACT METHODS
 

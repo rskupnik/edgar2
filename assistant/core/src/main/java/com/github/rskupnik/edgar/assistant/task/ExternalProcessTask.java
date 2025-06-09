@@ -24,7 +24,7 @@ public abstract class ExternalProcessTask extends Task {
         if (pipe.exists()) {
             pipe.delete();
         }
-        Runtime.getRuntime().exec("mkfifo " + pipePath).waitFor();
+        Runtime.getRuntime().exec("mkfifo " + pipePath + " && chmod 666 " + pipePath).waitFor();
         this.syncPipe = pipePath;
 
         var asyncPipePath = pipePath + "_async";
@@ -32,7 +32,7 @@ public abstract class ExternalProcessTask extends Task {
         if (asyncPipe.exists()) {
             asyncPipe.delete();
         }
-        Runtime.getRuntime().exec("mkfifo " + asyncPipePath).waitFor();
+        Runtime.getRuntime().exec("mkfifo " + asyncPipePath + " && chmod 666 " + asyncPipePath).waitFor();
         this.asyncPipe = asyncPipePath;
     }
 
