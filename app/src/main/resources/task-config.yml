@@ -10,7 +10,9 @@ tasks:
   test-driver-license:
     script-location: /app/tasks/driver-license-test.py
     pipe: /tmp/test-driver-license
-    n8n-url: http://n8n:5678
+    n8n:
+      url: http://n8n:5678
+      webhook-path: /webhook/driver-license-response
 
 ---
 # Local MacOS profile
