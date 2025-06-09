@@ -61,7 +61,8 @@ public class AssistantConfig {
             new TaskRegistration("test driver license", DriverLicenseCheckTask.class, Map.of(
                     PythonTask.SCRIPT_LOCATION_PROP, "tasks.test-driver-license.script-location",
                     PythonTask.PIPE_PATH_PROP, "tasks.test-driver-license.pipe",
-                    DriverLicenseCheckTask.N8N_URL_PROPERTY, flattenedProps.get("tasks.test-driver-license.n8n-url")
+                    DriverLicenseCheckTask.N8N_URL_PROPERTY, flattenedProps.get("tasks.test-driver-license.n8n.url"),
+                    DriverLicenseCheckTask.N8N_WEBHOOK_PATH_PROPERTY, flattenedProps.get("tasks.test-driver-license.n8n.webhook-path")
             ))
         );
     }

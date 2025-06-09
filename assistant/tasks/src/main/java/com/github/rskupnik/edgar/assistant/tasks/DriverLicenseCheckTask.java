@@ -20,6 +20,7 @@ import java.util.function.Supplier;
 public class DriverLicenseCheckTask extends PythonTask {
 
     public static String N8N_URL_PROPERTY = "n8n.url";
+    public static String N8N_WEBHOOK_PATH_PROPERTY = "n8n.webhook-path";
 
     private boolean isRecordingOutput = false;
     private StringBuilder outputBuffer;
@@ -33,7 +34,7 @@ public class DriverLicenseCheckTask extends PythonTask {
             Map<String, Object> parameters
     ) {
         super(taskProperties, userIO, webCrawlerSupplier, parameters);
-        this.url = parameters.get(N8N_URL_PROPERTY) + "/webhook/driver-license-test-response";
+        this.url = "" + parameters.get(N8N_URL_PROPERTY) + parameters.get(N8N_WEBHOOK_PATH_PROPERTY);
     }
 
     @Override
