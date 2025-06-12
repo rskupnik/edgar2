@@ -12,6 +12,13 @@ container_name := "edgar"
 build:
     ./gradlew build
 
+build-image:
+    ssh {{rpi_user}}@{{rpi_hostname}} 'cd edgar && docker build --build-arg JAR_SOURCE_PATH="./app.jar" --build-arg TASKS_PATH="./tasks/*.py" -t edgar .'
+
+push:
+    ssh {{rpi_user}}@{{rpi_hostname}} 'cd edgar && docker tag edgar rskupnik/ether:edgar'
+    ssh {{rpi_user}}@{{rpi_hostname}} 'cd edgar && docker push rskupnik/ether:edgar'
+
 # SSH into Raspberry Pi
 ssh:
     ssh {{rpi_user}}@{{rpi_hostname}}

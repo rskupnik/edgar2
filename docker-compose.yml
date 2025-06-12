@@ -4,6 +4,8 @@ services:
     image: edgar
     container_name: edgar
     restart: unless-stopped
+    environment:
+      TASKS_TEST_DRIVER_LICENSE_N8N_WEBHOOK_PATH: /webhook/driver-license-test-response
     build:
       context: .
       dockerfile: Dockerfile
