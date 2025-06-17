@@ -1,13 +1,9 @@
-name: Test Self-Hosted Runner
-
+name: Actions Runner Controller Demo
 on:
-  push:
-    branches:
-      - master
+  workflow_dispatch:
 
 jobs:
-  test-run:
+  Explore-GitHub-Actions:
     runs-on: ether-runner-edgar
     steps:
-      - name: Echo Hello
-        run: echo "✅ This job ran on my self-hosted runner!"
+    - run: echo "🎉 This job uses runner scale set runners!"
