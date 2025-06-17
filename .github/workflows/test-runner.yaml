@@ -7,7 +7,7 @@ on:
 
 jobs:
   test-run:
-    runs-on: [self-hosted, ether-runner-edgar]
+    runs-on: ether-runner-edgar
     steps:
       - name: Echo Hello
         run: echo "✅ This job ran on my self-hosted runner!"
