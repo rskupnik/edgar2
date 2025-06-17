@@ -1,0 +1,13 @@
+name: Test Self-Hosted Runner
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  test-run:
+    runs-on: [self-hosted, ether-runner-edgar]
+    steps:
+      - name: Echo Hello
+        run: echo "✅ This job ran on my self-hosted runner!"
