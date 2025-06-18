@@ -34,6 +34,7 @@ jobs:
       
       - name: Push Docker image
         run: |
+          export DOCKER_CONFIG=/tmp/docker-config
           echo $DOCKER_CONFIG
           docker tag edgar rskupnik/ether:edgar
           docker push rskupnik/ether:edgar
