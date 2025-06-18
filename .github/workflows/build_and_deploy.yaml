@@ -20,9 +20,13 @@ jobs:
 
       - name: Build with Gradle
         run: ./gradlew build
+      
+      - name: Configure Docker to use custom config
+        run: export DOCKER_CONFIG=/tmp/docker-config
 
       - name: Build Docker image
         run: |
+          echo $DOCKER_CONFIG
           docker build \
             --build-arg JAR_SOURCE_PATH=./app/build/libs/app.jar \
             --build-arg TASKS_PATH="./assistant/playwright-tasks/*.py" \
@@ -30,5 +34,6 @@ jobs:
       
       - name: Push Docker image
         run: |
+          echo $DOCKER_CONFIG
           docker tag edgar rskupnik/ether:edgar
           docker push rskupnik/ether:edgar
