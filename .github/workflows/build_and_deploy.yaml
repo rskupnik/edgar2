@@ -20,3 +20,15 @@ jobs:
 
       - name: Build with Gradle
         run: ./gradlew build
+
+      - name: Build Docker image
+        run: |
+          docker build \
+            --build-arg JAR_SOURCE_PATH=./app/build/libs/app.jar \
+            --build-arg TASKS_PATH="./assistant/playwright-tasks/*.py" \
+            -t edgar .
+      
+      - name: Push Docker image
+        run: |
+          docker tag edgar rskupnik/ether:edgar
+          docker push rskupnik/ether:edgar
