@@ -26,6 +26,7 @@ jobs:
 
       - name: Build & Push Docker Image
         run: |
+          export DOCKER_CONFIG=/tmp/docker-config
           docker buildx build \
             --build-arg JAR_SOURCE_PATH=./app/build/libs/app.jar \
             --build-arg TASKS_PATH="./assistant/playwright-tasks/*.py" \
