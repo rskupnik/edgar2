@@ -22,7 +22,7 @@ jobs:
         run: ./gradlew build
       
       - name: Set up Docker Buildx
-        run: docker buildx create --use
+        run: docker buildx create --use --config /tmp/docker-config
 
       - name: Build & Push Docker Image
         run: |
