@@ -20,14 +20,19 @@ jobs:
 
       - name: Build with Gradle
         run: ./gradlew build
+      
+      - name: Set up Docker Buildx
+        run: docker buildx create --use
 
       - name: Build Docker image
         run: |
-          echo $DOCKER_CONFIG
-          docker build \
+          docker buildx build \
             --build-arg JAR_SOURCE_PATH=./app/build/libs/app.jar \
             --build-arg TASKS_PATH="./assistant/playwright-tasks/*.py" \
-            -t edgar .
+            --cache-from type=local,src=/mnt/docker-cache \
+            --cache-to type=local,dest=/mnt/docker-cache \
+            -t edgar \
+            -f Dockerfile .
       
       - name: Push Docker image
         run: |
