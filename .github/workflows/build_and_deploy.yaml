@@ -27,7 +27,7 @@ jobs:
       - name: Set up Docker Buildx
         run: docker buildx create --use
 
-      - name: Build & Push Docker Image
+      - name: Build Docker Image
         run: |
           docker buildx build \
             --build-arg JAR_SOURCE_PATH=./app/build/libs/app.jar \
