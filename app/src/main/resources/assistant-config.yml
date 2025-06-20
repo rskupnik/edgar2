@@ -3,4 +3,12 @@
 
 spring:
   config:
+    import: classpath:task-config.yml
+
+---
+# Local MacOS profile
+spring:
+  config:
+    activate:
+      on-profile: local-macos
     import: classpath:credentials.yml, classpath:task-config.yml
